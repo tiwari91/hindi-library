@@ -59,6 +59,9 @@ def subpages(base):
 def chapter_items(title, cn):
     w = wikitext(HOST, title) or ""
     poems = re.findall(r"<poem>(.*?)</poem>", w, flags=re.S)
+    # some pages have only an empty decorative <poem> and the verses outside it
+    if poems and len(re.sub(r"<[^>]+>|\s", "", "".join(poems))) < 40:
+        poems = []
     body = "\n".join(poems) if poems else re.sub(r"\{\{.*?\}\}|\[\[वर्गः:[^\]]*\]\]", "", w, flags=re.S)
     lines, colophon = [], []
     for l in clean_wiki(body):

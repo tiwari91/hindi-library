@@ -91,6 +91,14 @@
    "sources": ["sa-puranas"]
   },
   {
+   "id": "varaha-purana", "purana": true, "title": "वराहपुराणम्", "title_en": "Varaha Purana", "by": "वेदव्यास",
+   "desc": "218 chapters in Sanskrit with Roman transliteration, from Sanskrit Wikisource; complete.",
+   "script": "sa", "kind": "verse", "unit": "", "verse": "श्लोक", "layers": {"text": "संस्कृत", "tr": "Roman"},
+   "recite": true, "no_search": true,
+   "ocr_note": "This text is typed on Sanskrit Wikisource and has not been checked against a printed edition there; a few typing errors may remain. Verse breaks follow the verse numbers in the source.",
+   "sources": ["sa-puranas"]
+  },
+  {
    "id": "narada-purana", "purana": true, "title": "नारदपुराणम्", "title_en": "Narada Purana", "by": "वेदव्यास",
    "desc": "Purvardha (125 chapters) and Uttarardha (82 chapters) in Sanskrit with Roman transliteration, from Sanskrit Wikisource; complete.",
    "script": "sa", "kind": "verse", "unit": "", "verse": "श्लोक", "layers": {"text": "संस्कृत", "tr": "Roman"},
@@ -321,7 +329,7 @@
   {"title": "भविष्य पुराण", "title_en": "Bhavishya Purana"},
   {"title": "ब्रह्मवैवर्त पुराण", "title_en": "Brahmavaivarta Purana"},
   {"title": "लिङ्ग पुराण", "title_en": "Linga Purana", "book": "linga-purana"},
-  {"title": "वराह पुराण", "title_en": "Varaha Purana"},
+  {"title": "वराह पुराण", "title_en": "Varaha Purana", "book": "varaha-purana"},
   {"title": "स्कन्द पुराण", "title_en": "Skanda Purana"},
   {"title": "वामन पुराण", "title_en": "Vamana Purana", "book": "vamana-purana"},
   {"title": "कूर्म पुराण", "title_en": "Kurma Purana", "book": "kurma-purana"},
