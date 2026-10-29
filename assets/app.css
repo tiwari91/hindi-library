@@ -528,3 +528,6 @@ footer.site a { color: var(--ink-2); }
 	.rc-foot { gap: 10px; }
 	.mala-btn { width: 84px; height: 84px; }
 }
+
+/* while the reader covers the screen, the page behind it takes no space */
+body.rc-open > main, body.rc-open > footer.site, body.rc-open > header.topbar { display: none; }

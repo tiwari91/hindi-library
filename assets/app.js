@@ -498,7 +498,7 @@
 				h("div", { class: "rc-bar" }, bar)),
 			body, foot);
 		document.body.append(root);
-		document.documentElement.style.overflow = "hidden";
+		document.documentElement.style.overflow = "hidden"; document.body.classList.add("rc-open");
 		RC.root = root;
 		function fit() {
 			// shrink a long verse a little so it fits; past that, only the verse panel scrolls
@@ -567,7 +567,7 @@
 			viewport,
 			h("div", { class: "rc-foot" }, prevBtn, h("div", { class: "rc-mid" }, pos), nextBtn));
 		document.body.append(root);
-		document.documentElement.style.overflow = "hidden";
+		document.documentElement.style.overflow = "hidden"; document.body.classList.add("rc-open");
 		let page = 0, pages = 1, step = 1;
 		const saved = S.last[b.id] && S.last[b.id].pg;
 		const startFrac = saved && String(saved.n) === String(meta.n) ? saved.f : 0;
@@ -624,7 +624,7 @@
 	function closeRecite() {
 		if (!RC) return;
 		RC.root.remove();
-		document.documentElement.style.overflow = "";
+		document.documentElement.style.overflow = ""; document.body.classList.remove("rc-open");
 		const id = RC.items[RC.i] && RC.items[RC.i].id;
 		const b = RC.b, n = RC.ch.meta.n;
 		RC = null;
