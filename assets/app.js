@@ -57,6 +57,9 @@
 		speak: '<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/>',
 		recite: '<rect x="5" y="3.5" width="14" height="17" rx="2.5"/><path d="M9 9h6M9 13h6"/>',
 		link: '<path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1"/><path d="M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/>',
+		list: '<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r=".8"/><circle cx="4" cy="12" r=".8"/><circle cx="4" cy="18" r=".8"/>',
+		scroll: '<rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 8h7M8.5 11.5h7M8.5 15h4"/>',
+		sliders: '<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>',
 	};
 	let toastTimer;
 	function toast(msg) {
@@ -188,17 +191,21 @@
 	async function viewHome() {
 		setTitle("");
 		const frag = [];
-		frag.push(h("section", { class: "hero" },
-			h("p", { class: "eyebrow" }, "Hindi Library · हिन्दी पुस्तकालय"),
-			h("h1", null, "पढ़िए, अध्याय-दर-अध्याय"),
-			h("p", { class: "lede" }, "भगवद्गीता, रामचरितमानस, प्रेमचंद की कहानियाँ और दूसरे ग्रंथ — मुक्त स्रोतों से, मूल पाठ में। Classic Hindi and Sanskrit texts from public-domain and openly licensed sources.")));
+		view.classList.add("wide");
+		frag.push(h("section", { class: "hero home" },
+			h("h1", null, "हिन्दी पुस्तकालय"),
+			h("p", { class: "lede" }, "Gita, Ramcharitmanas, Premchand, stotras and more, from free sources, one verse at a time.")));
+		const top = h("div", { class: "home-top" });
 		const lb = S.lastBook && bookById(S.lastBook);
 		if (lb && S.last[lb.id]) {
 			const L = S.last[lb.id];
-			frag.push(h("a", { class: "resume", href: L.id ? verseUrl(lb, L.n, L.id) : "#/" + lb.id + "/" + L.n },
-				h("span", null, "पढ़ना जारी रखें · Continue: ", h("b", null, lb.title), " — ", (lb.unit || "") + " " + dev(L.n)), "→"));
+			let where = (lb.unit || "") + " " + dev(L.n);
+			try { const c = (await toc(lb)).chapters.find((x) => String(x.n) === String(L.n)); if (c) where = chapterTitle(lb, c); } catch (e) { /* keep the number */ }
+			top.append(h("a", { class: "resume", href: L.id ? verseUrl(lb, L.n, L.id) : "#/" + lb.id + "/" + L.n },
+				h("span", null, h("small", null, "पढ़ना जारी रखें · Continue reading"), h("b", null, lb.title), h("span", null, where)), "→"));
 		}
-		for (const f of homeExtras) { const el = await f(); if (el) frag.push(el); }
+		for (const f of homeExtras) { const el = await f(); if (el) top.append(el); }
+		if (top.childNodes.length) frag.push(top);
 		const shown = books().filter((b) => !b.purana && !b.hidden);
 		const groups = [["ग्रंथ · Books", shown.filter((b) => b.shelf !== "stotra")], ["स्तोत्र · Stotras and chants", shown.filter((b) => b.shelf === "stotra")]];
 		for (const [label, list] of groups) {
@@ -209,17 +216,16 @@
 		frag.push(h("ul", { class: "puranas" }, LIB.puranas.map((p) => {
 			const b = p.book && bookById(p.book);
 			return h("li", null, b
-				? h("a", { class: "card", href: "#/" + b.id }, h("span", { class: "t sa" }, p.title), h("span", { class: "e" }, p.title_en))
-				: h("div", { class: "card soon" }, h("span", { class: "t sa" }, p.title), h("span", { class: "e" }, p.title_en, h("span", { class: "pill" }, "coming"))));
+				? h("a", { class: "pchip", href: "#/" + b.id, title: p.title_en }, h("span", { class: "sa" }, p.title), h("small", null, "read"))
+				: h("span", { class: "pchip soon", title: p.title_en + " (coming)" }, h("span", { class: "sa" }, p.title), h("small", null, "coming")));
 		})));
 		view.replaceChildren(...frag);
 	}
 	function bookCard(b) {
 		const href = b.link || (b.open ? "#/" + b.open : "#/" + b.id);
-		return h("a", { class: "card", href, rel: b.link ? "noopener" : null },
+		return h("a", { class: "card", href, rel: b.link ? "noopener" : null, title: b.desc || null },
 			h("span", { class: "t" + (b.script === "sa" ? " sa" : "") }, b.title),
-			h("span", { class: "go", "aria-hidden": "true" }, "→"),
-			h("span", { class: "e" }, b.title_en, b.by ? " · " + b.by : ""),
+			h("span", { class: "e" }, b.title_en),
 			b.desc ? h("span", { class: "d" }, b.desc) : null);
 	}
 
@@ -289,7 +295,7 @@
 	}
 
 	// one verse at a time: a per-book choice; some books (b.one) start that way
-	const isOne = (b) => !!b.recite && (b.id in S.one ? S.one[b.id] : !!b.one);
+	const isOne = (b) => !!b.recite && b.kind !== "prose" && (b.id in S.one ? S.one[b.id] : true);
 
 	let observer = null;
 	async function viewChapter(b, n, focusId) {
@@ -309,14 +315,15 @@
 			layerChips(b),
 			goToBox(b, t, meta.n, false),
 			b.recite ? h("div", { class: "layers" },
-				h("button", { class: "chip ghost", onclick: () => openRecite(b, meta.n, null) }, "▶ एक-एक करके पढ़ें · Recite mode" + (b.mala ? " + mala" : "")),
-				h("button", { class: "chip ghost", "aria-pressed": String(isOne(b)), title: "Always open this book one verse at a time",
-					onclick: (e) => { S.one[b.id] = !isOne(b); save(); e.currentTarget.setAttribute("aria-pressed", String(S.one[b.id])); if (S.one[b.id]) openRecite(b, meta.n, null); } },
-					"हमेशा एक-एक · Always one at a time")) : null,
+				h("button", { class: "chip ghost", onclick: () => { S.one[b.id] = true; save(); openRecite(b, meta.n, null); } },
+					"▶ एक-एक श्लोक · One verse at a time" + (b.mala ? " + mala" : ""))) : null,
 			b.ocr_note ? h("p", { class: "ocr-note", lang: "hi" }, b.ocr_note) : null,
 			b.en_note ? h("p", { class: "ocr-note", lang: "en" }, b.en_note) : null,
 			doc.note ? h("p", { class: "ocr-note" }, doc.note) : null);
-		const body = b.kind === "prose"
+		// in one-verse or page mode the reader covers the screen, so the long list is not built behind it
+		const covered = isOne(b) || (b.kind === "prose" && !S.scrollProse);
+		const body = covered ? h("div")
+			: b.kind === "prose"
 			? h("div", { class: "prose", lang: "hi" }, doc.items.map((it) => renderItem(b, meta.n, it)))
 			: h("div", { class: "verses" }, doc.items.map((it) => renderItem(b, meta.n, it)));
 		const prev = t.chapters[index - 1], next = t.chapters[index + 1];
@@ -341,6 +348,7 @@
 		if (observer) observer.disconnect();
 		if ("IntersectionObserver" in window) {
 			observer = new IntersectionObserver((entries) => {
+				if (RC) return;
 				for (const e of entries) {
 					if (e.isIntersecting && e.target.id) {
 						S.last[b.id] = { n: meta.n, id: e.target.id.slice(2) };
@@ -353,9 +361,10 @@
 			view.querySelectorAll("[id^='v-']").forEach((el) => observer.observe(el));
 		}
 		if (isOne(b)) await openRecite(b, meta.n, focusId || null);
+		else if (b.kind === "prose" && !S.scrollProse) openPages(b, ch);
 	}
 
-	function layerChips(b) {
+	function layerChips(b, onChange) {
 		if (!b.layers) return null;
 		const keys = Object.keys(b.layers);
 		if (keys.length < 2) return null;
@@ -368,6 +377,7 @@
 				if (keys.filter((x) => x !== "note").every((x) => hidden(b, x))) setHidden(b, k, false);
 				save(); applyLayers(b);
 				btns.forEach((c, i) => c.setAttribute("aria-pressed", hidden(b, keys[i]) ? "false" : "true"));
+				if (onChange) onChange();
 			});
 			return btn;
 		});
@@ -422,10 +432,24 @@
 		const setSize = (d) => {
 			S.scale = Math.min(1.6, Math.max(0.85, Math.round(((S.scale || 1) + d) * 100) / 100));
 			sizeOut.textContent = Math.round(S.scale * 100) + "%";
-			applyScale(); save();
+			applyScale(); save(); refit();
 		};
+		const r = parseRoute();
+		const rb = RC ? RC.b : (r.n && bookById(r.book)) || null;
+		const refit = () => { if (RC && RC.fit) RC.fit(); };
 		const sheet = h("div", { class: "sheet", role: "dialog", "aria-modal": "true", "aria-label": "Reading settings" },
 			h("h2", null, "पढ़ने की सेटिंग · Reading settings"),
+			rb && rb.layers && Object.keys(rb.layers).length > 1 ? h("div", { class: "row" }, h("span", null, "Show · दिखाएँ"), layerChips(rb, refit)) : null,
+			rb && rb.recite && rb.kind !== "prose" ? h("div", { class: "row" }, h("span", null, "Reading · पढ़ने का ढंग"),
+				seg([["one", "एक-एक श्लोक · One verse"], ["all", "पूरा अध्याय · Whole chapter"]], () => isOne(rb) ? "one" : "all", (v) => {
+					S.one[rb.id] = v === "one"; save();
+					if (v === "all" && RC) { closeRecite(); close(); route(); }
+					else if (v === "one" && !RC) { close(); route(); }
+				})) : null,
+			rb && rb.kind === "prose" ? h("div", { class: "row" }, h("span", null, "Reading · पढ़ने का ढंग"),
+				seg([["pages", "पन्ने · Pages"], ["scroll", "स्क्रॉल · Scroll"]], () => S.scrollProse ? "scroll" : "pages", (v) => {
+					S.scrollProse = v === "scroll"; save(); if (RC) closeRecite(); close(); route();
+				})) : null,
 			h("div", { class: "row" }, h("span", null, "Theme · रंग"),
 				seg([["auto", "Auto"], ["light", "दिन · Light"], ["dark", "रात · Dark"]], () => S.theme || "auto", (v) => { S.theme = v === "auto" ? undefined : v; applyTheme(); save(); })),
 			h("div", { class: "row" }, h("span", null, "Text size · अक्षर का आकार"),
@@ -434,7 +458,7 @@
 					h("button", { "aria-pressed": "true", disabled: true }, sizeOut),
 					h("button", { onclick: () => setSize(0.1), "aria-label": "Larger" }, "अ+"))),
 			h("div", { class: "row" }, h("span", null, "Meaning · अर्थ"),
-				seg([["show", "दिखाएँ · Show"], ["tap", "टैप पर · Hide until I tap"]], () => S.tap ? "tap" : "show", (v) => { S.tap = v === "tap"; applyTap(); save(); })),
+				seg([["show", "दिखाएँ · Show"], ["tap", "टैप पर · Hide until I tap"]], () => S.tap ? "tap" : "show", (v) => { S.tap = v === "tap"; applyTap(); save(); refit(); })),
 			h("button", { class: "chip", onclick: close }, "बंद करें · Close"));
 		document.body.append(scrim, sheet);
 		sheet.querySelector("button").focus();
@@ -457,35 +481,48 @@
 		RC = { b, ch, items, i };
 		const card = h("div", { class: "rc-card", "aria-live": "polite" });
 		const bar = h("i");
-		const where = h("span", { class: "where" });
-		const prevBtn = h("button", { class: "rc-nav", "aria-label": "Previous · पिछला", onclick: () => go(-1) }, svg(ICON.prev));
-		const nextBtn = h("button", { class: "rc-nav", "aria-label": "Next · अगला", onclick: () => go(1) }, svg(ICON.next));
-		const foot = h("div", { class: "rc-foot" }, prevBtn, b.mala ? malaWidget(b) : null, nextBtn);
+		const pos = h("span", { class: "rc-pos" });
+		const tools = h("span", { class: "rc-tools" });
+		const prevBtn = h("button", { class: "rc-nav", "aria-label": "Previous · पिछला", onclick: () => go(-1) }, svg(ICON.prev), h("span", { class: "w" }, "पिछला"));
+		const nextBtn = h("button", { class: "rc-nav", "aria-label": "Next · अगला", onclick: () => go(1) }, h("span", { class: "w" }, "अगला"), svg(ICON.next));
+		const foot = h("div", { class: "rc-foot" }, prevBtn, h("div", { class: "rc-mid" }, pos, tools, b.mala ? malaWidget(b) : null), nextBtn);
 		const body = h("div", { class: "rc-body" }, card);
-		const root = h("div", { class: "recite", role: "dialog", "aria-modal": "true", "aria-label": "Recite mode" },
+		const root = h("div", { class: "recite", role: "dialog", "aria-modal": "true", "aria-label": b.title_en + ", one verse at a time" },
 			h("div", null,
 				h("div", { class: "rc-top" },
-					h("button", { class: "ibtn", "aria-label": "Close recite mode", onclick: closeRecite }, svg(ICON.close)),
-					where,
-					h("button", { class: "ibtn", "aria-label": "Settings", onclick: openSettings }, "अ")),
-				h("div", { class: "rc-goto" }, goToBox(b, ch.toc, n, true)),
+					h("a", { class: "ibtn", href: "#/" + b.id, "aria-label": "Contents · सूची", title: "Contents · सूची" }, svg(ICON.list)),
+					h("a", { class: "where", href: "#/" + b.id }, h("b", { class: b.script === "sa" ? "sa" : null }, b.title), h("span", null, chapterTitle(b, ch.meta))),
+					goToBox(b, ch.toc, n, true),
+					h("button", { class: "ibtn", "aria-label": "Whole chapter · पूरा अध्याय", title: "Whole chapter · पूरा अध्याय", onclick: toWhole }, svg(ICON.scroll)),
+					h("button", { class: "ibtn", "aria-label": "Settings · सेटिंग", title: "Settings", onclick: openSettings }, svg(ICON.sliders))),
 				h("div", { class: "rc-bar" }, bar)),
 			body, foot);
 		document.body.append(root);
 		document.documentElement.style.overflow = "hidden";
 		RC.root = root;
+		function fit() {
+			// shrink a long verse a little so it fits; past that, only the verse panel scrolls
+			let z = 1;
+			card.style.zoom = "";
+			while (body.scrollHeight > body.clientHeight + 1 && z > 0.76) { z -= 0.06; card.style.zoom = String(z); }
+		}
 		function show() {
 			const it = RC.items[RC.i];
 			card.replaceChildren(renderItem(b, n, it, { recite: true }));
-			where.textContent = b.title + " · " + chapterTitle(b, ch.meta) + " · " + dev(RC.i + 1) + "/" + dev(RC.items.length);
+			pos.textContent = (RC.i + 1) + " of " + RC.items.length;
+			pos.title = dev(RC.i + 1) + " / " + dev(RC.items.length);
+			tools.replaceChildren(...toolMakers.slice(1).map((f) => f(b, n, it)).filter(Boolean));
 			bar.style.width = ((RC.i + 1) / RC.items.length * 100) + "%";
 			prevBtn.disabled = RC.i === 0 && ch.index === 0;
 			nextBtn.disabled = RC.i === RC.items.length - 1 && ch.index === ch.toc.chapters.length - 1;
 			body.scrollTop = 0;
+			fit();
 			S.last[b.id] = Object.assign({}, S.last[b.id] || {}, { n: ch.meta.n, id: it.id, rc: { n: ch.meta.n, id: it.id } });
 			S.lastBook = b.id;
 			save();
+			try { history.replaceState(null, "", verseUrl(b, ch.meta.n, it.id)); } catch (e) { /* ignore */ }
 		}
+		RC.fit = fit;
 		async function go(d) {
 			const j = RC.i + d;
 			if (j >= 0 && j < RC.items.length) { RC.i = j; show(); return; }
@@ -509,6 +546,81 @@
 		show();
 		nextBtn.focus();
 	}
+	// prose (stories): screen-sized pages laid out with CSS columns; ‹ › turn a page, past the end go to the next story
+	function openPages(b, ch) {
+		closeRecite();
+		const { doc, meta, toc: t, index } = ch;
+		const cols = h("div", { class: "pg-cols", lang: "hi" }, h("h1", { class: "pg-title" }, doc.title || meta.title), doc.items.map((it) => renderItem(b, meta.n, it, { recite: true })));
+		const viewport = h("div", { class: "pg-view" }, cols);
+		const pos = h("span", { class: "rc-pos" });
+		const bar = h("i");
+		const prevBtn = h("button", { class: "rc-nav", "aria-label": "Previous page · पिछला", onclick: () => go(-1) }, svg(ICON.prev), h("span", { class: "w" }, "पिछला"));
+		const nextBtn = h("button", { class: "rc-nav", "aria-label": "Next page · अगला", onclick: () => go(1) }, h("span", { class: "w" }, "अगला"), svg(ICON.next));
+		const root = h("div", { class: "recite pages", role: "dialog", "aria-modal": "true", "aria-label": (doc.title || meta.title) + ", page by page" },
+			h("div", null,
+				h("div", { class: "rc-top" },
+					h("a", { class: "ibtn", href: "#/" + b.id, "aria-label": "Contents · सूची", title: "Contents · सूची" }, svg(ICON.list)),
+					h("a", { class: "where", href: "#/" + b.id }, h("b", null, b.title), h("span", null, meta.title)),
+					h("button", { class: "ibtn", "aria-label": "Scroll view · स्क्रॉल", title: "Scroll view · स्क्रॉल", onclick: () => { S.scrollProse = true; save(); closeRecite(); route(); } }, svg(ICON.scroll)),
+					h("button", { class: "ibtn", "aria-label": "Settings · सेटिंग", title: "Settings", onclick: openSettings }, svg(ICON.sliders))),
+				h("div", { class: "rc-bar" }, bar)),
+			viewport,
+			h("div", { class: "rc-foot" }, prevBtn, h("div", { class: "rc-mid" }, pos), nextBtn));
+		document.body.append(root);
+		document.documentElement.style.overflow = "hidden";
+		let page = 0, pages = 1, step = 1;
+		const saved = S.last[b.id] && S.last[b.id].pg;
+		const startFrac = saved && String(saved.n) === String(meta.n) ? saved.f : 0;
+		function layout(frac) {
+			const w = viewport.clientWidth;
+			step = w;
+			cols.style.setProperty("--pw", w + "px");
+			pages = Math.max(1, Math.round(cols.scrollWidth / step));
+			page = Math.min(pages - 1, Math.max(0, Math.round((frac || 0) * pages)));
+			show();
+		}
+		function show() {
+			viewport.scrollLeft = page * step;
+			pos.textContent = "Page " + (page + 1) + " of " + pages;
+			bar.style.width = ((page + 1) / pages * 100) + "%";
+			prevBtn.disabled = page === 0 && index === 0;
+			nextBtn.disabled = page === pages - 1 && index === t.chapters.length - 1;
+			S.last[b.id] = { n: meta.n, pg: { n: meta.n, f: page / pages } };
+			S.lastBook = b.id;
+			save();
+		}
+		function go(d) {
+			const p = page + d;
+			if (p >= 0 && p < pages) { page = p; show(); return; }
+			const other = t.chapters[index + (d > 0 ? 1 : -1)];
+			if (!other) return;
+			if (d < 0) S.last[b.id] = { n: other.n, pg: { n: other.n, f: 0.999 } };
+			location.hash = "#/" + b.id + "/" + other.n;
+		}
+		RC = { b, ch, items: [], i: 0, root, go, fit: () => layout(page / pages), show };
+		let x0 = null, y0 = null;
+		viewport.addEventListener("touchstart", (e) => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+		viewport.addEventListener("touchend", (e) => {
+			if (x0 == null) return;
+			const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+			if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) go(dx < 0 ? 1 : -1);
+			x0 = null;
+		});
+		// fonts change the layout once they load
+		requestAnimationFrame(() => layout(startFrac));
+		if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (RC && RC.root === root) layout(page / pages); });
+		nextBtn.focus();
+	}
+
+	// leave one-at-a-time for the whole-chapter scroll view, and remember that choice for this book
+	function toWhole() {
+		if (!RC) return;
+		S.one[RC.b.id] = false;
+		save();
+		closeRecite();
+		route();
+	}
+	window.addEventListener("resize", () => { if (RC && RC.fit) RC.fit(); });
 	function closeRecite() {
 		if (!RC) return;
 		RC.root.remove();
@@ -526,7 +638,7 @@
 		if (!RC || document.querySelector(".sheet")) return;
 		const tg = e.target;
 		if (tg && tg.closest && tg.closest("input, select, textarea, [contenteditable]")) return;
-		if (e.key === "Escape") return closeRecite();
+		if (e.key === "Escape") return toWhole();
 		if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
 		if (e.key === "ArrowRight" || e.key === "PageDown") { e.preventDefault(); RC.go(1); }
 		else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); RC.go(-1); }
@@ -577,6 +689,7 @@
 	const routes = {}; // extra pages registered by features: routes[name] = fn
 	async function route() {
 		if (RC) closeRecite();
+		view.classList.remove("wide");
 		const r = parseRoute();
 		try {
 			if (!r.book) await viewHome();

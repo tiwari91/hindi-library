@@ -141,11 +141,12 @@
    "kind": "verse",
    "unit": "",
    "verse": "श्लोक",
-   "layers": {"text": "संस्कृत", "tr": "Roman"},
+   "layers": {"text": "संस्कृत", "tr": "Roman", "en": "English"},
    "recite": true,
    "mala": true,
    "ocr_note": "This text is typed on Sanskrit Wikisource and has not been checked against a printed edition there; a few typing errors may remain. यह पाठ विकिस्रोत पर टाइप किया हुआ है; कहीं-कहीं टाइपिंग की भूल हो सकती है।",
-   "sources": ["sa-lalita"]
+   "en_note": "The English meanings are plain renderings written with Claude directly from the Sanskrit for this reader. They are not a scholarly translation.",
+   "sources": ["sa-lalita", "claude-en"]
   },
   {
    "id": "shiva-sahasranama",
