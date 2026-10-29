@@ -59,14 +59,15 @@
    "title": "सुन्दरकाण्ड",
    "title_en": "Sundarkand (Ramcharitmanas)",
    "by": "गोस्वामी तुलसीदास · टीका: महावीरप्रसाद मालवीय ‘वीर’",
-   "desc": "The fifth kand of the Ramcharitmanas, complete except the two opening Sanskrit shlokas (scan page not yet proofread), with Hindi meaning and notes.",
+   "desc": "The fifth kand of the Ramcharitmanas, complete except the two opening Sanskrit shlokas (scan page not yet proofread), with Hindi meaning, notes and a plain-English meaning.",
    "script": "hi",
    "kind": "verse",
    "unit": "",
-   "layers": {"text": "मूल", "tr": "Roman", "hi": "अर्थ", "note": "टिप्पणी"},
+   "layers": {"text": "मूल", "tr": "Roman", "hi": "अर्थ", "en": "English", "note": "टिप्पणी"},
    "default_hide": ["tr", "note"],
+   "en_note": "The English meanings are plain renderings written with Claude directly from the Awadhi for this reader. They are not a scholarly translation.",
    "recite": true,
-   "sources": ["manas"]
+   "sources": ["manas", "claude-en"]
   },
   {
    "id": "premchand",
