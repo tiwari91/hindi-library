@@ -11,10 +11,11 @@
    "unit": "अध्याय",
    "unit_en": "Chapter",
    "verse": "श्लोक",
-   "layers": {"text": "संस्कृत", "tr": "Roman", "hi": "हिन्दी अर्थ"},
+   "layers": {"text": "संस्कृत", "tr": "Roman", "hi": "हिन्दी अर्थ", "en": "English"},
+   "en_note": "The English meanings are plain renderings written with Claude directly from the Sanskrit for this reader. They are not a scholarly translation.",
    "ocr_note": "हिन्दी अर्थ गांधीजी के ‘अनासक्तियोग’ (सस्ता साहित्य मंडल, 1949 संस्करण) से है। यह विकिस्रोत पर स्कैन का OCR पाठ है, जिसकी अभी जाँच (proofreading) नहीं हुई है, इसलिए कहीं-कहीं अक्षर ग़लत हो सकते हैं। हर अर्थ के साथ स्कैन पृष्ठ का लिंक है। The Hindi meaning is unproofread OCR from the Wikisource scan of Gandhi's Anasaktiyoga; some letters may be wrong. Each meaning links to its scan page.",
    "recite": true,
-   "sources": ["sa-gita", "anasakti"]
+   "sources": ["sa-gita", "anasakti", "claude-en"]
   },
   {
    "id": "parashara",
