@@ -82,6 +82,23 @@
    "sources": ["premchand"]
   },
   {
+   "id": "shiva-purana",
+   "purana": true,
+   "title": "शिवपुराणम्",
+   "title_en": "Shiva Purana",
+   "by": "वेदव्यास",
+   "desc": "All seven samhitas, 457 chapters, in Sanskrit with Roman transliteration, from Sanskrit Wikisource.",
+   "script": "sa",
+   "kind": "verse",
+   "unit": "",
+   "verse": "श्लोक",
+   "layers": {"text": "संस्कृत", "tr": "Roman"},
+   "recite": true,
+   "no_search": true,
+   "ocr_note": "This text is typed on Sanskrit Wikisource and has not been checked against a printed edition there; a few typing errors may remain. Verse breaks follow the verse numbers in the source.",
+   "sources": ["sa-shiva-purana"]
+  },
+  {
    "id": "garuda-purana",
    "purana": true,
    "title": "गरुडपुराणम्",
@@ -247,7 +264,7 @@
   {"title": "ब्रह्म पुराण", "title_en": "Brahma Purana"},
   {"title": "पद्म पुराण", "title_en": "Padma Purana"},
   {"title": "विष्णु पुराण", "title_en": "Vishnu Purana", "book": "vishnu-purana"},
-  {"title": "शिव पुराण", "title_en": "Shiva Purana"},
+  {"title": "शिव पुराण", "title_en": "Shiva Purana", "book": "shiva-purana"},
   {"title": "श्रीमद्भागवत पुराण", "title_en": "Bhagavata Purana", "book": "bhagavata"},
   {"title": "नारद पुराण", "title_en": "Narada Purana"},
   {"title": "मार्कण्डेय पुराण", "title_en": "Markandeya Purana", "book": "markandeya-purana"},
@@ -264,6 +281,14 @@
   {"title": "ब्रह्माण्ड पुराण", "title_en": "Brahmanda Purana"}
  ],
  "sources": {
+  "sa-shiva-purana": {
+   "title": "शिवपुराणम् — Sanskrit Wikisource",
+   "where": "Sanskrit Wikisource (sa.wikisource.org)",
+   "url": "https://sa.wikisource.org/wiki/%E0%A4%B6%E0%A4%BF%E0%A4%B5%E0%A4%AA%E0%A5%81%E0%A4%B0%E0%A4%BE%E0%A4%A3%E0%A4%AE%E0%A5%8D",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "note": "The traditional Sanskrit text is public domain. All seven samhitas, 457 chapter pages, as typed on Wikisource; where a chapter exists on two pages the longer one is used. Each chapter links to its page. Verse breaks follow the verse numbers in the source; the Roman transliteration is made by a fixed rule."
+  },
   "sa-garuda": {
    "title": "गरुडपुराणम् — Sanskrit Wikisource",
    "where": "Sanskrit Wikisource (sa.wikisource.org)",

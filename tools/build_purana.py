@@ -26,6 +26,23 @@ PURANAS = {
         "parts": ["आचारकाण्डः", "प्रेतकाण्डः (धर्मकाण्डः)", "ब्रह्मकाण्डः (मोक्षकाण्डः)"],
         "unit": "काण्ड", "unit_en": "Kanda",
     },
+    "shiva-purana": {
+        "base": "शिवपुराणम्",
+        "parts": ["संहिता १ (विश्वेश्वरसंहिता)",
+                  "संहिता २ (रुद्रसंहिता)/खण्डः १ (सृष्टिखण्डः)", "संहिता २ (रुद्रसंहिता)/खण्डः २ (सतीखण्डः)",
+                  "संहिता २ (रुद्रसंहिता)/खण्डः ३ (पार्वतीखण्डः)", "संहिता २ (रुद्रसंहिता)/खण्डः ४ (कुमारखण्डः)",
+                  "संहिता २ (रुद्रसंहिता)/खण्डः ५ (युद्धखण्डः)",
+                  "संहिता ३ (शतरुद्रसंहिता)", "संहिता ४ (कोटिरुद्रसंहिता)", "संहिता ५ (उमासंहिता)", "संहिता ६ (कैलाससंहिता)",
+                  "संहिता ७ (वायवीयसंहिता)/पूर्व भागः", "संहिता ७ (वायवीयसंहिता)/उत्तर भागः"],
+        "labels": ["विद्येश्वरसंहिता · Vidyeshvara Samhita",
+                   "रुद्रसंहिता, सृष्टिखण्ड · Rudra Samhita, Srishti", "रुद्रसंहिता, सतीखण्ड · Rudra Samhita, Sati",
+                   "रुद्रसंहिता, पार्वतीखण्ड · Rudra Samhita, Parvati", "रुद्रसंहिता, कुमारखण्ड · Rudra Samhita, Kumara",
+                   "रुद्रसंहिता, युद्धखण्ड · Rudra Samhita, Yuddha",
+                   "शतरुद्रसंहिता · Shatarudra Samhita", "कोटिरुद्रसंहिता · Kotirudra Samhita", "उमासंहिता · Uma Samhita",
+                   "कैलाससंहिता · Kailasa Samhita", "वायवीयसंहिता, पूर्वभाग · Vayaviya Samhita, first part",
+                   "वायवीयसंहिता, उत्तरभाग · Vayaviya Samhita, second part"],
+        "unit": "", "unit_en": "",
+    },
 }
 
 
@@ -62,13 +79,16 @@ def chapter_items(title, cn):
 def main(bid):
     cfg = PURANAS[bid]
     base = cfg["base"]
-    rx = re.compile(r"^" + re.escape(base) + r"/(.+?)/अध्यायः\s*([०-९0-9]+)$")
-    chs = []
+    rx = re.compile(r"^" + re.escape(base) + r"/(.+)/अध्याया?ः\s*([०-९0-9]+)$")
+    found = {}
     for t in subpages(base):
         m = rx.match(t)
         if m and m.group(1) in cfg["parts"]:
-            chs.append((cfg["parts"].index(m.group(1)) + 1, undev(m.group(2)), t))
-    chs.sort()
+            key = (cfg["parts"].index(m.group(1)) + 1, undev(m.group(2)))
+            # the same chapter can exist twice ("अध्यायः" and "अध्यायाः"); keep the longer page
+            if key not in found or len(wikitext(HOST, t) or "") > len(wikitext(HOST, found[key]) or ""):
+                found[key] = t
+    chs = sorted((pt, ad, t) for (pt, ad), t in found.items())
     out = os.path.join(ROOT, "data", bid)
     os.makedirs(out, exist_ok=True)
     for f in os.listdir(out):
@@ -82,11 +102,13 @@ def main(bid):
         r[0] += 1; r[1] += nv; r[2] += bad
         fname = f"{pt:02}-{ad:03}.json"
         src = "https://sa.wikisource.org/wiki/" + urllib.parse.quote(t.replace(" ", "_"))
-        title = f"{cfg['unit']} {dev(pt)} · अध्याय {dev(ad)}"
+        labels = cfg.get("labels")
+        group = labels[pt - 1] if labels else f"{cfg['unit']} {dev(pt)} · {cfg['unit_en']} {pt}"
+        title = (labels[pt - 1].split(" · ")[0] if labels else f"{cfg['unit']} {dev(pt)}") + f" · अध्याय {dev(ad)}"
         json.dump({"book": bid, "n": k, "title": title, "src": src, "items": items},
                   open(os.path.join(out, fname), "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
         first = next((x["text"].split("\n")[0] for x in items if "text" in x), "")
-        toc.append({"n": k, "file": fname, "label": f"{pt}.{ad}", "group": f"{cfg['unit']} {dev(pt)} · {cfg['unit_en']} {pt}",
+        toc.append({"n": k, "file": fname, "label": f"{pt}.{ad}", "group": group,
                     "title": title, "first": first[:60], "count": nv})
     json.dump({"book": bid, "chapters": toc}, open(os.path.join(out, "index.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     for pt, (c, v, bad) in sorted(report.items()):
