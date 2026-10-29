@@ -169,6 +169,12 @@
 		const c = t.chapters.find((x) => String(x.n) === String(n));
 		if (!c) return null;
 		const doc = await getJSON(bookDir(b) + c.file);
+		if (!doc._pos) {
+			// position of each verse in its chapter: shown when the source's own numbers repeat
+			let p = 0;
+			for (const it of doc.items) if (it.text) it._pos = ++p;
+			doc._pos = true;
+		}
 		return { toc: t, meta: c, doc, index: t.chapters.indexOf(c) };
 	}
 
@@ -232,6 +238,75 @@
 		return (b.unit ? b.unit + " " + dev(meta.n) + " · " : "") + meta.title;
 	}
 	const verseWord = (b) => (EN() ? (b.verse ? "Verse" : "") : b.verse || "");
+	// the label shown for a verse: "Verse 12", "Invocation 3" (an opening run numbered on its own),
+	// or, where the source's numbers repeat in a chapter, the position with the source's number beside it
+	function verseLabel(b, it, doc) {
+		const en = EN();
+		const num = (x) => (en ? toAscii(toEn(String(x))) : String(x));
+		if (it.pre && it.n) return [(en ? "Invocation " : "मङ्गलाचरण ") + num(it.n), null];
+		if (doc && doc.numbering === "position" && it._pos) {
+			const main = (en ? "Verse " : (b.verse ? b.verse + " " : "")) + (en ? it._pos : dev(it._pos));
+			const src = it.n && toAscii(it.n) !== String(it._pos) ? (en ? "source no. " : "मूल ") + num(it.n) : null;
+			return [main, src];
+		}
+		if (!it.n) return ["#", null];
+		return [(verseWord(b) ? verseWord(b) + " " : "") + num(it.n), null];
+	}
+
+	// Google Translate: a link that opens the verse (or the start of a chapter) in Google's machine translation
+	const GT_MAX = 1800; // characters of the encoded URL text; longer links are refused by browsers or Google
+	const gtLang = (b) => (b.script === "hi" || b.kind === "prose" ? "hi" : "sa");
+	function gtUrl(b, text) {
+		return "https://translate.google.com/?sl=" + gtLang(b) + "&tl=en&op=translate&text=" + encodeURIComponent(text);
+	}
+	// keep whole lines while the encoded text fits; returns [text, whether something was left out]
+	function gtFit(lines) {
+		const out = [];
+		for (const l of lines) {
+			if (encodeURIComponent(out.concat(l).join("\n")).length > GT_MAX) {
+				if (!out.length) {
+					// one long line (a prose paragraph): keep as many whole words as fit
+					const words = l.split(" ");
+					let s = "";
+					for (const w of words) {
+						if (encodeURIComponent(s ? s + " " + w : w).length > GT_MAX) break;
+						s = s ? s + " " + w : w;
+					}
+					return [s, true];
+				}
+				return [out.join("\n"), true];
+			}
+			out.push(l);
+		}
+		return [out.join("\n"), false];
+	}
+	function gtVerseLink(b, it) {
+		const orig = it.text || it.p || it.poem;
+		if (!orig) return null;
+		const [text] = gtFit(String(orig).replace(/\s*॥\s*[०-९0-9]+\s*॥\s*$/gm, "").split("\n"));
+		if (!text) return null;
+		return h("p", { class: "gt" },
+			h("a", { href: gtUrl(b, text), target: "_blank", rel: "noopener" }, T("Google से अंग्रेज़ी अनुवाद · Translate to English (Google) ↗", "Translate to English (Google) ↗")),
+			h("span", null, T(" Google का मशीन अनुवाद; जाँचा हुआ नहीं।", " Google's machine translation, not checked.")));
+	}
+	function gtChapterLink(b, doc) {
+		const lines = [];
+		for (const it of doc.items) {
+			const o = it.text || it.p || it.poem;
+			if (o) lines.push(...String(o).replace(/\s*॥\s*[०-९0-9]+\s*॥\s*$/gm, "").split("\n"));
+		}
+		if (!lines.length) return null;
+		const [text, cut] = gtFit(lines);
+		if (!text) return null;
+		return h("p", { class: "gt gt-chapter" },
+			h("a", { href: gtUrl(b, text), target: "_blank", rel: "noopener" },
+				b.kind === "prose"
+					? T("इस कहानी का Google अनुवाद · Translate this story (Google) ↗", "Translate this story to English (Google) ↗")
+					: T("इस अध्याय का Google अनुवाद · Translate this chapter (Google) ↗", "Translate this chapter to English (Google) ↗")),
+			h("span", null, cut
+				? T(" केवल आरम्भ का भाग भेजा जाता है, क्योंकि Google एक बार में सीमित पाठ लेता है। Google का मशीन अनुवाद।", " Only the first part is sent, because Google takes a limited amount of text at once. Google's machine translation, not checked.")
+				: T(" Google का मशीन अनुवाद।", " Google's machine translation, not checked.")));
+	}
 	// "Chapter 2 of 18" (stories: "Story 3 of 45")
 	function posLabel(b, i, n) {
 		if (EN()) return (b.kind === "prose" ? "Story " : b.unit || b.purana ? "Chapter " : "Part ") + i + " of " + n;
@@ -250,8 +325,10 @@
 		if (it.p != null) return h("p", { id: opts.recite ? null : "v-" + it.id }, it.p);
 		if (it.poem != null) return h("div", { class: "poem", id: opts.recite ? null : "v-" + it.id }, it.poem);
 		const scriptCls = b.script === "hi" ? "sa-text hi" : "sa-text";
+		const [vl, vsrc] = verseLabel(b, it, curDoc);
 		const head = h("div", { class: "vhead" },
-			h("a", { class: "vnum", href: verseUrl(b, n, it.id), "aria-label": "Link to this verse" }, it.n ? (b.verse ? b.verse + " " : "") + it.n : "#"),
+			h("a", { class: "vnum", href: verseUrl(b, n, it.id), "aria-label": "Link to this verse" }, vl),
+			vsrc ? h("span", { class: "vsrc" }, vsrc) : null,
 			it.speaker ? h("span", { class: "speaker" }, it.speaker) : null,
 			opts.recite ? null : h("span", { class: "vtools" }, ...verseTools(b, n, it)),
 		);
@@ -277,6 +354,7 @@
 		if (it.en) mw.append(h("div", { class: "meaning en", lang: "en" },
 			b.en_source ? h("span", { class: "mlabel" }, "English · " + b.en_source) : b.en_note ? h("span", { class: "mlabel" }, "English · machine translation, not proofread") : null, it.en));
 		if (it.note) mw.append(h("p", { class: "note", lang: b.note_lang || "hi" }, it.note));
+		if (!it.en && !it.en_ref) { const g = gtVerseLink(b, it); if (g) mw.append(g); }
 		if (mw.childNodes.length) {
 			const rv = h("button", { class: "chip ghost reveal", type: "button" }, "अर्थ दिखाएँ · Show meaning");
 			rv.addEventListener("click", () => { rv.classList.add("done"); mw.classList.add("open"); });
@@ -330,9 +408,10 @@
 		const isProse = it.p != null || it.poem != null;
 		const orig = it.text || it.p || it.poem || "";
 		const tr = it.tr || (orig ? (b.script === "hi" || b.kind === "prose" ? iastHi(orig) : iast(orig)) : "");
-		const vl = it.n ? (verseWord(b) ? verseWord(b) + " " : "") + toAscii(toEn(it.n)) : "#";
+		const [vl, vsrc] = verseLabel(b, it, curDoc);
 		const head = isProse ? null : h("div", { class: "vhead" },
 			h("a", { class: "vnum", href: verseUrl(b, n, it.id), "aria-label": "Link to this verse" }, vl),
+			vsrc ? h("span", { class: "vsrc" }, vsrc) : null,
 			it.speaker ? h("span", { class: "speaker", lang: "en" }, cap(iast(it.speaker))) : null,
 			opts.recite ? null : h("span", { class: "vtools" }, ...verseTools(b, n, it)));
 		const parts = head ? [head] : [];
@@ -344,10 +423,11 @@
 		} else if (it.en_ref) {
 			mw.append(h("div", { class: "meaning ref", lang: "en" }, "The English meaning is given with verse " + it.en_ref + "."));
 		} else if (!isProse && opts.recite) {
-			mw.append(h("p", { class: "note", lang: "en" }, hasChapterEn(curDoc)
+			mw.append(h("p", { class: "en-missing", lang: "en" }, hasChapterEn(curDoc)
 				? "This chapter's English translation is one passage for the whole chapter: tap “English” at the top to read it."
 				: NO_EN));
 		}
+		if (!isProse && !it.en && !it.en_ref) { const g = gtVerseLink(b, it); if (g) mw.append(g); }
 		if (it.note && b.note_lang === "en") mw.append(h("p", { class: "note", lang: "en" }, it.note));
 		if (mw.childNodes.length) {
 			const rv = h("button", { class: "chip ghost reveal", type: "button" }, "Show meaning");
@@ -541,8 +621,10 @@
 		const want = m ? m[2] : v;
 		const ch = await chapter(b, n);
 		if (!ch) return false;
+		const byPos = ch.doc.numbering === "position";
 		const it = ch.doc.items.find((x) => x.id === n + "." + want || x.id === want && !x.h && !x.gap) ||
-			ch.doc.items.find((x) => x.n && toAscii(x.n).split("(")[0] === want);
+			(byPos ? ch.doc.items.find((x) => String(x._pos) === want) : null) ||
+			ch.doc.items.find((x) => x.n && !x.pre && toAscii(x.n).split("(")[0] === want);
 		if (!it) return false;
 		if (inRecite) openRecite(b, n, it.id);
 		else location.hash = verseUrl(b, n, it.id);
@@ -601,6 +683,7 @@
 			ocr && !(en && b.hi_only_ocr) ? h("p", { class: "ocr-note", lang: en ? "en" : "hi" }, ocr) : null,
 			en ? enNote(b) : b.en_note ? h("p", { class: "ocr-note", lang: "en" }, b.en_note) : null,
 			chapterEnBox(b, doc),
+			doc.items.some((x) => (x.text || x.p || x.poem) && !x.en && !x.en_ref) ? gtChapterLink(b, doc) : null,
 			doc.note ? h("p", { class: "ocr-note" }, en ? toEn(doc.note) : doc.note) : null);
 		// in one-verse or page mode the reader covers the screen, so the long list is not built behind it
 		const covered = isOne(b) || (b.kind === "prose" && !S.scrollProse);
@@ -876,7 +959,9 @@
 	function openPages(b, ch) {
 		closeRecite();
 		const { doc, meta, toc: t, index } = ch;
-		const cols = h("div", { class: "pg-cols", lang: EN() ? "en" : "hi" }, h("h1", { class: "pg-title" }, EN() ? cTitle(meta) : doc.title || meta.title), doc.items.map((it) => renderItem(b, meta.n, it, { recite: true })));
+		curDoc = doc;
+		const cols = h("div", { class: "pg-cols", lang: EN() ? "en" : "hi" }, h("h1", { class: "pg-title" }, EN() ? cTitle(meta) : doc.title || meta.title),
+			gtChapterLink(b, doc), doc.items.map((it) => renderItem(b, meta.n, it, { recite: true })));
 		const viewport = h("div", { class: "pg-view" }, cols);
 		const pos = h("span", { class: "rc-pos" });
 		const bar = h("i");

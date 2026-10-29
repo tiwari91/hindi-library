@@ -643,6 +643,15 @@ body.lang-en .puranas .pchip span { font-family: var(--f-ui); }
 
 /* help page and the link in the Aa sheet */
 .nobr { white-space: nowrap; }
+/* verse labels: the source's own number beside a position number */
+.vsrc { font-size: .75rem; color: var(--ink-2); }
+.en-missing { font-size: calc(.9rem * var(--scale)); color: var(--ink-2); margin: .6rem 0 0; }
+/* Google Translate links */
+.gt { margin: .6rem 0 0; font-size: .85rem; color: var(--ink-2); line-height: 1.5; }
+.gt a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+.gt-chapter { margin-top: .8rem; }
+.pg-cols .gt-chapter { break-inside: avoid; }
+.rc-card .gt { text-align: start; }
 /* a chapter's English translation given as one passage (Vishnu Purana) */
 .en-chapter { margin: 1rem 0 0; padding: .6rem .9rem; border: 1px solid var(--rule); border-radius: 12px; background: var(--surface); }
 .en-chapter summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
