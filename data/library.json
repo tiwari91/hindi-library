@@ -124,10 +124,11 @@
    "kind": "verse",
    "unit": "",
    "verse": "श्लोक",
-   "layers": {"text": "संस्कृत", "tr": "Roman"},
+   "layers": {"text": "संस्कृत", "tr": "Roman", "en": "English"},
    "recite": true,
    "mala": true,
-   "sources": ["sa-vishnu"]
+   "en_note": "The English meanings are plain renderings written with Claude directly from the Sanskrit for this reader. They are not a scholarly translation.",
+   "sources": ["sa-vishnu", "claude-en"]
   },
   {
    "id": "lalita-sahasranama",
@@ -157,10 +158,11 @@
    "kind": "verse",
    "unit": "",
    "verse": "श्लोक",
-   "layers": {"text": "संस्कृत", "tr": "Roman"},
+   "layers": {"text": "संस्कृत", "tr": "Roman", "en": "English"},
    "recite": true,
    "mala": true,
-   "sources": ["sa-shiva"]
+   "en_note": "The English meanings are plain renderings written with Claude directly from the Sanskrit for this reader. They are not a scholarly translation.",
+   "sources": ["sa-shiva", "claude-en"]
   },
   {
    "id": "hanuman-chalisa",
