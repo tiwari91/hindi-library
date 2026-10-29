@@ -24,6 +24,30 @@ It is a plain static site: no build step, no framework.
 To try it locally: `python3 -m http.server 8000` in this folder, then open
 http://localhost:8000/.
 
+## English mode
+
+The हिन्दी / English switch in the header (or a link ending in `?lang=en`, for example
+`#/gita/2?lang=en`) shows the whole site in English: the interface, book and chapter names, and
+the verses in Roman transliteration instead of Devanagari, with the English meaning where there is
+one. Hindi prose (Premchand) is transliterated in the page by `iastHi()` in `assets/app.js`. The
+choice is saved in `localStorage`.
+
+English meanings, by source:
+
+- **Bhagavad Gita** – Annie Besant's translation (1922, public domain), verse by verse, from English
+  Wikisource: `python3 tools/fetch_besant.py` then `python3 tools/add_en_pd.py gita sources/en-pd/gita-besant.json`.
+- **Vishnu Purana** – M. N. Dutt's translation (1896, public domain), one passage per chapter, from
+  Project Gutenberg #66208: `python3 tools/add_vishnu_dutt.py`.
+- **Parashara Smriti, Chanakya Niti, Bal Kand, Sundarkand and the three Sahasranamas** – machine
+  translation written by an AI model (Claude) for this site, kept in `sources/en/` and merged with
+  `tools/add_en.py`. The site labels it "machine translation, not proofread". No public-domain
+  English was found that lines up verse by verse with these texts.
+- **Everything else** (the other Puranas, the Devi Mahatmya, Premchand) – transliteration only, with a
+  note that a free English translation is not available yet.
+
+`python3 tools/stats.py` refreshes `data/stats.json` (chapter and verse counts and reading time on the
+home page); run it after adding or rebuilding a book.
+
 ## How to add a book
 
 1. **Check the licence first.** Use only public-domain texts or texts under an open licence
