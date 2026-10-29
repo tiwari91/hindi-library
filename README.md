@@ -76,9 +76,13 @@ http://localhost:8000/.
   [tiwari91/parashara-smriti](https://github.com/tiwari91/parashara-smriti) at commit `7636992`
   with `python3 tools/import_parashara.py <clone>`. Sanskrit from Sanskrit Wikisource (CC BY-SA
   4.0); the English meanings were written with Claude for that reader and are labelled as such.
-  Its reader features live on here for every book: one verse at a time (`"one": true` opens a
-  book that way), "Go to" a chapter or verse, "Hide meaning until I tap" (in settings), text size
-  and arrow keys.
+  Its reader features live on here for every book: one verse at a time (now the default for
+  every verse book; the reader can switch to the whole chapter in settings), "Go to" a chapter or
+  verse, "Hide meaning until I tap" (in settings), text size and arrow keys.
+
+- **Puranas** come from Sanskrit Wikisource: `tools/build_bhagavata.py`, `tools/build_purana.py <id>`
+  (Vishnu, Garuda, Shiva; add a new one to `PURANAS` in that file) and `tools/build_markandeya.py`
+  (which also writes the Devi Mahatmya, adhyayas 81–93). They are large, so search leaves them out.
 
 - **Stotras.** [tiwari91/stotra-reader](https://github.com/tiwari91/stotra-reader) (checked at
   commit `6dbb6f7`) takes its text from sanskritdocuments.org, whose files say they are "not to
