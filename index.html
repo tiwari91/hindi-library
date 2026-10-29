@@ -17,7 +17,8 @@ try {
 	var s = JSON.parse(localStorage.getItem("hl:v1") || "{}");
 	var m = location.hash.match(/[?&]lang=(en|hi)\b/);
 	if ((m && m[1] === "en") || (!m && s.lang === "en")) document.documentElement.lang = "en";
-	if (s.theme === "light" || s.theme === "dark") document.documentElement.setAttribute("data-theme", s.theme);
+	if (s.theme === "light" || s.theme === "dark" || s.theme === "sepia") document.documentElement.setAttribute("data-theme", s.theme);
+	if (s.lh === "relaxed" || s.lh === "loose") document.documentElement.setAttribute("data-spacing", s.lh);
 	if (s.scale) document.documentElement.style.setProperty("--scale", s.scale);
 } catch (e) {}
 </script>
@@ -27,8 +28,8 @@ try {
 	<nav class="bar" aria-label="Main">
 		<a class="brand" href="#/"><b>हिन्दी पुस्तकालय</b><span>Hindi Library</span></a>
 		<div class="langsw" id="lang-switch" role="group" aria-label="Language">
-			<button type="button" data-lang="hi" lang="hi" aria-pressed="true">हिन्दी</button>
-			<button type="button" data-lang="en" lang="en" aria-pressed="false">English</button>
+			<button type="button" data-lang="hi" lang="hi" aria-pressed="true" aria-label="हिन्दी (Hindi)"><span class="long">हिन्दी</span><span class="short" aria-hidden="true">हि</span></button>
+			<button type="button" data-lang="en" lang="en" aria-pressed="false" aria-label="English"><span class="long">English</span><span class="short" aria-hidden="true">EN</span></button>
 		</div>
 		<a class="ibtn" href="#/search" id="nav-search" hidden aria-label="Search · खोजें" title="Search">
 			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
@@ -36,9 +37,7 @@ try {
 		<a class="ibtn" href="#/saved" id="nav-saved" hidden aria-label="Saved verses · सहेजे श्लोक" title="Saved verses">
 			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6.5 3.5h11v17l-5.5-4-5.5 4z"/></svg>
 		</a>
-		<button class="ibtn" id="nav-settings" aria-label="Reading settings · सेटिंग" title="Reading settings">
-			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
-		</button>
+		<button class="ibtn aa" id="nav-settings" aria-label="Text size, spacing and colours" title="Text size, spacing and colours">Aa</button>
 	</nav>
 </header>
 <main class="wrap" id="view" tabindex="-1"><p class="loading">लोड हो रहा है…</p></main>

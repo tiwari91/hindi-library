@@ -25,7 +25,7 @@
 	color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
-	:root:not([data-theme="light"]) {
+	:root:not([data-theme="light"]):not([data-theme="sepia"]) {
 		--paper: #0d111e;
 		--surface: #171c2d;
 		--ink: #eee3cd;
@@ -56,6 +56,26 @@
 	--bead: #394058;
 	color-scheme: dark;
 }
+/* sepia: warmer and lower glare than light; text colours keep WCAG AA contrast on this paper */
+:root[data-theme="sepia"] {
+	--paper: #f1e4c8;
+	--surface: #e8d7b4;
+	--ink: #3b2a17;
+	--ink-2: #5e4329;
+	--accent: #8e2f14;
+	--accent-ink: #fbf1dc;
+	--wash: #e3cb9c;
+	--rule: #d6bf94;
+	--glow: rgba(160, 82, 30, 0.14);
+	--shadow: rgba(70, 40, 10, 0.16);
+	--scrim: rgba(40, 26, 12, 0.32);
+	--bead: #cdb388;
+	color-scheme: light;
+}
+/* line spacing from the Aa menu */
+:root { --lhk: 1; }
+:root[data-spacing="relaxed"] { --lhk: 1.12; }
+:root[data-spacing="loose"] { --lhk: 1.25; }
 
 * { box-sizing: border-box; }
 html {
@@ -306,14 +326,14 @@ details.about p[lang="en"] { font-family: var(--f-lat); }
 .vnum { font-size: .8rem; font-weight: 600; color: var(--accent); font-variant-numeric: tabular-nums; text-decoration: none; }
 .speaker { font-family: var(--f-sa); color: var(--accent); font-size: calc(1rem * var(--scale)); }
 .vtools { margin-left: auto; display: flex; gap: 2px; }
-.vtools .ibtn { min-width: 36px; height: 36px; color: var(--ink-2); border-radius: 10px; }
+.vtools .ibtn { min-width: 44px; height: 44px; color: var(--ink-2); border-radius: 10px; }
 .vtools .ibtn svg { width: 18px; height: 18px; }
 .vtools .ibtn[aria-pressed="true"] { color: var(--accent); background: transparent; }
 
 .sa-text {
 	font-family: var(--f-sa);
 	font-size: calc(var(--dev-size) * var(--scale));
-	line-height: 1.95;
+	line-height: calc(1.95 * var(--lhk));
 	margin: 0;
 }
 .sa-text.hi { font-family: var(--f-hi); }
@@ -321,7 +341,7 @@ details.about p[lang="en"] { font-family: var(--f-lat); }
 .tr-text {
 	font-family: var(--f-lat);
 	font-size: calc(var(--lat-size) * var(--scale));
-	line-height: 1.7;
+	line-height: calc(1.7 * var(--lhk));
 	color: var(--ink-2);
 	margin: .35rem 0 0;
 	overflow-wrap: anywhere;
@@ -329,12 +349,12 @@ details.about p[lang="en"] { font-family: var(--f-lat); }
 .meaning {
 	font-family: var(--f-hi);
 	font-size: calc(var(--hi-size) * var(--scale));
-	line-height: 1.95;
+	line-height: calc(1.95 * var(--lhk));
 	margin: .7rem 0 0;
 	padding: .55rem 0 0 .9rem;
 	border-left: 3px solid var(--wash);
 }
-.meaning.en { font-family: var(--f-lat); line-height: 1.7; }
+.meaning.en { font-family: var(--f-lat); line-height: calc(1.7 * var(--lhk)); }
 .meaning .mlabel { display: block; font-family: var(--f-ui); font-size: .75rem; letter-spacing: .06em; color: var(--ink-2); margin-bottom: .1rem; }
 .meaning .mlabel a { color: var(--ink-2); }
 .meaning.ref { color: var(--ink-2); font-size: calc(.95rem * var(--scale)); }
@@ -343,7 +363,7 @@ details.about p[lang="en"] { font-family: var(--f-lat); }
 .prose p {
 	font-family: var(--f-hi);
 	font-size: calc(var(--hi-size) * 1.04 * var(--scale));
-	line-height: 2;
+	line-height: calc(2 * var(--lhk));
 	margin: 0 0 1.1em;
 	text-align: start;
 	hyphens: manual;
@@ -546,13 +566,98 @@ footer.site a { color: var(--ink-2); }
 /* English mode: the Roman transliteration is the main text, so it gets the main size and colour */
 body.lang-en .brand b { font-family: var(--f-ui); }
 body.lang-en .hero h1, body.lang-en .chap-head h1, body.lang-en .card .t, body.lang-en .toc .nm .dv, body.lang-en .pg-title { font-family: var(--f-lat); font-weight: 600; }
-body.lang-en .tr-text { color: var(--ink); font-size: calc(var(--lat-size) * 1.12 * var(--scale)); line-height: 1.75; margin-top: .2rem; }
+body.lang-en .tr-text { color: var(--ink); font-size: calc(var(--lat-size) * 1.12 * var(--scale)); line-height: calc(1.75 * var(--lhk)); margin-top: .2rem; }
 body.lang-en .rc-card .tr-text { font-size: calc(var(--lat-size) * 1.25 * var(--scale)); }
-body.lang-en .tr-text.prose-tr { font-size: calc(var(--lat-size) * 1.05 * var(--scale)); line-height: 1.85; margin: 0 0 1.1em; }
+body.lang-en .tr-text.prose-tr { font-size: calc(var(--lat-size) * 1.05 * var(--scale)); line-height: calc(1.85 * var(--lhk)); margin: 0 0 1.1em; }
 body.lang-en .speaker { font-family: var(--f-lat); font-style: italic; }
 body.lang-en .sec-h { font-family: var(--f-lat); }
 body.lang-en .meaning.en { font-family: var(--f-lat); }
 body.lang-en .puranas .pchip span { font-family: var(--f-ui); }
+
+/* ---------- easier reading for everyone ---------- */
+/* header: the brand gives way to the switch and buttons on small phones */
+.brand { overflow: hidden; }
+.brand b { overflow: hidden; text-overflow: ellipsis; }
+.ibtn.aa { font-family: var(--f-lat); font-size: 1.15rem; font-weight: 700; letter-spacing: -.02em; }
+@media (max-width: 480px) {
+	.bar { gap: 2px; padding: 6px 8px; }
+	.langsw button { padding: 0 .5rem; min-width: 40px; }
+	.langsw .long { display: none; }
+	.brand b { font-size: 1rem; }
+}
+@media (min-width: 481px) { .langsw .short { display: none; } }
+
+/* home: a welcome, one clear first step, search in view */
+.hero.home { padding-top: 1.4rem; display: block; max-width: 46rem; }
+.hero.home h1 { font-size: clamp(1.7rem, 4vw, 2.2rem); margin: 0; }
+.hero.home .lede { margin-top: .4rem; font-size: 1rem; }
+.hero.home .resume { margin-top: 1rem; min-height: 64px; max-width: 32rem; }
+.hero.home .home-search { max-width: 32rem; }
+.resume .go { font-size: 1.4rem; color: var(--accent); }
+.resume.start { background: var(--accent); color: var(--accent-ink); }
+.resume.start b, .resume.start .go, .resume.start small, .resume.start span span { color: var(--accent-ink) !important; }
+.hero.home .resume > span { display: grid; gap: .05rem; min-width: 0; }
+.hero.home .resume small { font-size: .78rem; color: var(--ink-2); }
+.hero.home .resume b { font-weight: 600; font-size: 1.1rem; }
+.hero.home .resume span span { font-size: .9rem; color: var(--ink-2); }
+.home-search { display: flex; gap: 8px; margin: .9rem 0 0; }
+.home-search input, .searchbox input {
+	flex: 1; min-width: 0; min-height: 48px; padding: .5rem .9rem; border-radius: 12px;
+	border: 1px solid var(--rule); background: var(--paper); color: var(--ink); font: inherit; font-size: 1rem;
+}
+.home-search .chip { min-height: 48px; padding: 0 1.1rem; }
+.shelf-note { margin: -.2rem 0 .6rem; font-size: .88rem; color: var(--ink-2); }
+
+/* book cards: title, one-line description, size and reading time */
+.card .m { grid-column: 1 / -1; font-size: .8rem; color: var(--ink-2); margin-top: .25rem; font-variant-numeric: tabular-nums; }
+.wide .card .d { display: -webkit-box !important; -webkit-line-clamp: 2; }
+@media (max-width: 520px) {
+	.wide .books { grid-template-columns: 1fr; gap: 10px; }
+	.wide .card { padding: .8rem 1rem; }
+	.wide .card .t { font-size: 1.15rem; white-space: normal; }
+	.hero.home h1 { display: block !important; font-size: 1.7rem; }
+}
+.card .t.en { font-family: var(--f-lat); font-weight: 600; }
+
+/* the one-time tip */
+.tip { margin: 1rem 0 0; padding: .9rem 1.1rem; border-radius: 16px; border: 1px solid var(--accent); background: var(--surface); }
+.tip h2 { margin: 0 0 .4rem; font-size: 1rem; }
+.tip ol { margin: 0; padding-left: 1.2rem; display: grid; gap: .35rem; font-size: .92rem; }
+.tip-actions { display: flex; align-items: center; gap: 1rem; margin: .7rem 0 0; }
+.tip-actions .chip { min-height: 44px; padding: 0 1.2rem; background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+/* inside a book: breadcrumb, position, a big sticky pager on phones */
+.crumbs { display: flex; flex-wrap: wrap; gap: .1rem .4rem; align-items: center; }
+.crumbs a { min-height: 32px; display: inline-flex; align-items: center; }
+.crumbs .sep { color: var(--ink-2); }
+.chap-pos { margin: .3rem 0 0; font-size: .85rem; color: var(--ink-2); }
+.chap-progress { height: 4px; background: var(--rule); border-radius: 4px; margin: .5rem 0 0; overflow: hidden; }
+.chap-progress i { display: block; height: 100%; background: var(--accent); }
+.pager a { min-height: 64px; align-content: center; }
+@media (max-width: 700px) {
+	.pager { position: sticky; bottom: 0; z-index: 15; margin: 1.5rem -16px 0; padding: 8px 12px calc(8px + env(safe-area-inset-bottom, 0px)); background: color-mix(in srgb, var(--paper) 94%, transparent); border-top: 1px solid var(--rule); }
+	.pager a { min-height: 56px; padding: .5rem .8rem; }
+}
+.rc-top .where .pos { font-variant-numeric: tabular-nums; }
+.rc-nav { min-width: 56px; min-height: 56px; }
+
+/* help page and the link in the Aa sheet */
+.nobr { white-space: nowrap; }
+.help h2 { font-size: 1.12rem; margin: 1.6rem 0 .3rem; }
+.help p { line-height: 1.7; }
+.sheet-help { margin: 0 0 1rem; font-size: .92rem; }
+
+/* comfortable line length and visible focus everywhere */
+.chap-head, .verses, .prose { max-width: 40rem; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.chip, .langsw button, .ibtn, .linkish { min-height: 44px; }
+.linkish { display: inline-flex; align-items: center; }
+
+/* respect "reduce motion" */
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+	a.card:hover { transform: none; }
+}
 
 /* while the reader covers the screen, the page behind it takes no space */
 body.rc-open > main, body.rc-open > footer.site, body.rc-open > header.topbar { display: none; }

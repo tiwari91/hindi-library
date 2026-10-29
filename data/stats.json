@@ -1,0 +1,191 @@
+{
+ "gita": {
+  "chapters": 18,
+  "verses": 700,
+  "words": 7847,
+  "with_en": 700,
+  "minutes": 233
+ },
+ "parashara": {
+  "chapters": 12,
+  "verses": 583,
+  "words": 7910,
+  "with_en": 583,
+  "minutes": 194
+ },
+ "manas-bal": {
+  "chapters": 12,
+  "verses": 1626,
+  "words": 30173,
+  "with_en": 1626,
+  "minutes": 542
+ },
+ "manas-sundar": {
+  "chapters": 2,
+  "verses": 340,
+  "words": 7022,
+  "with_en": 340,
+  "minutes": 113
+ },
+ "premchand": {
+  "chapters": 45,
+  "verses": 0,
+  "words": 182312,
+  "with_en": 0,
+  "minutes": 1215
+ },
+ "agni-purana": {
+  "chapters": 383,
+  "verses": 16204,
+  "words": 151922,
+  "with_en": 0,
+  "minutes": 5401
+ },
+ "brahma-purana": {
+  "chapters": 246,
+  "verses": 13984,
+  "words": 157346,
+  "with_en": 0,
+  "minutes": 4661
+ },
+ "brahmanda-purana": {
+  "chapters": 156,
+  "verses": 13653,
+  "words": 171803,
+  "with_en": 0,
+  "minutes": 4551
+ },
+ "brahmavaivarta-purana": {
+  "chapters": 276,
+  "verses": 20646,
+  "words": 272976,
+  "with_en": 0,
+  "minutes": 6882
+ },
+ "bhavishya-purana": {
+  "chapters": 585,
+  "verses": 26056,
+  "words": 349582,
+  "with_en": 0,
+  "minutes": 8685
+ },
+ "padma-purana": {
+  "chapters": 693,
+  "verses": 42653,
+  "words": 530173,
+  "with_en": 0,
+  "minutes": 14218
+ },
+ "varaha-purana": {
+  "chapters": 218,
+  "verses": 10559,
+  "words": 144078,
+  "with_en": 0,
+  "minutes": 3520
+ },
+ "narada-purana": {
+  "chapters": 207,
+  "verses": 18093,
+  "words": 226537,
+  "with_en": 0,
+  "minutes": 6031
+ },
+ "matsya-purana": {
+  "chapters": 291,
+  "verses": 13044,
+  "words": 148279,
+  "with_en": 0,
+  "minutes": 4348
+ },
+ "linga-purana": {
+  "chapters": 163,
+  "verses": 8917,
+  "words": 100189,
+  "with_en": 0,
+  "minutes": 2972
+ },
+ "kurma-purana": {
+  "chapters": 99,
+  "verses": 5903,
+  "words": 70441,
+  "with_en": 0,
+  "minutes": 1968
+ },
+ "vamana-purana": {
+  "chapters": 96,
+  "verses": 5539,
+  "words": 66052,
+  "with_en": 0,
+  "minutes": 1846
+ },
+ "shiva-purana": {
+  "chapters": 457,
+  "verses": 22184,
+  "words": 291034,
+  "with_en": 0,
+  "minutes": 7395
+ },
+ "garuda-purana": {
+  "chapters": 318,
+  "verses": 12254,
+  "words": 167938,
+  "with_en": 0,
+  "minutes": 4085
+ },
+ "markandeya-purana": {
+  "chapters": 133,
+  "verses": 6103,
+  "words": 68183,
+  "with_en": 0,
+  "minutes": 2034
+ },
+ "devi-mahatmya": {
+  "chapters": 13,
+  "verses": 589,
+  "words": 6161,
+  "with_en": 0,
+  "minutes": 196
+ },
+ "vishnu-purana": {
+  "chapters": 126,
+  "verses": 5788,
+  "words": 70339,
+  "with_en": 0,
+  "minutes": 1929
+ },
+ "bhagavata": {
+  "chapters": 335,
+  "verses": 13375,
+  "words": 183038,
+  "with_en": 0,
+  "minutes": 4458
+ },
+ "chanakya-niti": {
+  "chapters": 15,
+  "verses": 300,
+  "words": 3955,
+  "with_en": 300,
+  "minutes": 100
+ },
+ "vishnu-sahasranama": {
+  "chapters": 7,
+  "verses": 214,
+  "words": 1863,
+  "with_en": 214,
+  "minutes": 71
+ },
+ "lalita-sahasranama": {
+  "chapters": 2,
+  "verses": 236,
+  "words": 2839,
+  "with_en": 236,
+  "minutes": 79
+ },
+ "shiva-sahasranama": {
+  "chapters": 1,
+  "verses": 182,
+  "words": 1798,
+  "with_en": 182,
+  "minutes": 61
+ }
+}

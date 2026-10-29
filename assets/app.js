@@ -200,8 +200,12 @@
 		}
 	}
 	function applyTheme() {
-		if (S.theme === "light" || S.theme === "dark") document.documentElement.setAttribute("data-theme", S.theme);
+		if (S.theme === "light" || S.theme === "dark" || S.theme === "sepia") document.documentElement.setAttribute("data-theme", S.theme);
 		else document.documentElement.removeAttribute("data-theme");
+	}
+	function applySpacing() {
+		if (S.lh === "relaxed" || S.lh === "loose") document.documentElement.setAttribute("data-spacing", S.lh);
+		else document.documentElement.removeAttribute("data-spacing");
 	}
 	function applyScale() { document.documentElement.style.setProperty("--scale", S.scale || 1); }
 	function applyTap() { if (S.tap) document.body.dataset.tap = "1"; else delete document.body.dataset.tap; }
@@ -210,8 +214,9 @@
 	function lines(text, cls) {
 		// keep a closing verse number like ॥४७॥ or ||47|| together on one line
 		return h("p", { class: cls }, String(text).split("\n").map((l) => {
-			const m = l.match(/^(.*?)\s*((?:॥|\|\|)[^॥|]*(?:॥|\|\|))\s*$/);
-			return m ? h("span", { class: "ln" }, m[1] + " ", h("span", { class: "vend" }, m[2])) : h("span", { class: "ln" }, l);
+			const m = l.match(/^(.*?)(\S*)\s*((?:॥|\|\|)[^॥|]*(?:॥|\|\|))\s*$/);
+			// the last word and the verse number stay together, so the number never sits alone on a line
+			return m ? h("span", { class: "ln" }, m[1], h("span", { class: "nobr" }, m[2] + " ", h("span", { class: "vend" }, m[3]))) : h("span", { class: "ln" }, l);
 		}));
 	}
 	const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
@@ -227,6 +232,11 @@
 		return (b.unit ? b.unit + " " + dev(meta.n) + " · " : "") + meta.title;
 	}
 	const verseWord = (b) => (EN() ? (b.verse ? "Verse" : "") : b.verse || "");
+	// "Chapter 2 of 18" (stories: "Story 3 of 45")
+	function posLabel(b, i, n) {
+		if (EN()) return (b.kind === "prose" ? "Story " : b.unit ? "Chapter " : "Part ") + i + " of " + n;
+		return (b.kind === "prose" ? "कहानी " : b.unit ? b.unit + " " : "भाग ") + dev(i) + " / " + dev(n) + " · " + (b.kind === "prose" ? "Story " : "Chapter ") + i + " of " + n;
+	}
 	function verseUrl(b, n, id) { return "#/" + b.id + "/" + n + "/" + encodeURIComponent(id); }
 
 	function renderItem(b, n, it, opts) {
@@ -336,48 +346,113 @@
 		setTitle("");
 		const frag = [];
 		view.classList.add("wide");
-		frag.push(h("section", { class: "hero home" },
-			h("h1", null, T("हिन्दी पुस्तकालय", "Hindi Library")),
-			h("p", { class: "lede" }, EN()
-				? "The Gita, the Ramcharitmanas, Premchand, stotras and the Puranas, from free sources, in Roman transliteration with English meanings where a free translation exists."
-				: "Gita, Ramcharitmanas, Premchand, stotras and more, from free sources, one verse at a time.")));
-		const top = h("div", { class: "home-top" });
+		try { STATS = STATS || await getJSON("data/stats.json"); } catch (e) { STATS = {}; }
+		const en = EN();
+		// one clear first step: continue where you left off, or start with the Gita
 		const lb = S.lastBook && bookById(S.lastBook);
+		let primary;
 		if (lb && S.last[lb.id]) {
 			const L = S.last[lb.id];
-			let where = EN() ? (lb.unit ? "Chapter " : "Part ") + L.n : (lb.unit || "") + " " + dev(L.n);
+			let where = en ? (lb.unit ? "Chapter " : "Part ") + L.n : (lb.unit || "") + " " + dev(L.n);
 			try { const c = (await toc(lb)).chapters.find((x) => String(x.n) === String(L.n)); if (c) where = chapterTitle(lb, c); } catch (e) { /* keep the number */ }
-			top.append(h("a", { class: "resume", href: L.id ? verseUrl(lb, L.n, L.id) : "#/" + lb.id + "/" + L.n },
-				h("span", null, h("small", null, T("पढ़ना जारी रखें · Continue reading", "Continue reading")), h("b", null, bTitle(lb)), h("span", null, where)), "→"));
+			primary = h("a", { class: "resume", href: L.id ? verseUrl(lb, L.n, L.id) : "#/" + lb.id + "/" + L.n },
+				h("span", null, h("small", null, T("जहाँ छोड़ा था वहीं से पढ़ें · Continue where you left off", "Continue where you left off")), h("b", null, bTitle(lb)), h("span", null, where)), h("span", { class: "go", "aria-hidden": "true" }, "→"));
+		} else {
+			primary = h("a", { class: "resume start", href: "#/gita/1" },
+				h("span", null, h("small", null, T("शुरू करें · Start reading", "Start reading")), h("b", null, T("श्रीमद्भगवद्गीता", "Bhagavad Gita")), h("span", null, T("अध्याय १ से · from chapter 1", "from chapter 1"))), h("span", { class: "go", "aria-hidden": "true" }, "→"));
 		}
+		const q = h("input", { type: "search", name: "q", placeholder: en ? "Search: krishna, dharma, mind…" : "खोजें: कृष्ण, dharma…", "aria-label": T("सभी ग्रंथों में खोजें · Search all books", "Search all books"), autocomplete: "off" });
+		const search = h("form", { class: "searchbox home-search", role: "search" }, q, h("button", { class: "chip", type: "submit" }, T("खोजें", "Search")));
+		search.addEventListener("submit", (e) => { e.preventDefault(); if (q.value.trim()) location.hash = "#/search/" + encodeURIComponent(q.value.trim()); });
+		frag.push(h("section", { class: "hero home" },
+			h("h1", null, T("हिन्दी पुस्तकालय", "Hindi Library")),
+			h("p", { class: "lede" }, en
+				? "A free library of Indian classics to read on any screen: the Bhagavad Gita, the Ramcharitmanas, stotras, the Puranas and Premchand's stories, in Roman letters with English meanings where a free translation exists."
+				: "भगवद्गीता, रामचरितमानस, स्तोत्र, पुराण और प्रेमचंद की कहानियाँ — मुक्त स्रोतों से, मूल पाठ में, एक-एक श्लोक करके पढ़ें। A free library of Indian classics, one verse at a time."),
+			primary, search));
+		const tip = firstTip();
+		if (tip) frag.push(tip);
+		const top = h("div", { class: "home-top" });
 		for (const f of homeExtras) { const el = await f(); if (el) top.append(el); }
 		if (top.childNodes.length) frag.push(top);
 		const shown = books().filter((b) => !b.purana && !b.hidden);
-		const groups = [[T("ग्रंथ · Books", "Books"), shown.filter((b) => b.shelf !== "stotra")], [T("स्तोत्र · Stotras and chants", "Stotras and chants"), shown.filter((b) => b.shelf === "stotra")]];
-		for (const [label, list] of groups) {
-			frag.push(h("h2", { class: "shelf" }, label));
+		for (const [key, hi, enName] of SHELVES) {
+			const list = shown.filter((b) => shelfOf(b) === key);
+			if (!list.length) continue;
+			frag.push(h("h2", { class: "shelf" }, T(hi + " · " + enName, enName)));
 			frag.push(h("ul", { class: "books" }, list.map((b) => h("li", null, bookCard(b)))));
 		}
-		frag.push(h("h2", { class: "shelf" }, T("पुराण · The 18 Mahapuranas", "The 18 Mahapuranas")));
+		frag.push(h("h2", { class: "shelf" }, T("पुराण · The 18 Mahapuranas", "Puranas · the 18 Mahapuranas")));
+		frag.push(h("p", { class: "shelf-note" }, en
+			? "Long Sanskrit texts, chapter by chapter, in Roman transliteration."
+			: "संस्कृत में, अध्याय-दर-अध्याय · Sanskrit text with Roman transliteration."));
 		frag.push(h("ul", { class: "puranas" }, LIB.puranas.map((p) => {
 			const b = p.book && bookById(p.book);
 			const name = EN() ? h("span", null, p.title_en.replace(/ Purana$/, "")) : h("span", { class: "sa" }, p.title);
 			return h("li", null, b
-				? h("a", { class: "pchip", href: "#/" + b.id, title: p.title_en + (p.partial ? " (partial: " + p.partial + ")" : "") }, name, h("small", null, p.partial ? "partial" : "read"))
+				? h("a", { class: "pchip", href: "#/" + b.id, title: p.title_en + (p.partial ? " (partial: " + p.partial + ")" : "") }, name,
+					h("small", null, STATS && STATS[b.id] ? (en ? STATS[b.id].chapters + " chapters" : dev(STATS[b.id].chapters) + " अध्याय") : p.partial ? "partial" : "read"))
 				: h("span", { class: "pchip soon", title: p.title_en + " (coming)" }, name, h("small", null, "coming")));
 		})));
 		view.replaceChildren(...frag);
 	}
+	// shelves on the home page
+	let STATS = null;
+	const SHELVES = [["scripture", "ग्रंथ", "Scriptures"], ["stotra", "स्तोत्र और प्रार्थना", "Stotras & prayers"], ["smriti", "स्मृति और नीति", "Smritis & niti"], ["story", "कहानियाँ", "Stories"]];
+	function shelfOf(b) {
+		if (b.shelf === "stotra") return "stotra";
+		if (b.kind === "prose") return "story";
+		if (/parashara|niti|smriti/.test(b.id)) return "smriti";
+		return "scripture";
+	}
+	function readTime(min) {
+		if (!min) return "";
+		if (min < 60) return EN() ? "about " + min + " min" : "लगभग " + dev(min) + " मिनट";
+		const hrs = Math.round(min / 60);
+		return EN() ? "about " + hrs + (hrs === 1 ? " hour" : " hours") : "लगभग " + dev(hrs) + " घंटे";
+	}
+	// "18 chapters · 700 verses · about 4 hours"
+	function statLine(b) {
+		const s = STATS && STATS[b.id];
+		if (!s) return "";
+		const en = EN(), parts = [];
+		if (b.kind === "prose") parts.push(en ? s.chapters + " stories" : dev(s.chapters) + " कहानियाँ");
+		else {
+			if (s.chapters > 1) parts.push(en ? s.chapters + " chapters" : dev(s.chapters) + " " + (b.unit === "अध्याय" ? "अध्याय" : "भाग"));
+			parts.push(en ? s.verses.toLocaleString("en-IN") + " verses" : dev(s.verses) + " " + (b.verse || "पद"));
+		}
+		parts.push(readTime(s.minutes));
+		return parts.join(" · ");
+	}
+	// a short one-line description: the first sentence of the book's description
+	const oneLine = (b) => {
+		const d = EN() ? toEn(b.desc || "") : b.desc || "";
+		return (d.split(/(?<=[.;])\s/)[0] || "").replace(/[;.]$/, "");
+	};
 	function bookCard(b) {
 		const href = b.link || (b.open ? "#/" + b.open : "#/" + b.id);
-		if (EN()) return h("a", { class: "card", href, rel: b.link ? "noopener" : null, title: b.desc || null },
-			h("span", { class: "t en" }, bTitle(b)),
-			h("span", { class: "e" }, b.en_source ? "English: " + b.en_source.replace(/^English (translation|meanings?)[: ]*/i, "") : b.en_note ? "English: machine translation" : "Transliteration"),
-			b.desc ? h("span", { class: "d" }, b.desc) : null);
-		return h("a", { class: "card", href, rel: b.link ? "noopener" : null, title: b.desc || null },
-			h("span", { class: "t" + (b.script === "sa" ? " sa" : "") }, b.title),
-			h("span", { class: "e" }, b.title_en),
-			b.desc ? h("span", { class: "d" }, b.desc) : null);
+		const en = EN();
+		const enInfo = !en ? "" : b.link ? "Transliteration, on a separate site" : b.kind === "prose" ? "Roman transliteration" : b.en_source ? "English: " + b.en_source : b.en_note ? "English: machine translation" : "Transliteration only";
+		return h("a", { class: "card", href, rel: b.link ? "noopener" : null },
+			h("span", { class: "t" + (!en && b.script === "sa" ? " sa" : "") + (en ? " en" : "") }, bTitle(b)),
+			h("span", { class: "e" }, en ? enInfo : b.title_en),
+			b.desc ? h("span", { class: "d" }, oneLine(b)) : null,
+			b.link ? h("span", { class: "m" }, en ? "Opens the Stotra Reader site" : "स्तोत्र रीडर साइट पर खुलता है") : statLine(b) ? h("span", { class: "m" }, statLine(b)) : null);
+	}
+
+	// a one-time welcome tip; it can be skipped and does not come back
+	function firstTip() {
+		if (S.tipDone) return null;
+		const box = h("aside", { class: "tip", "aria-label": T("सुझाव · Tips", "How to use this site") },
+			h("h2", null, T("इस साइट को कैसे पढ़ें · How to use this site", "How to use this site")),
+			h("ol", null,
+				h("li", null, T("कोई ग्रंथ चुनें। वह एक-एक श्लोक करके खुलता है; ‹ › बटन, तीर कुंजियाँ या स्वाइप से आगे-पीछे जाएँ।", "Pick a book. It opens one verse at a time: use the big ‹ › buttons, the arrow keys or a swipe to move.")),
+				h("li", null, T("ऊपर ‘Aa’ से अक्षर का आकार, पंक्ति की दूरी और रंग बदलें; ‘हिन्दी / English’ से भाषा।", "Use ‘Aa’ at the top for text size, line spacing and colours, and ‘हिन्दी / English’ for the language.")),
+				h("li", null, T("बुकमार्क से श्लोक सहेजें, स्पीकर से सुनें, और ऊपर खोज से कुछ भी ढूँढ़ें।", "Tap the bookmark to save a verse, the speaker to hear it read aloud, and the search button to find anything."))),
+			h("p", { class: "tip-actions" },
+				h("button", { class: "chip", type: "button", onclick: () => { S.tipDone = true; save(); box.remove(); } }, T("समझ गया · Got it", "Got it")),
+				h("a", { href: "#/help" }, T("पूरी सहायता · More help", "More help"))));
+		return box;
 	}
 
 	async function viewBook(b) {
@@ -477,8 +552,14 @@
 		const en = EN();
 		const ocr = en ? enNoteFor(b, b.ocr_note) : b.ocr_note;
 		const head = h("header", { class: "chap-head" },
-			h("p", { class: "crumbs" }, h("a", { href: "#/" + b.id }, bTitle(b)), " · ", h("a", { href: "#/" + b.id }, T("सूची", "Contents"))),
+			h("nav", { class: "crumbs", "aria-label": "Breadcrumb" },
+				h("a", { href: "#/" }, T("मुखपृष्ठ", "Home")), h("span", { class: "sep", "aria-hidden": "true" }, "›"),
+				h("a", { href: "#/" + b.id }, bTitle(b)), h("span", { class: "sep", "aria-hidden": "true" }, "›"),
+				h("span", { "aria-current": "page" }, en ? cTitle(meta) : meta.title)),
 			h("h1", { class: !en && b.script === "sa" ? "sa" : null }, en ? chapterTitle(b, meta) : doc.title || chapterTitle(b, meta)),
+			t.chapters.length > 1 ? h("p", { class: "chap-pos" }, posLabel(b, index + 1, t.chapters.length)) : null,
+			t.chapters.length > 1 ? h("div", { class: "chap-progress", role: "progressbar", "aria-valuemin": "1", "aria-valuemax": String(t.chapters.length), "aria-valuenow": String(index + 1), "aria-label": "Position in the book" },
+				h("i", { style: "width:" + ((index + 1) / t.chapters.length * 100).toFixed(1) + "%" })) : null,
 			!en && meta.title_tr ? h("p", { class: "tr" }, meta.title_tr) : null,
 			layerChips(b),
 			goToBox(b, t, meta.n, false),
@@ -584,6 +665,35 @@
 		parts.push(doc);
 		view.replaceChildren(...parts);
 	}
+	function viewHelp() {
+		const en = EN();
+		setTitle(T("सहायता · Help", "Help"));
+		const sec = (title, ...ps) => [h("h2", null, title), ...ps.map((p) => h("p", null, p))];
+		view.replaceChildren(h("section", { class: "hero" },
+			h("p", { class: "eyebrow" }, h("a", { href: "#/" }, T("पुस्तकालय", "Library")), " · ", T("सहायता", "Help")),
+			h("h1", null, T("सहायता · How to use this site", "How to use this site")),
+			h("p", { class: "lede" }, en ? "Everything works on a phone or a computer, and nothing needs an account." : "सब कुछ फ़ोन और कंप्यूटर पर चलता है; कोई खाता नहीं चाहिए। Everything works on a phone or a computer, and nothing needs an account.")),
+		h("div", { class: "doc help" },
+			...sec(T("एक-एक श्लोक या पूरा अध्याय · One verse at a time, or the whole chapter", "One verse at a time, or the whole chapter"),
+				en ? "Books open one verse at a time, so the verse fills the screen. Move with the big ‹ Previous and Next › buttons at the bottom, the left and right arrow keys, or a swipe. The line at the top shows how far you are, and the counter shows “Verse 12 of 47”."
+					: "ग्रंथ एक-एक श्लोक करके खुलते हैं। नीचे के ‹ पिछला / अगला › बटन, तीर कुंजियाँ या स्वाइप से आगे-पीछे जाएँ। Books open one verse at a time; use the ‹ › buttons, the arrow keys or a swipe.",
+				en ? "To read a whole chapter as one page, tap the page button at the top right of the verse screen, or choose “Whole chapter” under Aa. Stories open page by page like a book."
+					: "पूरा अध्याय एक पन्ने पर पढ़ने के लिए ऊपर दाईं ओर पन्ने वाला बटन दबाएँ, या ‘Aa’ में ‘पूरा अध्याय’ चुनें। कहानियाँ किताब की तरह पन्ना-दर-पन्ना खुलती हैं।"),
+			...sec(T("जाएँ · Finding your place", "Finding your place"),
+				en ? "Each book has a contents list. On the verse screen, pick a chapter from the list at the top, or type a verse number in “Go to verse” (for example 2.47, or 47 for this chapter). The site remembers where you stopped, and the home page offers “Continue where you left off”."
+					: "हर ग्रंथ की सूची है। श्लोक वाले पन्ने पर ऊपर से अध्याय चुनें या ‘Go to’ में संख्या लिखें (जैसे 2.47)। साइट याद रखती है कि आपने कहाँ छोड़ा था।"),
+			...sec(T("माला · The mala counter", "The mala counter"),
+				en ? "Stotras such as the Vishnu Sahasranama show a 108-bead mala at the bottom. Tap it (or press the space bar) once for each recitation; a full round of 108 is counted as one mala. Reset sets it back to zero."
+					: "स्तोत्रों में नीचे १०८ मनकों की माला है। हर जप पर उसे दबाएँ (या स्पेस बार)। १०८ पूरे होने पर एक माला गिनी जाती है।"),
+			...sec(T("सहेजें, सुनें, खोजें · Save, listen, search", "Save, listen and search"),
+				en ? "The bookmark button saves a verse to “Saved verses” (top of the page). The speaker button reads the verse aloud with your device’s own voice: in English mode it reads the English meaning, or the transliteration. Search looks through all books except the Puranas; type in English letters (krishna, dharma)."
+					: "बुकमार्क बटन श्लोक को ‘सहेजे श्लोक’ में रखता है। स्पीकर बटन श्लोक पढ़कर सुनाता है। खोज में देवनागरी या अंग्रेज़ी अक्षरों में लिखें (धर्म, dharma)।"),
+			...sec(T("भाषा और अक्षर · Language and text size", "Language and text size"),
+				en ? "The हिन्दी / English switch at the top changes the whole site. English mode shows the verses in Roman letters (transliteration) with an English meaning where a free translation exists. Aa sets the text size, line spacing and colours (light, sepia or dark), and can hide the meaning until you tap it, which helps with memorising."
+					: "ऊपर ‘हिन्दी / English’ से पूरी साइट की भाषा बदलें। ‘Aa’ से अक्षर का आकार, पंक्ति की दूरी और रंग (दिन, सेपिया, रात) बदलें।"),
+			...sec(T("स्रोत · Where the texts come from", "Where the texts come from"),
+				h("span", null, en ? "Every text is public domain or openly licensed; see " : "हर पाठ मुक्त स्रोत से है; देखें ", h("a", { href: "#/sources" }, T("स्रोत और लाइसेंस", "Sources and licences")), "."))));
+	}
 	function viewMissing() {
 		setTitle("Not found");
 		view.replaceChildren(h("p", { class: "empty" }, T("यह पृष्ठ नहीं मिला। ", "Page not found. "), h("a", { href: "#/" }, T("मुखपृष्ठ पर जाएँ", "Go to the home page"))));
@@ -624,7 +734,9 @@
 					S.scrollProse = v === "scroll"; save(); if (RC) closeRecite(); close(); route();
 				})) : null,
 			h("div", { class: "row" }, h("span", null, T("Theme · रंग", "Theme")),
-				seg([["auto", "Auto"], ["light", T("दिन · Light", "Light")], ["dark", T("रात · Dark", "Dark")]], () => S.theme || "auto", (v) => { S.theme = v === "auto" ? undefined : v; applyTheme(); save(); })),
+				seg([["auto", "Auto"], ["light", T("दिन · Light", "Light")], ["sepia", T("सेपिया · Sepia", "Sepia")], ["dark", T("रात · Dark", "Dark")]], () => S.theme || "auto", (v) => { S.theme = v === "auto" ? undefined : v; applyTheme(); save(); })),
+			h("div", { class: "row" }, h("span", null, T("Line spacing · पंक्तियों की दूरी", "Line spacing")),
+				seg([["normal", T("सामान्य · Normal", "Normal")], ["relaxed", T("खुली · Wider", "Wider")], ["loose", T("और खुली · Widest", "Widest")]], () => S.lh || "normal", (v) => { S.lh = v === "normal" ? undefined : v; applySpacing(); save(); refit(); })),
 			h("div", { class: "row" }, h("span", null, T("Text size · अक्षर का आकार", "Text size")),
 				h("div", { class: "seg" },
 					h("button", { onclick: () => setSize(-0.1), "aria-label": "Smaller" }, T("अ−", "A−")),
@@ -632,6 +744,7 @@
 					h("button", { onclick: () => setSize(0.1), "aria-label": "Larger" }, T("अ+", "A+")))),
 			h("div", { class: "row" }, h("span", null, T("Meaning · अर्थ", "Meaning")),
 				seg([["show", T("दिखाएँ · Show", "Show")], ["tap", T("टैप पर · Hide until I tap", "Hide until I tap")]], () => S.tap ? "tap" : "show", (v) => { S.tap = v === "tap"; applyTap(); save(); refit(); })),
+			h("p", { class: "sheet-help" }, h("a", { href: "#/help", onclick: () => close() }, T("सहायता · How to use this site", "Help: how to use this site"))),
 			h("button", { class: "chip", onclick: close }, T("बंद करें · Close", "Close")));
 		document.body.append(scrim, sheet);
 		sheet.querySelector("button").focus();
@@ -668,10 +781,11 @@
 			h("div", null,
 				h("div", { class: "rc-top" },
 					h("a", { class: "ibtn", href: "#/" + b.id, "aria-label": T("Contents · सूची", "Contents"), title: T("Contents · सूची", "Contents") }, svg(ICON.list)),
-					h("a", { class: "where", href: "#/" + b.id }, h("b", { class: !EN() && b.script === "sa" ? "sa" : null }, bTitle(b)), h("span", null, chapterTitle(b, ch.meta))),
+					h("a", { class: "where", href: "#/" + b.id, title: T("सूची पर जाएँ · Back to contents", "Back to the contents") }, h("b", { class: !EN() && b.script === "sa" ? "sa" : null }, bTitle(b)),
+						h("span", null, chapterTitle(b, ch.meta) + (ch.toc.chapters.length > 1 ? " · " + (EN() ? (b.unit ? "Ch. " : "Part ") + (ch.index + 1) + " of " + ch.toc.chapters.length : dev(ch.index + 1) + "/" + dev(ch.toc.chapters.length)) : ""))),
 					goToBox(b, ch.toc, n, true),
 					h("button", { class: "ibtn", "aria-label": T("Whole chapter · पूरा अध्याय", "Whole chapter"), title: T("Whole chapter · पूरा अध्याय", "Whole chapter"), onclick: toWhole }, svg(ICON.scroll)),
-					h("button", { class: "ibtn", "aria-label": T("Settings · सेटिंग", "Settings"), title: "Settings", onclick: openSettings }, svg(ICON.sliders))),
+					h("button", { class: "ibtn aa", "aria-label": T("अक्षर, दूरी और रंग · Text size, spacing and colours", "Text size, spacing and colours"), title: T("अक्षर, दूरी और रंग · Text size, spacing and colours", "Text size, spacing and colours"), onclick: openSettings }, "Aa")),
 				h("div", { class: "rc-bar" }, bar)),
 			body, foot);
 		document.body.append(root);
@@ -686,7 +800,7 @@
 		function show() {
 			const it = RC.items[RC.i];
 			card.replaceChildren(renderItem(b, n, it, { recite: true }), srcNote && !it.gap ? h("p", { class: "rc-src" }, srcNote) : "");
-			pos.textContent = (RC.i + 1) + " of " + RC.items.length;
+			pos.textContent = (EN() ? "Verse " : "") + (RC.i + 1) + " of " + RC.items.length;
 			pos.title = EN() ? "" : dev(RC.i + 1) + " / " + dev(RC.items.length);
 			tools.replaceChildren(...toolMakers.slice(1).map((f) => f(b, n, it)).filter(Boolean));
 			bar.style.width = ((RC.i + 1) / RC.items.length * 100) + "%";
@@ -739,7 +853,7 @@
 					h("a", { class: "ibtn", href: "#/" + b.id, "aria-label": T("Contents · सूची", "Contents"), title: T("Contents · सूची", "Contents") }, svg(ICON.list)),
 					h("a", { class: "where", href: "#/" + b.id }, h("b", null, bTitle(b)), h("span", null, cTitle(meta))),
 					h("button", { class: "ibtn", "aria-label": T("Scroll view · स्क्रॉल", "Scroll view"), title: T("Scroll view · स्क्रॉल", "Scroll view"), onclick: () => { S.scrollProse = true; save(); closeRecite(); route(); } }, svg(ICON.scroll)),
-					h("button", { class: "ibtn", "aria-label": T("Settings · सेटिंग", "Settings"), title: "Settings", onclick: openSettings }, svg(ICON.sliders))),
+					h("button", { class: "ibtn aa", "aria-label": T("अक्षर, दूरी और रंग · Text size, spacing and colours", "Text size, spacing and colours"), title: T("अक्षर, दूरी और रंग · Text size, spacing and colours", "Text size, spacing and colours"), onclick: openSettings }, "Aa")),
 				h("div", { class: "rc-bar" }, bar)),
 			viewport,
 			h("div", { class: "rc-foot" }, prevBtn, h("div", { class: "rc-mid" }, pos), nextBtn));
@@ -874,10 +988,10 @@
 		const set = (id, label) => { const el = $(id); if (el) { el.setAttribute("aria-label", label); el.title = label; } };
 		set("nav-search", T("Search · खोजें", "Search"));
 		set("nav-saved", T("Saved verses · सहेजे श्लोक", "Saved verses"));
-		set("nav-settings", T("Reading settings · सेटिंग", "Reading settings"));
+		set("nav-settings", T("अक्षर, दूरी और रंग · Text size, spacing and colours", "Text size, spacing and colours"));
 		document.querySelectorAll("#lang-switch button").forEach((btn) => btn.setAttribute("aria-pressed", String((btn.dataset.lang === "en") === en)));
 		const f = $("footer");
-		if (f) f.replaceChildren(h("p", null, "Texts are public domain or openly licensed; see ",
+		if (f) f.replaceChildren(h("p", null, h("a", { href: "#/help" }, T("सहायता · Help", "Help: how to use this site")), " · Texts are public domain or openly licensed; see ",
 			h("a", { href: "#/sources" }, T("Sources and licences · स्रोत", "Sources and licences")), ". Site content is shared under ",
 			h("a", { href: "https://creativecommons.org/licenses/by-sa/4.0/" }, "CC BY-SA 4.0"), ". ",
 			h("a", { href: "https://github.com/tiwari91/hindi-library" }, "Code on GitHub"), "."));
@@ -904,6 +1018,7 @@
 		try {
 			if (!r.book) await viewHome();
 			else if (r.book === "sources") viewSources();
+			else if (r.book === "help") viewHelp();
 			else if (routes[r.book]) await routes[r.book](r);
 			else {
 				const b = bookById(r.book);
@@ -958,6 +1073,7 @@
 
 	applyLayers(null);
 	applyTap();
+	applySpacing();
 	applyChrome();
 	getJSON("data/library.json").then((lib) => {
 		LIB = lib;
