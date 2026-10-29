@@ -15,6 +15,34 @@
    "ocr_note": "हिन्दी अर्थ गांधीजी के ‘अनासक्तियोग’ (सस्ता साहित्य मंडल, 1949 संस्करण) से है। यह विकिस्रोत पर स्कैन का OCR पाठ है, जिसकी अभी जाँच (proofreading) नहीं हुई है, इसलिए कहीं-कहीं अक्षर ग़लत हो सकते हैं। हर अर्थ के साथ स्कैन पृष्ठ का लिंक है। The Hindi meaning is unproofread OCR from the Wikisource scan of Gandhi's Anasaktiyoga; some letters may be wrong. Each meaning links to its scan page.",
    "recite": true,
    "sources": ["sa-gita", "anasakti"]
+  },
+  {
+   "id": "manas-bal",
+   "title": "रामचरितमानस · बालकाण्ड",
+   "title_en": "Ramcharitmanas · Bal Kand",
+   "by": "गोस्वामी तुलसीदास · टीका: महावीरप्रसाद मालवीय ‘वीर’",
+   "desc": "Tulsidas' Awadhi verses with a Hindi meaning and the editor's notes (Belvedere Press, 1925). Doha 1 to about 290; the rest of Bal Kand is not yet proofread on Wikisource.",
+   "script": "hi",
+   "kind": "verse",
+   "unit": "",
+   "layers": {"text": "मूल", "tr": "Roman", "hi": "अर्थ", "note": "टिप्पणी"},
+   "default_hide": ["tr", "note"],
+   "recite": true,
+   "sources": ["manas"]
+  },
+  {
+   "id": "manas-sundar",
+   "title": "सुन्दरकाण्ड",
+   "title_en": "Sundarkand (Ramcharitmanas)",
+   "by": "गोस्वामी तुलसीदास · टीका: महावीरप्रसाद मालवीय ‘वीर’",
+   "desc": "The fifth kand of the Ramcharitmanas, complete except the two opening Sanskrit shlokas (scan page not yet proofread), with Hindi meaning and notes.",
+   "script": "hi",
+   "kind": "verse",
+   "unit": "",
+   "layers": {"text": "मूल", "tr": "Roman", "hi": "अर्थ", "note": "टिप्पणी"},
+   "default_hide": ["tr", "note"],
+   "recite": true,
+   "sources": ["manas"]
   }
  ],
  "puranas": [
@@ -38,6 +66,14 @@
   {"title": "ब्रह्माण्ड पुराण", "title_en": "Brahmanda Purana"}
  ],
  "sources": {
+  "manas": {
+   "title": "रामचरितमानस (सटीक) — तुलसीदास; टीका महावीरप्रसाद मालवीय ‘वीर’",
+   "where": "Hindi Wikisource transcription of the Belvedere Press edition, Prayag, 1925.",
+   "url": "https://hi.wikisource.org/wiki/%E0%A4%B0%E0%A4%BE%E0%A4%AE%E0%A4%9A%E0%A4%B0%E0%A4%BF%E0%A4%A4%E0%A4%AE%E0%A4%BE%E0%A4%A8%E0%A4%B8",
+   "licence": "Public domain (published 1925; tagged PD-1996 on Wikisource); Wikisource transcription CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "note": "Tulsidas' text (16th century) is public domain. The 1925 commentary is public domain in the USA (published before 1931) and is hosted on Wikisource as public domain. Only scan pages that Wikisource volunteers have proofread are used; unproofread pages are shown as gaps with a link to the scan. The Roman transliteration is made by a fixed rule."
+  },
   "sa-gita": {
    "title": "भगवद्गीता — संस्कृत पाठ (Sanskrit text)",
    "where": "Sanskrit Wikisource (sa.wikisource.org)",

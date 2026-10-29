@@ -8,11 +8,13 @@ CACHE = os.path.join(ROOT, "sources", "cache")
 
 def api(host, **params):
     params["format"] = "json"
-    url = f"https://{host}/w/api.php?" + urllib.parse.urlencode(params)
+    url = f"https://{host}/w/api.php"
+    body = urllib.parse.urlencode(params).encode()
     err = None
     for i in range(5):
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": UA})
+            # POST keeps long title lists out of the URL (GET hits "414 URI too long")
+            req = urllib.request.Request(url, data=body, headers={"User-Agent": UA})
             with urllib.request.urlopen(req, timeout=60) as r:
                 data = json.load(r)
             time.sleep(0.25)
@@ -65,7 +67,29 @@ def page_quality(host, titles):
     return out
 
 
-DEV_DIGITS = "०१२३४५६७८९"
+def pages_many(host, titles):
+    """Fetch wikitext and proofread level for many Page: titles, 50 at a time.
+    Returns {title: {"text": str|None, "quality": int|None}}. Cached per batch."""
+    out = {}
+    for i in range(0, len(titles), 50):
+        batch = titles[i:i + 50]
+
+        def fetch():
+            d = api(host, action="query", prop="revisions|proofread", rvprop="content", rvslots="main",
+                    titles="|".join(batch))
+            res = {}
+            for p in d["query"]["pages"].values():
+                rev = p.get("revisions")
+                res[p["title"]] = {
+                    "text": rev[0]["slots"]["main"]["*"] if rev else None,
+                    "quality": p.get("proofread", {}).get("quality"),
+                }
+            return res
+        out.update(_cached(host, "|".join(batch), "many", fetch))
+    return out
+
+
+DEV_DIGITS ="०१२३४५६७८९"
 
 
 def dev(n):

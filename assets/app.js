@@ -92,10 +92,20 @@
 	}
 
 	// ---------- applying settings ----------
-	function applyLayers() {
+	// which layers (text, tr, hi, en, note) are hidden is remembered per book
+	let curBook = null;
+	function hidden(b, k) {
+		const hb = b && S.hide[b.id];
+		if (hb && k in hb) return hb[k];
+		return !!(b && b.default_hide && b.default_hide.includes(k));
+	}
+	function setHidden(b, k, v) { (S.hide[b.id] = S.hide[b.id] || {})[k] = v; }
+	function applyLayers(b) {
+		if (b !== undefined) curBook = b;
 		for (const k of ["text", "tr", "hi", "en", "note"]) {
-			if (S.hide[k]) document.body.dataset["hide" + k[0].toUpperCase() + k.slice(1)] = "1";
-			else delete document.body.dataset["hide" + k[0].toUpperCase() + k.slice(1)];
+			const key = "hide" + k[0].toUpperCase() + k.slice(1);
+			if (curBook && hidden(curBook, k)) document.body.dataset[key] = "1";
+			else delete document.body.dataset[key];
 		}
 	}
 	function applyTheme() {
@@ -120,11 +130,15 @@
 	function renderItem(b, n, it, opts) {
 		opts = opts || {};
 		if (it.h) return h("h3", { class: "sec-h", text: it.h });
+		if (it.gap) return h("p", { class: "ocr-note gap" },
+			"स्कैन पृष्ठ " + it.gap + (it.gap_to ? "–" + it.gap_to : "") + " का पाठ विकिस्रोत पर अभी जाँचा (proofread) नहीं गया है, इसलिए यहाँ छोड़ा गया है। ",
+			h("a", { href: it.src, target: "_blank", rel: "noopener" }, "स्कैन देखें"),
+			" · These scan pages are not yet proofread on Wikisource, so they are left out.");
 		if (it.p != null) return h("p", { id: opts.recite ? null : "v-" + it.id }, it.p);
 		if (it.poem != null) return h("div", { class: "poem", id: opts.recite ? null : "v-" + it.id }, it.poem);
 		const scriptCls = b.script === "hi" ? "sa-text hi" : "sa-text";
 		const head = h("div", { class: "vhead" },
-			it.n ? h("a", { class: "vnum", href: verseUrl(b, n, it.id), "aria-label": (b.verse || "Verse") + " " + it.n }, (b.verse ? b.verse + " " : "") + it.n) : null,
+			h("a", { class: "vnum", href: verseUrl(b, n, it.id), "aria-label": "Link to this verse" }, it.n ? (b.verse ? b.verse + " " : "") + it.n : "#"),
 			it.speaker ? h("span", { class: "speaker" }, it.speaker) : null,
 			opts.recite ? null : h("span", { class: "vtools" }, ...verseTools(b, n, it)),
 		);
@@ -216,7 +230,7 @@
 		parts.push(h("ul", { class: "toc" + (b.script === "sa" ? " sa" : "") }, t.chapters.map((c) => h("li", { class: L && String(L.n) === String(c.n) ? "here" : null },
 			h("a", { href: "#/" + b.id + "/" + c.n },
 				h("span", { class: "n" }, dev(c.label || c.n)),
-				h("span", { class: "nm" }, h("span", { class: "dv" }, c.title), c.title_tr ? h("span", { class: "tr" }, c.title_tr) : null, c.title_en ? h("span", { class: "tr" }, c.title_en) : null),
+				h("span", { class: "nm" }, h("span", { class: "dv" }, c.title), c.first ? h("span", { class: "fl" }, c.first) : null, c.title_tr ? h("span", { class: "tr" }, c.title_tr) : null, c.title_en ? h("span", { class: "tr" }, c.title_en) : null),
 				c.count ? h("span", { class: "ct" }, dev(c.count) + (b.kind === "prose" ? "" : " " + (b.verse || ""))) : null)))));
 		if (b.sources) parts.push(h("p", { class: "note" }, "स्रोत · Sources: ", h("a", { href: "#/sources" }, b.sources.map((s) => LIB.sources[s] ? LIB.sources[s].where.split(" (")[0] : s).join(", "))));
 		view.replaceChildren(...parts);
@@ -227,6 +241,7 @@
 		const ch = await chapter(b, n);
 		if (!ch) return viewMissing();
 		const { doc, meta, toc: t, index } = ch;
+		applyLayers(b);
 		setTitle(b.title + " · " + chapterTitle(b, meta));
 		S.lastBook = b.id;
 		if (!S.last[b.id] || String(S.last[b.id].n) !== String(n)) S.last[b.id] = { n: meta.n };
@@ -282,19 +297,20 @@
 		if (!b.layers) return null;
 		const keys = Object.keys(b.layers);
 		if (keys.length < 2) return null;
-		return h("div", { class: "layers", role: "group", "aria-label": "Show or hide" }, keys.map((k) => {
-			const btn = h("button", { class: "chip", "aria-pressed": S.hide[k] ? "false" : "true" }, b.layers[k]);
+		const group = h("div", { class: "layers", role: "group", "aria-label": "Show or hide" });
+		const btns = keys.map((k) => {
+			const btn = h("button", { class: "chip", "aria-pressed": hidden(b, k) ? "false" : "true" }, b.layers[k]);
 			btn.addEventListener("click", () => {
-				S.hide[k] = !S.hide[k];
-				// never hide everything
-				if (keys.every((x) => S.hide[x])) S.hide[k] = false;
-				save(); applyLayers();
-				document.querySelectorAll(".layers").forEach((g) => g.querySelectorAll(".chip[aria-pressed]").forEach((c, i) => {
-					if (keys[i]) c.setAttribute("aria-pressed", S.hide[keys[i]] ? "false" : "true");
-				}));
+				setHidden(b, k, !hidden(b, k));
+				// never hide everything except notes
+				if (keys.filter((x) => x !== "note").every((x) => hidden(b, x))) setHidden(b, k, false);
+				save(); applyLayers(b);
+				btns.forEach((c, i) => c.setAttribute("aria-pressed", hidden(b, keys[i]) ? "false" : "true"));
 			});
 			return btn;
-		}));
+		});
+		group.append(...btns);
+		return group;
 	}
 
 	function viewSources() {
@@ -520,7 +536,36 @@
 	window.HL = { S, save, h, svg, ICON, dev, toast, getJSON, toc, chapter, bookById, books: () => LIB.books, lib: () => LIB, renderItem, verseUrl, chapterTitle, toolMakers, homeExtras, routes, openRecite, route };
 
 	// ---------- start ----------
-	applyLayers();
+	// Left/Right arrow keys move to the previous/next chapter in chapter view
+	// (recite mode handles its own keys: previous/next verse)
+	document.addEventListener("keydown", (e) => {
+		if (RC || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
+		const t = e.target;
+		if (t && (/^(input|textarea|select)$/i.test(t.tagName) || t.isContentEditable)) return;
+		if (document.querySelector(".sheet")) return;
+		if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+		const a = view.querySelector(".pager a." + (e.key === "ArrowLeft" ? "prev" : "next"));
+		if (a) { e.preventDefault(); location.hash = a.getAttribute("href"); }
+	});
+	// swipe left/right on the chapter page does the same on phones
+	(function () {
+		let x0 = null, y0 = null, t0 = 0;
+		view.addEventListener("touchstart", (e) => {
+			if (e.touches.length !== 1) { x0 = null; return; }
+			x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = Date.now();
+		}, { passive: true });
+		view.addEventListener("touchend", (e) => {
+			if (x0 == null || RC) return;
+			const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+			x0 = null;
+			if (Date.now() - t0 > 600 || Math.abs(dx) < 90 || Math.abs(dx) < Math.abs(dy) * 2) return;
+			if (window.getSelection && String(window.getSelection())) return;
+			const a = view.querySelector(".pager a." + (dx < 0 ? "next" : "prev"));
+			if (a) location.hash = a.getAttribute("href");
+		});
+	})();
+
+	applyLayers(null);
 	getJSON("data/library.json").then((lib) => {
 		LIB = lib;
 		document.dispatchEvent(new CustomEvent("hl:ready"));

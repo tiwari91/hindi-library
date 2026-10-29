@@ -210,6 +210,7 @@ main:focus { outline: none; }
 .toc .nm .dv { font-family: var(--f-hi); font-size: 1.12rem; }
 .toc.sa .nm .dv { font-family: var(--f-sa); }
 .toc .nm .tr { font-family: var(--f-lat); font-style: italic; font-size: .9rem; color: var(--ink-2); }
+.toc .nm .fl { font-family: var(--f-hi); font-size: .92rem; color: var(--ink-2); flex-basis: 100%; }
 .toc .ct { font-size: .8rem; color: var(--ink-2); white-space: nowrap; }
 .toc a:hover .dv { color: var(--accent); }
 .toc li.here a .dv::after { content: " •"; color: var(--accent); }
