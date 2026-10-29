@@ -102,15 +102,16 @@
    "title": "चाणक्यनीतिः",
    "title_en": "Chanakya Niti",
    "by": "चाणक्य",
-   "desc": "Chanakya's sayings on life, conduct and statecraft: 15 chapters, 300 ślokas in Sanskrit with Roman transliteration. No free Hindi meaning was found, so the original only.",
+   "desc": "Chanakya's sayings on life, conduct and statecraft: 15 chapters, 300 ślokas in Sanskrit with Roman transliteration and a plain-English meaning. No free Hindi meaning was found.",
    "script": "sa",
    "kind": "verse",
    "unit": "अध्याय",
    "verse": "श्लोक",
-   "layers": {"text": "संस्कृत", "tr": "Roman"},
+   "layers": {"text": "संस्कृत", "tr": "Roman", "en": "English"},
    "recite": true,
    "ocr_note": "This text is typed on Sanskrit Wikisource and has not been checked against a printed edition there; a few typing errors may remain.",
-   "sources": ["sa-chanakya"]
+   "en_note": "The English meanings are plain renderings written with Claude directly from the Sanskrit for this reader. They are not a scholarly translation.",
+   "sources": ["sa-chanakya", "claude-en"]
   },
   {
    "id": "vishnu-sahasranama",
