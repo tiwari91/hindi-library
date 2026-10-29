@@ -21,3 +21,4 @@ Names in simple roman spelling, no diacritics.
 - Jagannath: Vishnu at Puri; Kalki: the future avatar, born at Sambhala to Vishnuyasha
 - Mleccha: the text's word for foreign or non-Vedic people, reported as given; Kali: the age and its personified spirit; Bali, Maya: demon lords who work against the gods
 - Babara, Homayu, Akabara: rulers of Delhi as spelled in the text
+- Indumati, Budha, Anagha, Kartavirya Arjuna, Kritavirya, Lomasha, Ishvari, Bhushana: names as the text gives them (Budha: also the planet Mercury where the text means it)
