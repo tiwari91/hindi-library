@@ -81,6 +81,23 @@
    "sources": ["premchand"]
   },
   {
+   "id": "vishnu-purana",
+   "purana": true,
+   "title": "विष्णुपुराणम्",
+   "title_en": "Vishnu Purana",
+   "by": "पराशर",
+   "desc": "All six amshas, 126 chapters, in Sanskrit with Roman transliteration, from Sanskrit Wikisource.",
+   "script": "sa",
+   "kind": "verse",
+   "unit": "",
+   "verse": "श्लोक",
+   "layers": {"text": "संस्कृत", "tr": "Roman"},
+   "recite": true,
+   "no_search": true,
+   "ocr_note": "This text is typed on Sanskrit Wikisource and has not been checked against a printed edition there; a few typing errors may remain. Verse breaks follow the verse numbers in the source.",
+   "sources": ["sa-vishnu-purana"]
+  },
+  {
    "id": "bhagavata",
    "purana": true,
    "title": "श्रीमद्भागवतपुराणम्",
@@ -178,7 +195,7 @@
  "puranas": [
   {"title": "ब्रह्म पुराण", "title_en": "Brahma Purana"},
   {"title": "पद्म पुराण", "title_en": "Padma Purana"},
-  {"title": "विष्णु पुराण", "title_en": "Vishnu Purana"},
+  {"title": "विष्णु पुराण", "title_en": "Vishnu Purana", "book": "vishnu-purana"},
   {"title": "शिव पुराण", "title_en": "Shiva Purana"},
   {"title": "श्रीमद्भागवत पुराण", "title_en": "Bhagavata Purana", "book": "bhagavata"},
   {"title": "नारद पुराण", "title_en": "Narada Purana"},
@@ -196,6 +213,14 @@
   {"title": "ब्रह्माण्ड पुराण", "title_en": "Brahmanda Purana"}
  ],
  "sources": {
+  "sa-vishnu-purana": {
+   "title": "विष्णुपुराणम् — Sanskrit Wikisource",
+   "where": "Sanskrit Wikisource (sa.wikisource.org)",
+   "url": "https://sa.wikisource.org/wiki/%E0%A4%B5%E0%A4%BF%E0%A4%B7%E0%A5%8D%E0%A4%A3%E0%A5%81%E0%A4%AA%E0%A5%81%E0%A4%B0%E0%A4%BE%E0%A4%A3%E0%A4%AE%E0%A5%8D",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "note": "The traditional Sanskrit text is public domain. All six amshas (126 chapter pages) as typed on Wikisource; each chapter links to its page. Verse breaks follow the verse numbers in the source; the Roman transliteration is made by a fixed rule. No Hindi or English meaning."
+  },
   "claude-en": {
    "title": "English meanings — plain renderings written with Claude",
    "where": "Written for this site (stored in sources/en/ in the repository)",
