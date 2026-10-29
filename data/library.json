@@ -81,6 +81,23 @@
    "sources": ["premchand"]
   },
   {
+   "id": "garuda-purana",
+   "purana": true,
+   "title": "गरुडपुराणम्",
+   "title_en": "Garuda Purana",
+   "by": "वेदव्यास",
+   "desc": "All three kandas, 318 chapters (Achara, Preta and Brahma kandas), in Sanskrit with Roman transliteration, from Sanskrit Wikisource.",
+   "script": "sa",
+   "kind": "verse",
+   "unit": "",
+   "verse": "श्लोक",
+   "layers": {"text": "संस्कृत", "tr": "Roman"},
+   "recite": true,
+   "no_search": true,
+   "ocr_note": "This text is typed on Sanskrit Wikisource and has not been checked against a printed edition there; a few typing errors may remain. Verse breaks follow the verse numbers in the source.",
+   "sources": ["sa-garuda"]
+  },
+  {
    "id": "markandeya-purana",
    "purana": true,
    "title": "मार्कण्डेयपुराणम्",
@@ -242,10 +259,18 @@
   {"title": "वामन पुराण", "title_en": "Vamana Purana"},
   {"title": "कूर्म पुराण", "title_en": "Kurma Purana"},
   {"title": "मत्स्य पुराण", "title_en": "Matsya Purana"},
-  {"title": "गरुड पुराण", "title_en": "Garuda Purana"},
+  {"title": "गरुड पुराण", "title_en": "Garuda Purana", "book": "garuda-purana"},
   {"title": "ब्रह्माण्ड पुराण", "title_en": "Brahmanda Purana"}
  ],
  "sources": {
+  "sa-garuda": {
+   "title": "गरुडपुराणम् — Sanskrit Wikisource",
+   "where": "Sanskrit Wikisource (sa.wikisource.org)",
+   "url": "https://sa.wikisource.org/wiki/%E0%A4%97%E0%A4%B0%E0%A5%81%E0%A4%A1%E0%A4%AA%E0%A5%81%E0%A4%B0%E0%A4%BE%E0%A4%A3%E0%A4%AE%E0%A5%8D",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "note": "The traditional Sanskrit text is public domain. All three kandas (Achara 240, Preta 49 and Brahma 29 chapter pages) as typed on Wikisource; each chapter links to its page. Verse breaks follow the verse numbers in the source; the Roman transliteration is made by a fixed rule."
+  },
   "sa-markandeya": {
    "title": "मार्कण्डेयपुराणम् — Sanskrit Wikisource",
    "where": "Sanskrit Wikisource (sa.wikisource.org)",
