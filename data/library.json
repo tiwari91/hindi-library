@@ -5,17 +5,20 @@
    "title": "श्रीमद्भगवद्गीता",
    "title_en": "Bhagavad Gita",
    "by": "व्यास · हिन्दी अर्थ: महात्मा गांधी (अनासक्तियोग)",
-   "desc": "18 chapters, 700 verses: Sanskrit, Roman transliteration, Gandhi's Hindi meaning and a plain-English meaning.",
+   "by_en": "Vyasa · English translation by Annie Besant (1922) · Hindi meaning by Mahatma Gandhi (Anasaktiyoga)",
+   "desc": "18 chapters, 700 verses: Sanskrit, Roman transliteration, Gandhi's Hindi meaning and Annie Besant's English translation.",
    "script": "sa",
    "kind": "verse",
    "unit": "अध्याय",
    "unit_en": "Chapter",
    "verse": "श्लोक",
    "layers": {"text": "संस्कृत", "tr": "Roman", "hi": "हिन्दी अर्थ", "en": "English"},
-   "en_note": "The English meanings are plain renderings written with Claude directly from the Sanskrit for this reader. They are not a scholarly translation.",
+   "en_source": "Annie Besant's translation (1922)",
+   "en_source_note": "Public domain, from English Wikisource. In chapter 13 her first verse (“Arjuna said: Matter and Spirit…”) is not in this Sanskrit text, so her numbering there is one higher than the verse numbers shown here.",
+   "en_sources": ["besant-gita"],
    "ocr_note": "हिन्दी अर्थ गांधीजी के ‘अनासक्तियोग’ (सस्ता साहित्य मंडल, 1949 संस्करण) से है। यह विकिस्रोत पर स्कैन का OCR पाठ है, जिसकी अभी जाँच (proofreading) नहीं हुई है, इसलिए कहीं-कहीं अक्षर ग़लत हो सकते हैं। हर अर्थ के साथ स्कैन पृष्ठ का लिंक है। The Hindi meaning is unproofread OCR from the Wikisource scan of Gandhi's Anasaktiyoga; some letters may be wrong. Each meaning links to its scan page.",
    "recite": true,
-   "sources": ["sa-gita", "anasakti", "claude-en"]
+   "sources": ["sa-gita", "anasakti"]
   },
   {
    "id": "parashara",
@@ -29,7 +32,7 @@
    "verse": "श्लोक",
    "layers": {"text": "संस्कृत", "tr": "Roman", "en": "English", "note": "Notes"},
    "note_lang": "en",
-   "en_note": "The English meanings are plain renderings written with Claude directly from the Sanskrit for this reader. They are not a scholarly translation.",
+   "en_note": "Machine translation, not proofread: these English meanings were written by an AI model (Claude) directly from the Sanskrit for this reader. They are not a scholarly translation.",
    "recite": true,
    "one": true,
    "about": [
@@ -51,7 +54,7 @@
    "unit": "",
    "layers": {"text": "मूल", "tr": "Roman", "hi": "अर्थ", "en": "English", "note": "टिप्पणी"},
    "default_hide": ["tr", "note"],
-   "en_note": "The English meanings are plain renderings written with Claude directly from the Awadhi for this reader. They are not a scholarly translation.",
+   "en_note": "Machine translation, not proofread: these English meanings were written by an AI model (Claude) directly from the Awadhi for this reader. They are not a scholarly translation.",
    "recite": true,
    "sources": ["manas", "claude-en"]
   },
@@ -67,7 +70,7 @@
    "unit": "",
    "layers": {"text": "मूल", "tr": "Roman", "hi": "अर्थ", "en": "English", "note": "टिप्पणी"},
    "default_hide": ["tr", "note"],
-   "en_note": "The English meanings are plain renderings written with Claude directly from the Awadhi for this reader. They are not a scholarly translation.",
+   "en_note": "Machine translation, not proofread: these English meanings were written by an AI model (Claude) directly from the Awadhi for this reader. They are not a scholarly translation.",
    "recite": true,
    "sources": ["manas", "claude-en"]
   },
@@ -292,7 +295,7 @@
    "layers": {"text": "संस्कृत", "tr": "Roman", "en": "English"},
    "recite": true,
    "ocr_note": "This text is typed on Sanskrit Wikisource and has not been checked against a printed edition there; a few typing errors may remain.",
-   "en_note": "The English meanings are plain renderings written with Claude directly from the Sanskrit for this reader. They are not a scholarly translation.",
+   "en_note": "Machine translation, not proofread: these English meanings were written by an AI model (Claude) directly from the Sanskrit for this reader. They are not a scholarly translation.",
    "sources": ["sa-chanakya", "claude-en"]
   },
   {
@@ -309,7 +312,7 @@
    "layers": {"text": "संस्कृत", "tr": "Roman", "en": "English"},
    "recite": true,
    "mala": true,
-   "en_note": "The English meanings are plain renderings written with Claude directly from the Sanskrit for this reader. They are not a scholarly translation.",
+   "en_note": "Machine translation, not proofread: these English meanings were written by an AI model (Claude) directly from the Sanskrit for this reader. They are not a scholarly translation.",
    "sources": ["sa-vishnu", "claude-en"]
   },
   {
@@ -327,7 +330,7 @@
    "recite": true,
    "mala": true,
    "ocr_note": "This text is typed on Sanskrit Wikisource and has not been checked against a printed edition there; a few typing errors may remain. यह पाठ विकिस्रोत पर टाइप किया हुआ है; कहीं-कहीं टाइपिंग की भूल हो सकती है।",
-   "en_note": "The English meanings are plain renderings written with Claude directly from the Sanskrit for this reader. They are not a scholarly translation.",
+   "en_note": "Machine translation, not proofread: these English meanings were written by an AI model (Claude) directly from the Sanskrit for this reader. They are not a scholarly translation.",
    "sources": ["sa-lalita", "claude-en"]
   },
   {
@@ -344,7 +347,7 @@
    "layers": {"text": "संस्कृत", "tr": "Roman", "en": "English"},
    "recite": true,
    "mala": true,
-   "en_note": "The English meanings are plain renderings written with Claude directly from the Sanskrit for this reader. They are not a scholarly translation.",
+   "en_note": "Machine translation, not proofread: these English meanings were written by an AI model (Claude) directly from the Sanskrit for this reader. They are not a scholarly translation.",
    "sources": ["sa-shiva", "claude-en"]
   },
   {
@@ -378,6 +381,14 @@
   {"title": "ब्रह्माण्ड पुराण", "title_en": "Brahmanda Purana", "book": "brahmanda-purana"}
  ],
  "sources": {
+  "besant-gita": {
+   "title": "The Bhagavad-Gita, translated by Annie Besant (4th edition, 1922)",
+   "where": "English Wikisource transcription of the 1922 edition (Theosophical Publishing House)",
+   "url": "https://en.wikisource.org/wiki/Bhagavad-Gita_(Besant_4th)",
+   "licence": "Public domain (Besant died in 1933; published 1922); Wikisource transcription CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "note": "Used verse by verse as printed, with the translator's footnote markers and speaker lines left out (tools/fetch_besant.py). A few verse numbers that are mistyped on Wikisource were matched by the Sanskrit verse printed just above them."
+  },
   "sa-puranas": {
    "title": "Puranas — Sanskrit Wikisource",
    "where": "Sanskrit Wikisource (sa.wikisource.org), the chapter pages of each Purana",
@@ -419,12 +430,13 @@
    "note": "The traditional Sanskrit text is public domain. All six amshas (126 chapter pages) as typed on Wikisource; each chapter links to its page. Verse breaks follow the verse numbers in the source; the Roman transliteration is made by a fixed rule. No Hindi or English meaning."
   },
   "claude-en": {
-   "title": "English meanings — plain renderings written with Claude",
-   "where": "Written for this site (stored in sources/en/ in the repository)",
+   "title": "English meanings — machine translation, not proofread",
+   "title_en": "English meanings — machine translation, not proofread",
+   "where": "Written for this site by an AI model (Claude) and stored in sources/en/ in the repository",
    "url": "https://github.com/tiwari91/hindi-library/tree/main/sources/en",
    "licence": "CC BY-SA 4.0",
    "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
-   "note": "Plain renderings written with Claude directly from the original Sanskrit or Awadhi, one short meaning per verse. They are not a scholarly translation and are not taken from any published translation; check a printed edition before relying on a point. No free public-domain English that lines up verse by verse was found: K. T. Telang's 1882 Gita (Sacred Books of the East, vol. 8) is continuous prose without verse numbers, and is incomplete on Wikisource."
+   "note": "Machine translation: plain renderings written by Claude directly from the original Sanskrit or Awadhi, one short meaning per verse, and not proofread by a person. They are not taken from any published translation; check a printed edition before relying on a point. They are used only where no public-domain English translation lines up verse by verse with the text here. The Gita now uses Annie Besant's 1922 translation instead."
   },
   "sa-bhagavata": {
    "title": "श्रीमद्भागवतपुराणम् — Sanskrit Wikisource",

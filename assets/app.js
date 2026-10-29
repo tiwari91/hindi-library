@@ -488,7 +488,7 @@
 	function enNote(b) {
 		if (b.kind === "prose") return h("p", { class: "ocr-note", lang: "en" }, "This is Hindi prose. In English mode it is shown in Roman transliteration; a free English translation is not available yet.");
 		if (b.en_source) return h("p", { class: "ocr-note", lang: "en" }, "English meaning: " + b.en_source + ". " + (b.en_source_note || ""));
-		if (b.en_note) return h("p", { class: "ocr-note", lang: "en" }, "English meaning: machine translation, not proofread. " + b.en_note);
+		if (b.en_note) return h("p", { class: "ocr-note", lang: "en" }, b.en_note);
 		return h("p", { class: "ocr-note", lang: "en" }, NO_EN);
 	}
 
