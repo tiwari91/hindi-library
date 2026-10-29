@@ -29,6 +29,7 @@
    "verse": "श्लोक",
    "layers": {"text": "संस्कृत", "tr": "Roman", "en": "English", "note": "Notes"},
    "note_lang": "en",
+   "en_note": "The English meanings are plain renderings written with Claude directly from the Sanskrit for this reader. They are not a scholarly translation.",
    "recite": true,
    "one": true,
    "about": [

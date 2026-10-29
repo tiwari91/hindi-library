@@ -433,6 +433,7 @@ body[data-hide-note="1"] .note { display: none; }
 .rc-card .sa-text .ln, .rc-card .tr-text .ln { padding-left: 0; text-indent: 0; }
 .rc-card .meaning { text-align: start; }
 .rc-card .vhead { justify-content: center; }
+.rc-src { font-size: .74rem; color: var(--ink-2); margin: .8rem 0 0; font-family: var(--f-ui); }
 @media (min-width: 900px) and (min-height: 640px) {
 	.rc-card .sa-text { font-size: calc(var(--dev-size) * 1.4 * var(--scale)); }
 	.rc-card .tr-text, .rc-card .meaning { font-size: calc(var(--hi-size) * 1.12 * var(--scale)); }

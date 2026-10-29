@@ -155,6 +155,7 @@
 		if (it.hi) {
 			const lab = [];
 			if (it.hi_group) lab.push((b.verse || "") + " " + it.hi_group[0] + "–" + it.hi_group[1] + " का अर्थ");
+			if (opts.recite && it.hi_src && b.ocr_note) lab.push("OCR पाठ, जाँचा नहीं · unproofread OCR");
 			const m = h("div", { class: "meaning", lang: "hi" });
 			if (lab.length || it.hi_src) {
 				m.append(h("span", { class: "mlabel" }, lab.join(" "), lab.length && it.hi_src ? " · " : "",
@@ -165,7 +166,8 @@
 		} else if (it.hi_ref) {
 			mw.append(h("div", { class: "meaning ref", lang: "hi" }, "अर्थ आगे " + (b.verse || "") + " " + it.hi_ref + " के साथ है।"));
 		}
-		if (it.en) mw.append(h("div", { class: "meaning en", lang: "en" }, it.en));
+		if (it.en) mw.append(h("div", { class: "meaning en", lang: "en" },
+			opts.recite && b.en_note ? h("span", { class: "mlabel" }, "English · written with Claude, not a scholarly translation") : null, it.en));
 		if (it.note) mw.append(h("p", { class: "note", lang: b.note_lang || "hi" }, it.note));
 		if (mw.childNodes.length) {
 			const rv = h("button", { class: "chip ghost reveal", type: "button" }, "अर्थ दिखाएँ · Show meaning");
@@ -471,7 +473,9 @@
 	async function openRecite(b, n, fromId) {
 		const ch = await chapter(b, n);
 		if (!ch) return;
-		const items = ch.doc.items.filter((x) => x.text || x.p || x.poem);
+		// gaps stay in, so a reader sees where unproofread scan pages were left out
+		const items = ch.doc.items.filter((x) => x.text || x.p || x.poem || x.gap);
+		const srcNote = b.note_short || (b.ocr_note ? (b.ocr_note.match(/[A-Z][^.]*\./) || [""])[0] : "");
 		if (!items.length) return;
 		let i = 0;
 		const saved = S.last[b.id] && S.last[b.id].rc;
@@ -508,7 +512,7 @@
 		}
 		function show() {
 			const it = RC.items[RC.i];
-			card.replaceChildren(renderItem(b, n, it, { recite: true }));
+			card.replaceChildren(renderItem(b, n, it, { recite: true }), srcNote && !it.gap ? h("p", { class: "rc-src" }, srcNote) : "");
 			pos.textContent = (RC.i + 1) + " of " + RC.items.length;
 			pos.title = dev(RC.i + 1) + " / " + dev(RC.items.length);
 			tools.replaceChildren(...toolMakers.slice(1).map((f) => f(b, n, it)).filter(Boolean));
