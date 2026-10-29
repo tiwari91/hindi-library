@@ -676,3 +676,9 @@ body.lang-en .puranas .pchip span { font-family: var(--f-ui); }
 
 /* while the reader covers the screen, the page behind it takes no space */
 body.rc-open > main, body.rc-open > footer.site, body.rc-open > header.topbar { display: none; }
+
+/* machine-written English chapter summary */
+.en-summary { margin: .8rem 0; padding: .6rem .8rem; border: 1px solid var(--rule); border-radius: 8px; line-height: 1.6; }
+.en-summary summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 600; }
+.en-summary p { margin: .3rem 0; }
+.en-summary .mlabel { font-size: .8rem; color: var(--ink-2); }

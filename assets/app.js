@@ -383,6 +383,29 @@
 			h("summary", null, "English translation of this chapter · " + (b.en_source || "")),
 			...chapterEnBody(b, doc));
 	}
+	// Machine-written chapter summary (English): open in English mode, a closed box in Hindi mode
+	function summaryBox(b, doc) {
+		if (!doc.en_summary) return null;
+		const label = "Chapter summary: machine-written, not proofread";
+		if (EN()) return h("div", { class: "en-summary", lang: "en" }, h("p", { class: "mlabel" }, label), h("p", null, doc.en_summary));
+		return h("details", { class: "en-summary", lang: "en" }, h("summary", null, "English summary"), h("p", { class: "mlabel" }, label), h("p", null, doc.en_summary));
+	}
+	function openSummary(doc) {
+		const scrim = h("div", { class: "scrim" });
+		const close = () => { scrim.remove(); sheet.remove(); };
+		scrim.addEventListener("click", close);
+		const sheet = h("div", { class: "sheet en-sheet", role: "dialog", "aria-modal": "true", "aria-label": "Chapter summary", lang: "en" },
+			h("h2", null, "Chapter summary"),
+			h("p", { class: "note" }, "Chapter summary: machine-written, not proofread"),
+			h("p", null, doc.en_summary),
+			h("button", { class: "chip", onclick: close }, "Close"));
+		sheet.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+		document.body.append(scrim, sheet);
+		const hd = sheet.querySelector("h2");
+		hd.tabIndex = -1;
+		hd.focus({ preventScroll: true });
+		sheet.scrollTop = 0;
+	}
 	function openChapterEn(b, doc) {
 		const scrim = h("div", { class: "scrim" });
 		const close = () => { scrim.remove(); sheet.remove(); };
@@ -683,6 +706,7 @@
 			ocr && !(en && b.hi_only_ocr) ? h("p", { class: "ocr-note", lang: en ? "en" : "hi" }, ocr) : null,
 			en ? enNote(b) : b.en_note ? h("p", { class: "ocr-note", lang: "en" }, b.en_note) : null,
 			chapterEnBox(b, doc),
+			summaryBox(b, doc),
 			doc.items.some((x) => (x.text || x.p || x.poem) && !x.en && !x.en_ref) ? gtChapterLink(b, doc) : null,
 			doc.note ? h("p", { class: "ocr-note" }, en ? toEn(doc.note) : doc.note) : null);
 		// in one-verse or page mode the reader covers the screen, so the long list is not built behind it
@@ -901,6 +925,7 @@
 					h("a", { class: "where", href: "#/" + b.id, title: T("सूची पर जाएँ · Back to contents", "Back to the contents") }, h("b", { class: !EN() && b.script === "sa" ? "sa" : null }, bTitle(b)),
 						h("span", null, chapterTitle(b, ch.meta) + (ch.toc.chapters.length > 1 ? " · " + (EN() ? (b.unit || b.purana ? "Ch. " : "Part ") + (ch.index + 1) + " of " + ch.toc.chapters.length : dev(ch.index + 1) + "/" + dev(ch.toc.chapters.length)) : ""))),
 					goToBox(b, ch.toc, n, true),
+					ch.doc.en_summary ? h("button", { class: "chip en-btn", title: "Chapter summary (English)", onclick: () => openSummary(ch.doc) }, "Summary") : null,
 					hasChapterEn(ch.doc) ? h("button", { class: "chip en-btn", title: "English translation of this chapter", onclick: () => openChapterEn(b, ch.doc) }, "English") : null,
 					h("button", { class: "ibtn", "aria-label": T("Whole chapter · पूरा अध्याय", "Whole chapter"), title: T("Whole chapter · पूरा अध्याय", "Whole chapter"), onclick: toWhole }, svg(ICON.scroll)),
 					h("button", { class: "ibtn aa", "aria-label": T("अक्षर, दूरी और रंग · Text size, spacing and colours", "Text size, spacing and colours"), title: T("अक्षर, दूरी और रंग · Text size, spacing and colours", "Text size, spacing and colours"), onclick: openSettings }, "Aa")),
