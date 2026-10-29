@@ -120,10 +120,11 @@
   {
    "id": "bhavishya-purana", "purana": true, "title": "भविष्यपुराणम्", "title_en": "Bhavishya Purana", "by": "वेदव्यास",
    "desc": "All four parvas: Brahma (216 chapters), Madhyama (3 parts, 61), Pratisarga (4 khandas, 100) and Uttara (208), in Sanskrit with Roman transliteration, from Sanskrit Wikisource; complete.",
-   "script": "sa", "kind": "verse", "unit": "", "verse": "श्लोक", "layers": {"text": "संस्कृत", "tr": "Roman"},
+   "script": "sa", "kind": "verse", "unit": "", "verse": "श्लोक", "layers": {"text": "संस्कृत", "tr": "Roman", "en": "English"},
    "recite": true, "no_search": true,
    "ocr_note": "This text is typed on Sanskrit Wikisource and has not been checked against a printed edition there; a few typing errors may remain. Verse breaks follow the verse numbers in the source.",
-   "sources": ["sa-puranas"]
+   "en_note": "Machine translation, not proofread: these English meanings were written by an AI model (Claude) directly from the Sanskrit for this reader. They are not a scholarly translation. Only some chapters have English so far; the rest show transliteration with a Google Translate link.",
+   "sources": ["sa-puranas", "claude-en"]
   },
   {
    "id": "padma-purana", "purana": true, "title": "पद्मपुराणम्", "title_en": "Padma Purana", "by": "वेदव्यास",
