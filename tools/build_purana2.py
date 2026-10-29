@@ -1,0 +1,97 @@
+"""Build any Purana from Sanskrit Wikisource, part by part.
+
+Each part is (label, prefix). Its chapters are the pages directly under the prefix. They are put
+in order by the number in the title ("अध्यायः १२"); when titles are Sanskrit ordinals
+("द्वादशोऽध्यायः"), the order of links on the part's contents page is used instead. When one chapter
+exists on two pages, the longer page is kept. Words are used as on Wikisource.
+Usage: python3 tools/build_purana2.py <book id>
+"""
+import json, os, re, sys, urllib.parse
+sys.path.insert(0, os.path.dirname(__file__))
+from wiki import api, wikitext, ROOT
+from build_purana import chapter_items, HOST, dev, undev
+
+P = "पुराणम्"
+CONFIG = {
+    "vamana-purana": [("वामनपुराणम्", "वामनपुराणम्/")],
+    "kurma-purana": [("पूर्वभाग · Purva bhaga", "कूर्मपुराणम्-पूर्वभागः/"), ("उत्तरभाग · Uttara bhaga", "कूर्मपुराणम्-उत्तरभागः/")],
+    "matsya-purana": [("मत्स्यपुराणम्", "मत्स्यपुराणम्/")],
+    "linga-purana": [("लिङ्गपुराणम्", "लिङ्गपुराणम्/")],
+    "narada-purana": [("नारदपुराणम्", "नारदपुराणम्/")],
+    "agni-purana": [("अग्निपुराणम्", "अग्निपुराणम्/")],
+    "brahmanda-purana": [("पूर्वभाग · Purva bhaga", "ब्रह्माण्डपुराणम्/पूर्वभागः/"), ("मध्यभाग · Madhya bhaga", "ब्रह्माण्डपुराणम्/मध्यभागः/"),
+                         ("उत्तरभाग · Uttara bhaga", "ब्रह्माण्डपुराणम्/उत्तरभागः/")],
+    "varaha-purana": [("वराहपुराणम्", "वराहपुराणम्/")],
+    "brahma-purana": [("ब्रह्मपुराणम्", "ब्रह्मपुराणम्/")],
+}
+NUM = re.compile(r"अध्याया?ः\s*([०-९0-9]+)\s*$")
+
+
+def subpages(prefix):
+    ts, cont = [], {}
+    while True:
+        d = api(HOST, action="query", list="allpages", apprefix=prefix, aplimit=500, **cont)
+        ts += [x["title"] for x in d["query"]["allpages"]]
+        if "continue" not in d:
+            return ts
+        cont = {"apcontinue": d["continue"]["apcontinue"]}
+
+
+def part_chapters(prefix):
+    pages = [t for t in subpages(prefix) if "/" not in t[len(prefix):] and "ध्याय" in t and "अनुक्रमणिका" not in t]
+    numbered = {t: undev(NUM.search(t).group(1)) for t in pages if NUM.search(t)}
+    if len(numbered) >= 0.8 * len(pages):
+        order = sorted(numbered.items(), key=lambda x: x[1])
+        rest = [t for t in pages if t not in numbered]
+    else:
+        idx = wikitext(HOST, prefix.rstrip("/")) or ""
+        links = []
+        for l in re.findall(r"\[\[([^\]|#]+)", idx):
+            l = l.strip().replace("_", " ")
+            if l.startswith("/"):
+                l = prefix.rstrip("/") + l
+            if l in pages and l not in links:
+                links.append(l)
+        ordinal = [t for t in links if t not in numbered]
+        order = [(t, i + 1) for i, t in enumerate(ordinal)] + [(t, numbered[t]) for t in links if t in numbered]
+        rest = [t for t in pages if t not in links]
+    best = {}
+    for t, n in order:
+        if n not in best or len(wikitext(HOST, t) or "") > len(wikitext(HOST, best[n]) or ""):
+            best[n] = t
+    return sorted(best.items()), rest
+
+
+def main(bid):
+    parts = CONFIG[bid]
+    out = os.path.join(ROOT, "data", bid)
+    os.makedirs(out, exist_ok=True)
+    for f in os.listdir(out):
+        os.remove(os.path.join(out, f))
+    toc, k, total = [], 0, 0
+    for pt, (label, prefix) in enumerate(parts, 1):
+        chs, rest = part_chapters(prefix)
+        nums = [n for n, _ in chs]
+        missing = [n for n in range(1, max(nums) + 1) if n not in nums] if nums else []
+        print(f"{bid} part {pt} ({label}): {len(chs)} chapters; missing numbers {missing[:20]}{'…' if len(missing) > 20 else ''}; unplaced pages {len(rest)}")
+        for ad, t in chs:
+            k += 1
+            items = chapter_items(t, k)
+            nv = sum(1 for x in items if "text" in x)
+            total += nv
+            fname = f"{pt:02}-{ad:03}.json"
+            src = "https://sa.wikisource.org/wiki/" + urllib.parse.quote(t.replace(" ", "_"))
+            title = (label.split(" · ")[0] + " · " if len(parts) > 1 else "") + f"अध्याय {dev(ad)}"
+            json.dump({"book": bid, "n": k, "title": title, "src": src, "items": items},
+                      open(os.path.join(out, fname), "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
+            first = next((x["text"].split("\n")[0] for x in items if "text" in x), "")
+            c = {"n": k, "file": fname, "label": f"{pt}.{ad}" if len(parts) > 1 else str(ad), "title": title, "first": first[:60], "count": nv}
+            if len(parts) > 1:
+                c["group"] = label
+            toc.append(c)
+    json.dump({"book": bid, "chapters": toc}, open(os.path.join(out, "index.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    print(f"{bid}: {len(toc)} chapters, {total} verses")
+
+
+if __name__ == "__main__":
+    main(sys.argv[1])

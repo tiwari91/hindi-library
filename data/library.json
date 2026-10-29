@@ -83,6 +83,14 @@
    "sources": ["premchand"]
   },
   {
+   "id": "vamana-purana", "purana": true, "title": "वामनपुराणम्", "title_en": "Vamana Purana", "by": "वेदव्यास",
+   "desc": "96 chapters in Sanskrit with Roman transliteration, from Sanskrit Wikisource; complete as given there.",
+   "script": "sa", "kind": "verse", "unit": "", "verse": "श्लोक", "layers": {"text": "संस्कृत", "tr": "Roman"},
+   "recite": true, "no_search": true,
+   "ocr_note": "This text is typed on Sanskrit Wikisource and has not been checked against a printed edition there; a few typing errors may remain. Verse breaks follow the verse numbers in the source.",
+   "sources": ["sa-puranas"]
+  },
+  {
    "id": "shiva-purana",
    "purana": true,
    "title": "शिवपुराणम्",
@@ -275,13 +283,21 @@
   {"title": "लिङ्ग पुराण", "title_en": "Linga Purana"},
   {"title": "वराह पुराण", "title_en": "Varaha Purana"},
   {"title": "स्कन्द पुराण", "title_en": "Skanda Purana"},
-  {"title": "वामन पुराण", "title_en": "Vamana Purana"},
+  {"title": "वामन पुराण", "title_en": "Vamana Purana", "book": "vamana-purana"},
   {"title": "कूर्म पुराण", "title_en": "Kurma Purana"},
   {"title": "मत्स्य पुराण", "title_en": "Matsya Purana"},
   {"title": "गरुड पुराण", "title_en": "Garuda Purana", "book": "garuda-purana"},
   {"title": "ब्रह्माण्ड पुराण", "title_en": "Brahmanda Purana"}
  ],
  "sources": {
+  "sa-puranas": {
+   "title": "Puranas — Sanskrit Wikisource",
+   "where": "Sanskrit Wikisource (sa.wikisource.org), the chapter pages of each Purana",
+   "url": "https://sa.wikisource.org/wiki/%E0%A4%B5%E0%A4%B0%E0%A5%8D%E0%A4%97%E0%A4%83:%E0%A4%AA%E0%A5%81%E0%A4%B0%E0%A4%BE%E0%A4%A3%E0%A4%BE%E0%A4%A8%E0%A4%BF",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "note": "The traditional Sanskrit texts are public domain. Text is used as typed on Wikisource (not checked against print); each chapter links to its page. Chapters are put in order by the number in the page title, or by the order of the Purana's contents page where titles are Sanskrit ordinals; where a chapter exists on two pages the longer one is used. Verse breaks follow the verse numbers in the source; the Roman transliteration is made by a fixed rule. What is missing from each Purana is stated in its description."
+  },
   "sa-shiva-purana": {
    "title": "शिवपुराणम् — Sanskrit Wikisource",
    "where": "Sanskrit Wikisource (sa.wikisource.org)",

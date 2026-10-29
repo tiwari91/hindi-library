@@ -218,7 +218,7 @@
 		frag.push(h("ul", { class: "puranas" }, LIB.puranas.map((p) => {
 			const b = p.book && bookById(p.book);
 			return h("li", null, b
-				? h("a", { class: "pchip", href: "#/" + b.id, title: p.title_en }, h("span", { class: "sa" }, p.title), h("small", null, "read"))
+				? h("a", { class: "pchip", href: "#/" + b.id, title: p.title_en + (p.partial ? " (partial: " + p.partial + ")" : "") }, h("span", { class: "sa" }, p.title), h("small", null, p.partial ? "partial" : "read"))
 				: h("span", { class: "pchip soon", title: p.title_en + " (coming)" }, h("span", { class: "sa" }, p.title), h("small", null, "coming")));
 		})));
 		view.replaceChildren(...frag);
