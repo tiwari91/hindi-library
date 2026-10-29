@@ -199,7 +199,8 @@
 				h("span", null, "पढ़ना जारी रखें · Continue: ", h("b", null, lb.title), " — ", (lb.unit || "") + " " + dev(L.n)), "→"));
 		}
 		for (const f of homeExtras) { const el = await f(); if (el) frag.push(el); }
-		const groups = [["ग्रंथ · Books", books().filter((b) => !b.purana && !b.hidden)]];
+		const shown = books().filter((b) => !b.purana && !b.hidden);
+		const groups = [["ग्रंथ · Books", shown.filter((b) => b.shelf !== "stotra")], ["स्तोत्र · Stotras and chants", shown.filter((b) => b.shelf === "stotra")]];
 		for (const [label, list] of groups) {
 			frag.push(h("h2", { class: "shelf" }, label));
 			frag.push(h("ul", { class: "books" }, list.map((b) => h("li", null, bookCard(b)))));
@@ -214,8 +215,8 @@
 		view.replaceChildren(...frag);
 	}
 	function bookCard(b) {
-		const href = b.open ? "#/" + b.open : "#/" + b.id;
-		return h("a", { class: "card", href },
+		const href = b.link || (b.open ? "#/" + b.open : "#/" + b.id);
+		return h("a", { class: "card", href, rel: b.link ? "noopener" : null },
 			h("span", { class: "t" + (b.script === "sa" ? " sa" : "") }, b.title),
 			h("span", { class: "go", "aria-hidden": "true" }, "→"),
 			h("span", { class: "e" }, b.title_en, b.by ? " · " + b.by : ""),

@@ -75,6 +75,13 @@ http://localhost:8000/.
   book that way), "Go to" a chapter or verse, "Hide meaning until I tap" (in settings), text size
   and arrow keys.
 
+- **Stotras.** [tiwari91/stotra-reader](https://github.com/tiwari91/stotra-reader) (checked at
+  commit `6dbb6f7`) takes its text from sanskritdocuments.org, whose files say they are "not to
+  be copied or reposted ... without permission". So its text was **not** copied. Instead the
+  Vishnu, Lalita and Shiva Sahasranamas are built from Sanskrit Wikisource
+  (`tools/build_stotras.py`), and the Hanuman Chalisa card links to the stotra reader. Its recite
+  mode and 108-bead mala counter are reader features here: set `"recite": true, "mala": true`.
+
 ## Licence
 
 Text content is shared under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/),

@@ -76,6 +76,64 @@
    "kind": "prose",
    "unit": "",
    "sources": ["premchand"]
+  },
+  {
+   "id": "vishnu-sahasranama",
+   "shelf": "stotra",
+   "title": "श्रीविष्णुसहस्रनामस्तोत्रम्",
+   "title_en": "Vishnu Sahasranama",
+   "by": "महाभारत, अनुशासन पर्व",
+   "desc": "The thousand names of Vishnu: opening verses, nyāsa, dhyānam, the 108-verse stotram and the closing verses, in Sanskrit with Roman transliteration. Recite mode with a mala counter.",
+   "script": "sa",
+   "kind": "verse",
+   "unit": "",
+   "verse": "श्लोक",
+   "layers": {"text": "संस्कृत", "tr": "Roman"},
+   "recite": true,
+   "mala": true,
+   "sources": ["sa-vishnu"]
+  },
+  {
+   "id": "lalita-sahasranama",
+   "shelf": "stotra",
+   "title": "श्रीललितासहस्रनामस्तोत्रम्",
+   "title_en": "Lalita Sahasranama",
+   "by": "ब्रह्माण्डपुराण, उत्तरखण्ड",
+   "desc": "The thousand names of Lalitā, with the opening dialogue of Hayagrīva and Agastya, in Sanskrit with Roman transliteration. Recite mode with a mala counter.",
+   "script": "sa",
+   "kind": "verse",
+   "unit": "",
+   "verse": "श्लोक",
+   "layers": {"text": "संस्कृत", "tr": "Roman"},
+   "recite": true,
+   "mala": true,
+   "ocr_note": "This text is typed on Sanskrit Wikisource and has not been checked against a printed edition there; a few typing errors may remain. यह पाठ विकिस्रोत पर टाइप किया हुआ है; कहीं-कहीं टाइपिंग की भूल हो सकती है।",
+   "sources": ["sa-lalita"]
+  },
+  {
+   "id": "shiva-sahasranama",
+   "shelf": "stotra",
+   "title": "श्रीशिवसहस्रनामस्तोत्रम्",
+   "title_en": "Shiva Sahasranama",
+   "by": "महाभारत, अनुशासन पर्व, अध्याय १७ (बृहत्स्तोत्ररत्नाकर)",
+   "desc": "The thousand names of Shiva as taught by Upamanyu to Krishna, all 182 ślokas, in Sanskrit with Roman transliteration. Recite mode with a mala counter.",
+   "script": "sa",
+   "kind": "verse",
+   "unit": "",
+   "verse": "श्लोक",
+   "layers": {"text": "संस्कृत", "tr": "Roman"},
+   "recite": true,
+   "mala": true,
+   "sources": ["sa-shiva"]
+  },
+  {
+   "id": "hanuman-chalisa",
+   "shelf": "stotra",
+   "title": "हनुमान चालीसा",
+   "title_en": "Hanuman Chalisa",
+   "by": "गोस्वामी तुलसीदास",
+   "desc": "Opens in the separate Stotra Reader. No openly licensed copy of the text was found to republish here.",
+   "link": "https://tiwari91.github.io/stotra-reader/#hc"
   }
  ],
  "puranas": [
@@ -99,6 +157,30 @@
   {"title": "ब्रह्माण्ड पुराण", "title_en": "Brahmanda Purana"}
  ],
  "sources": {
+  "sa-vishnu": {
+   "title": "श्रीविष्णुसहस्रनामस्तोत्रम् — Sanskrit Wikisource",
+   "where": "Sanskrit Wikisource (sa.wikisource.org)",
+   "url": "https://sa.wikisource.org/wiki/%E0%A4%B6%E0%A5%8D%E0%A4%B0%E0%A5%80%E0%A4%B5%E0%A4%BF%E0%A4%B7%E0%A5%8D%E0%A4%A3%E0%A5%81%E0%A4%B8%E0%A4%B9%E0%A4%B8%E0%A5%8D%E0%A4%B0%E0%A4%A8%E0%A4%BE%E0%A4%AE%E0%A4%B8%E0%A5%8D%E0%A4%A4%E0%A5%8B%E0%A4%A4%E0%A5%8D%E0%A4%B0%E0%A4%AE%E0%A5%8D%E2%80%8C",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "note": "The traditional text is public domain. The Wikisource page notes that it was converted from the ITRANS version at sanskritdocuments.org. Verses, headings and numbers are as on that page; the Roman transliteration is made by a fixed rule."
+  },
+  "sa-lalita": {
+   "title": "श्री ललितासहस्रनामस्तोत्रम् — Sanskrit Wikisource",
+   "where": "Sanskrit Wikisource (sa.wikisource.org)",
+   "url": "https://sa.wikisource.org/wiki/%E0%A4%B6%E0%A5%8D%E0%A4%B0%E0%A5%80_%E0%A4%B2%E0%A4%B2%E0%A4%BF%E0%A4%A4%E0%A4%BE%E0%A4%B8%E0%A4%B9%E0%A4%B8%E0%A5%8D%E0%A4%B0%E0%A4%A8%E0%A4%BE%E0%A4%AE%E0%A4%B8%E0%A5%8D%E0%A4%A4%E0%A5%8B%E0%A4%A4%E0%A5%8D%E0%A4%B0%E0%A4%AE%E0%A5%8D",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "note": "The traditional text (Brahmāṇḍa Purāṇa) is public domain. This is the typed text on Wikisource, used as it stands, so a few typing errors may remain. The source does not number the verses."
+  },
+  "sa-shiva": {
+   "title": "शिवसहस्रनामस्तोत्रम् — बृहत्स्तोत्ररत्नाकरः (प्रथमः भागः), 1953",
+   "where": "Sanskrit Wikisource transcription of the scanned book, pages validated by Wikisource volunteers",
+   "url": "https://sa.wikisource.org/wiki/%E0%A4%B6%E0%A4%BF%E0%A4%B5%E0%A4%B8%E0%A4%B9%E0%A4%B8%E0%A5%8D%E0%A4%B0%E0%A4%A8%E0%A4%BE%E0%A4%AE%E0%A4%B8%E0%A5%8D%E0%A4%A4%E0%A5%8B%E0%A4%A4%E0%A5%8D%E0%A4%B0%E0%A4%AE%E0%A5%8D",
+   "licence": "Traditional text, public domain; Wikisource transcription CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "note": "Mahābhārata, Anuśāsana Parva, chapter 17, as printed in the Bṛhat Stotra Ratnākara. All 182 ślokas; the opening dhyāna verse and speaker lines are as in the book."
+  },
   "premchand": {
    "title": "मानसरोवर, भाग १ और २ — प्रेमचंद",
    "where": "Hindi Wikisource transcriptions of the Mansarovar volumes (Saraswati Press, Banaras)",
