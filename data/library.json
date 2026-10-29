@@ -123,6 +123,14 @@
    "sources": ["sa-puranas"]
   },
   {
+   "id": "padma-purana", "purana": true, "title": "पद्मपुराणम्", "title_en": "Padma Purana", "by": "वेदव्यास",
+   "desc": "All seven khandas: Srishti (82 chapters), Bhumi (125), Svarga (62), Brahma (26), Patala (117), Uttara (255) and Kriya (26), in Sanskrit with Roman transliteration, from Sanskrit Wikisource; complete.",
+   "script": "sa", "kind": "verse", "unit": "", "verse": "श्लोक", "layers": {"text": "संस्कृत", "tr": "Roman"},
+   "recite": true, "no_search": true,
+   "ocr_note": "This text is typed on Sanskrit Wikisource and has not been checked against a printed edition there; a few typing errors may remain. Verse breaks follow the verse numbers in the source.",
+   "sources": ["sa-puranas"]
+  },
+  {
    "id": "varaha-purana", "purana": true, "title": "वराहपुराणम्", "title_en": "Varaha Purana", "by": "वेदव्यास",
    "desc": "218 chapters in Sanskrit with Roman transliteration, from Sanskrit Wikisource; complete.",
    "script": "sa", "kind": "verse", "unit": "", "verse": "श्लोक", "layers": {"text": "संस्कृत", "tr": "Roman"},
@@ -351,7 +359,7 @@
  ],
  "puranas": [
   {"title": "ब्रह्म पुराण", "title_en": "Brahma Purana", "book": "brahma-purana"},
-  {"title": "पद्म पुराण", "title_en": "Padma Purana"},
+  {"title": "पद्म पुराण", "title_en": "Padma Purana", "book": "padma-purana"},
   {"title": "विष्णु पुराण", "title_en": "Vishnu Purana", "book": "vishnu-purana"},
   {"title": "शिव पुराण", "title_en": "Shiva Purana", "book": "shiva-purana"},
   {"title": "श्रीमद्भागवत पुराण", "title_en": "Bhagavata Purana", "book": "bhagavata"},
