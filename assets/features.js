@@ -6,7 +6,7 @@
 	if (!HL) return;
 	const { S, save, h, svg, ICON, dev, toast, getJSON, toc, chapter, bookById, verseUrl, toolMakers, homeExtras, routes } = HL;
 	const view = document.getElementById("view");
-	const readable = () => HL.books().filter((b) => !b.link && !b.hidden);
+	const readable = () => HL.books().filter((b) => !b.link && !b.hidden && !b.no_search);
 	document.getElementById("nav-search").hidden = false;
 	document.getElementById("nav-saved").hidden = false;
 
@@ -81,7 +81,7 @@
 		view.replaceChildren(h("section", { class: "hero" },
 			h("p", { class: "eyebrow" }, h("a", { href: "#/" }, "पुस्तकालय"), " · Search"),
 			h("h1", null, "खोजें · Search"),
-			h("p", { class: "lede" }, "Search every book. Type in Devanagari (धर्म) or in English letters (dharma, krishna).")), form, status, out);
+			h("p", { class: "lede" }, "Search every book (except the Bhagavata Purana, which is too large to search on a phone). Type in Devanagari (धर्म) or in English letters (dharma, krishna).")), form, status, out);
 		if (!q0) { input.focus(); return; }
 		status.textContent = "खोज रहे हैं… Searching…";
 		const rows = await buildIndex((d, n) => { status.textContent = "Loading books " + d + "/" + n + "…"; });

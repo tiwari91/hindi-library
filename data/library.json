@@ -79,6 +79,23 @@
    "sources": ["premchand"]
   },
   {
+   "id": "bhagavata",
+   "purana": true,
+   "title": "श्रीमद्भागवतपुराणम्",
+   "title_en": "Bhagavata Purana",
+   "by": "वेदव्यास",
+   "desc": "All 12 skandhas, 335 chapters, in Sanskrit with Roman transliteration, from Sanskrit Wikisource. No free Hindi meaning was found, so the original only.",
+   "script": "sa",
+   "kind": "verse",
+   "unit": "",
+   "verse": "श्लोक",
+   "layers": {"text": "संस्कृत", "tr": "Roman"},
+   "recite": true,
+   "no_search": true,
+   "ocr_note": "This text is typed on Sanskrit Wikisource and has not been checked against a printed edition there; a few typing errors may remain. Verse breaks follow the verse numbers in the source.",
+   "sources": ["sa-bhagavata"]
+  },
+  {
    "id": "chanakya-niti",
    "title": "चाणक्यनीतिः",
    "title_en": "Chanakya Niti",
@@ -157,7 +174,7 @@
   {"title": "पद्म पुराण", "title_en": "Padma Purana"},
   {"title": "विष्णु पुराण", "title_en": "Vishnu Purana"},
   {"title": "शिव पुराण", "title_en": "Shiva Purana"},
-  {"title": "श्रीमद्भागवत पुराण", "title_en": "Bhagavata Purana"},
+  {"title": "श्रीमद्भागवत पुराण", "title_en": "Bhagavata Purana", "book": "bhagavata"},
   {"title": "नारद पुराण", "title_en": "Narada Purana"},
   {"title": "मार्कण्डेय पुराण", "title_en": "Markandeya Purana"},
   {"title": "अग्नि पुराण", "title_en": "Agni Purana"},
@@ -173,6 +190,14 @@
   {"title": "ब्रह्माण्ड पुराण", "title_en": "Brahmanda Purana"}
  ],
  "sources": {
+  "sa-bhagavata": {
+   "title": "श्रीमद्भागवतपुराणम् — Sanskrit Wikisource",
+   "where": "Sanskrit Wikisource (sa.wikisource.org)",
+   "url": "https://sa.wikisource.org/wiki/%E0%A4%B6%E0%A5%8D%E0%A4%B0%E0%A5%80%E0%A4%AE%E0%A4%A6%E0%A5%8D%E0%A4%AD%E0%A4%BE%E0%A4%97%E0%A4%B5%E0%A4%A4%E0%A4%AA%E0%A5%81%E0%A4%B0%E0%A4%BE%E0%A4%A3%E0%A4%AE%E0%A5%8D",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "note": "The traditional Sanskrit text is public domain. Taken from the chapter pages ‘श्रीमद्भागवतपुराणम्/स्कन्धः N/अध्यायः M’; each chapter links to its page. The Roman transliteration is made by a fixed rule. No Hindi meaning is given: the Gita Press Hindi edition is under copyright and is not used."
+  },
   "sa-chanakya": {
    "title": "चाणक्यनीतिः — Sanskrit Wikisource",
    "where": "Sanskrit Wikisource (sa.wikisource.org)",

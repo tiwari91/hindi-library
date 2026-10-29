@@ -31,7 +31,7 @@ def clean_wiki(text):
     return [l.strip() for l in text.split("\n")]
 
 
-NUM_END = re.compile(r"[॥|।]\s*[०-९0-9]+\s*(॥|।।)?\s*$")
+NUM_END = re.compile(r"([॥|।]\s*[०-९0-9]+\s*(॥|।।)?|\s[०-९]+\s*[।॥])\s*$")
 
 
 def verses(lines, chap, numbered=False):
@@ -46,7 +46,7 @@ def verses(lines, chap, numbered=False):
             return
         k += 1
         text = "\n".join(buf)
-        m = re.search(r"([०-९0-9]+)\s*(॥|।।)?\s*$", buf[-1])
+        m = re.search(r"([०-९0-9]+)\s*(॥|।।|।)?\s*$", buf[-1])
         it = {"id": f"{chap}.{k}"}
         if m:
             it["n"] = dev(undev(m.group(1)))

@@ -238,11 +238,11 @@
 			if (c) parts.push(h("a", { class: "resume", href: L.id ? verseUrl(b, L.n, L.id) : "#/" + b.id + "/" + L.n },
 				h("span", null, "जहाँ छोड़ा था वहीं से · Continue: ", h("b", null, chapterTitle(b, c))), "→"));
 		}
-		parts.push(h("ul", { class: "toc" + (b.script === "sa" ? " sa" : "") }, t.chapters.map((c) => h("li", { class: L && String(L.n) === String(c.n) ? "here" : null },
+		parts.push(h("ul", { class: "toc" + (b.script === "sa" ? " sa" : "") }, t.chapters.map((c, i) => [c.group && c.group !== (t.chapters[i - 1] || {}).group ? h("li", { class: "grp" }, c.group) : null, h("li", { class: L && String(L.n) === String(c.n) ? "here" : null },
 			h("a", { href: "#/" + b.id + "/" + c.n },
 				h("span", { class: "n" }, dev(c.label || c.n)),
 				h("span", { class: "nm" }, h("span", { class: "dv" }, c.title), c.first ? h("span", { class: "fl" }, c.first) : null, c.title_tr ? h("span", { class: "tr" }, c.title_tr) : null, c.title_en ? h("span", { class: "tr" }, c.title_en) : null),
-				c.count ? h("span", { class: "ct" }, dev(c.count) + (b.kind === "prose" ? "" : " " + (b.verse || ""))) : null)))));
+				c.count ? h("span", { class: "ct" }, dev(c.count) + (b.kind === "prose" ? "" : " " + (b.verse || ""))) : null))]).flat()));
 		if (b.sources) parts.push(h("p", { class: "note" }, "स्रोत · Sources: ", h("a", { href: "#/sources" }, b.sources.map((s) => LIB.sources[s] ? LIB.sources[s].where.split(" (")[0] : s).join(", "))));
 		view.replaceChildren(...parts);
 	}

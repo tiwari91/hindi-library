@@ -422,6 +422,7 @@ body[data-hide-note="1"] .note { display: none; }
 	font-size: .9rem; box-shadow: 0 8px 24px -8px var(--shadow); pointer-events: none; max-width: calc(100vw - 32px);
 }
 .empty { color: var(--ink-2); padding: 2rem 0; }
+.toc li.grp { font-family: var(--f-hi); font-weight: 600; color: var(--accent); padding: 1.2rem 0 .3rem; border: 0; }
 
 /* search and saved verses */
 .searchbox { display: flex; gap: 6px; margin: .4rem 0 .6rem; }
