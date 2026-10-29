@@ -422,6 +422,28 @@ body[data-hide-note="1"] .note { display: none; }
 	font-size: .9rem; box-shadow: 0 8px 24px -8px var(--shadow); pointer-events: none; max-width: calc(100vw - 32px);
 }
 .empty { color: var(--ink-2); padding: 2rem 0; }
+
+/* search and saved verses */
+.searchbox { display: flex; gap: 6px; margin: .4rem 0 .6rem; }
+.searchbox input {
+	flex: 1; min-width: 0; min-height: 44px; padding: 0 .9rem; border-radius: 14px; border: 1px solid var(--rule);
+	background: var(--surface); color: var(--ink); font: inherit; font-size: 1rem;
+}
+.results { list-style: none; margin: .4rem 0 2rem; padding: 0; }
+.results li { border-bottom: 1px solid var(--rule); display: flex; align-items: center; gap: .5rem; }
+.results li > a { flex: 1; min-width: 0; display: grid; gap: .15rem; padding: .8rem 0; text-decoration: none; color: var(--ink); }
+.results .rb { font-size: .8rem; color: var(--accent); }
+.results .rt { font-family: var(--f-hi); font-size: calc(1rem * var(--scale)); line-height: 1.6; overflow-wrap: anywhere; }
+.results li.empty { display: block; border: 0; }
+.vtools .ibtn[aria-pressed="true"] { color: var(--accent); }
+.vtools .ibtn.mark[aria-pressed="true"] svg { fill: currentColor; }
+
+/* verse of the day */
+.votd { margin: .4rem 0 1.4rem; padding: 1rem 1.1rem; border: 1px solid var(--rule); border-radius: 16px; background: var(--surface); }
+.votd .eyebrow { margin: 0 0 .5rem; }
+.votd .sa-text { white-space: pre-line; margin: 0 0 .6rem; }
+.votd-hi { font-family: var(--f-hi); color: var(--ink-2); margin: 0 0 .6rem; font-size: calc(.98rem * var(--scale)); line-height: 1.7; }
+.votd a { font-size: .9rem; }
 .loading { color: var(--ink-2); padding: 3rem 0; text-align: center; }
 footer.site { max-width: 42rem; margin: 0 auto; padding: 0 16px 3rem; font-size: .85rem; color: var(--ink-2); }
 footer.site a { color: var(--ink-2); }
