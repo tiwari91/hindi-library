@@ -452,7 +452,7 @@
   },
   "sa-parashara": {
    "title": "पराशरस्मृतिः — संस्कृत पाठ (Sanskrit text)",
-   "where": "Sanskrit Wikisource (sa.wikisource.org), via the Parāśara Smṛti reader (github.com/tiwari91/parashara-smriti, commit 7636992)",
+   "where": "Sanskrit Wikisource (sa.wikisource.org), via the former Parāśara Smṛti reader (tiwari91/parashara-smriti, commit 7636992; that repository has been retired and this site is now the home of the text)",
    "url": "https://sa.wikisource.org/wiki/%E0%A4%AA%E0%A4%B0%E0%A4%BE%E0%A4%B6%E0%A4%B0%E0%A4%B8%E0%A5%8D%E0%A4%AE%E0%A5%83%E0%A4%A4%E0%A4%BF%E0%A4%83",
    "licence": "CC BY-SA 4.0",
    "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
@@ -460,8 +460,8 @@
   },
   "parashara-en": {
    "title": "Parāśara Smṛti — plain-English meanings",
-   "where": "Written for the parashara-smriti reader (github.com/tiwari91/parashara-smriti)",
-   "url": "https://github.com/tiwari91/parashara-smriti",
+   "where": "Written for the former parashara-smriti reader (now retired); kept in this site's data/parashara folder",
+   "url": "https://github.com/tiwari91/hindi-library/tree/main/data/parashara",
    "licence": "CC BY-SA 4.0",
    "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
    "note": "Plain renderings written with Claude directly from the Sanskrit for that reader. They are not a scholarly translation and are not taken from any published translation; check a printed edition before relying on a point of law or ritual."

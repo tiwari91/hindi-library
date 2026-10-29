@@ -72,9 +72,10 @@ http://localhost:8000/.
 
 ## Books imported from other readers
 
-- **Parāśara Smṛti** (`data/parashara/`): all 583 ślokas, copied from
-  [tiwari91/parashara-smriti](https://github.com/tiwari91/parashara-smriti) at commit `7636992`
-  with `python3 tools/import_parashara.py <clone>`. Sanskrit from Sanskrit Wikisource (CC BY-SA
+- **Parāśara Smṛti** (`data/parashara/`): all 583 ślokas, copied from the former
+  `tiwari91/parashara-smriti` reader at its commit `7636992` with
+  `python3 tools/import_parashara.py <clone>`. That repository has since been retired, so this
+  copy is now the home of the text; there is nothing upstream to re-sync from. Sanskrit from Sanskrit Wikisource (CC BY-SA
   4.0); the English meanings were written with Claude for that reader and are labelled as such.
   Its reader features live on here for every book: one verse at a time (now the default for
   every verse book; the reader can switch to the whole chapter in settings), "Go to" a chapter or

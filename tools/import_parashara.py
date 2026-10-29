@@ -1,4 +1,5 @@
-"""Import the Parashara Smriti from a clone of github.com/tiwari91/parashara-smriti.
+"""Import the Parashara Smriti from a clone of the former tiwari91/parashara-smriti repo
+(imported at commit 7636992; that repo is now retired, so this script is kept only as a record).
 
 Usage: python3 tools/import_parashara.py <path to parashara-smriti clone>
 Reads data/sa.json (Sanskrit, from sa.wikisource, CC BY-SA 4.0) and data/translations/out_*.json
