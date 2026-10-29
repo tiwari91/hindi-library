@@ -97,7 +97,7 @@ def main():
     titles = stories()
     used, skipped = [], []
     for t in titles:
-        name = re.sub(r"^[०-९0-9]+\s*", "", t.split("/", 1)[1]).strip()
+        name = re.sub(r"^[०-९0-9]+\s*", "", t.split("/", 1)[1]).strip(" ‌‍")
         if name in ("विषय-सूची", "भूमिका", "सूची"):
             continue
         pages = transcluded_pages(t)
@@ -121,8 +121,8 @@ def main():
                 items.append({"id": str(k), "poem": text})
             else:
                 # proofreaders often keep the scan's line breaks; a line ending in "-" continues the word
-                t = re.sub(r"-\n", "-", text)
-                items.append({"id": str(k), "p": re.sub(r"\s*\n\s*", " ", t)})
+                para = re.sub(r"-\n", "-", text)
+                items.append({"id": str(k), "p": re.sub(r"\s*\n\s*", " ", para)})
         if len(items) < 5:
             skipped.append((name, "too short", len(pages)))
             continue
@@ -133,7 +133,7 @@ def main():
         fname = f"{i:02}.json"
         vol = t.split("/")[0]
         src = WIKI + urllib.parse.quote(t.replace(" ", "_"))
-        doc = {"book": "premchand", "n": i, "title": name, "src": src, "note": f"‘{vol}’ (सरस्वती प्रेस, बनारस) से · From {vol} on Hindi Wikisource", "items": items}
+        doc = {"book": "premchand", "n": i, "title": name, "src": src, "note": f"‘{vol}’ (सरस्वती प्रेस, बनारस) से। विकिस्रोत पर जाँचा हुआ पाठ; कहीं-कहीं छपाई की भूल रह सकती है। · From {vol} on Hindi Wikisource (proofread there; a few print errors may remain).", "items": items}
         with open(os.path.join(outdir, fname), "w", encoding="utf-8") as f:
             json.dump(doc, f, ensure_ascii=False, separators=(",", ":"))
         words = sum(len((x.get("p") or x.get("poem") or "").split()) for x in items)

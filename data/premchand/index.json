@@ -1,0 +1,365 @@
+{
+ "book": "premchand",
+ "chapters": [
+  {
+   "n": 1,
+   "file": "01.json",
+   "title": "अनुभव",
+   "first": "मानसरोवर १",
+   "count": null,
+   "words": 2337
+  },
+  {
+   "n": 2,
+   "file": "02.json",
+   "title": "अलग्योझा",
+   "first": "मानसरोवर १",
+   "count": null,
+   "words": 5575
+  },
+  {
+   "n": 3,
+   "file": "03.json",
+   "title": "आखिरी हीला",
+   "first": "मानसरोवर १",
+   "count": null,
+   "words": 2536
+  },
+  {
+   "n": 4,
+   "file": "04.json",
+   "title": "ईदगाह",
+   "first": "मानसरोवर १",
+   "count": null,
+   "words": 4897
+  },
+  {
+   "n": 5,
+   "file": "05.json",
+   "title": "उन्माद",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 6831
+  },
+  {
+   "n": 6,
+   "file": "06.json",
+   "title": "क़ानूनी कुमार",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 3643
+  },
+  {
+   "n": 7,
+   "file": "07.json",
+   "title": "कायर",
+   "first": "मानसरोवर १",
+   "count": null,
+   "words": 3857
+  },
+  {
+   "n": 8,
+   "file": "08.json",
+   "title": "कुत्सा",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 1344
+  },
+  {
+   "n": 9,
+   "file": "09.json",
+   "title": "कुसुम",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 7192
+  },
+  {
+   "n": 10,
+   "file": "10.json",
+   "title": "कैदी",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 4131
+  },
+  {
+   "n": 11,
+   "file": "11.json",
+   "title": "खुदाई फौजदार",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 4013
+  },
+  {
+   "n": 12,
+   "file": "12.json",
+   "title": "गिला",
+   "first": "मानसरोवर १",
+   "count": null,
+   "words": 5114
+  },
+  {
+   "n": 13,
+   "file": "13.json",
+   "title": "गृह-नीति",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 4693
+  },
+  {
+   "n": 14,
+   "file": "14.json",
+   "title": "घासवाली",
+   "first": "मानसरोवर १",
+   "count": null,
+   "words": 4281
+  },
+  {
+   "n": 15,
+   "file": "15.json",
+   "title": "चमत्कार",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 4736
+  },
+  {
+   "n": 16,
+   "file": "16.json",
+   "title": "जादू",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 649
+  },
+  {
+   "n": 17,
+   "file": "17.json",
+   "title": "जीवन का शाप",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 4436
+  },
+  {
+   "n": 18,
+   "file": "18.json",
+   "title": "ज्योति",
+   "first": "मानसरोवर १",
+   "count": null,
+   "words": 3607
+  },
+  {
+   "n": 19,
+   "file": "19.json",
+   "title": "झाँकी",
+   "first": "मानसरोवर १",
+   "count": null,
+   "words": 2388
+  },
+  {
+   "n": 20,
+   "file": "20.json",
+   "title": "डामुल का कैदी",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 8019
+  },
+  {
+   "n": 21,
+   "file": "21.json",
+   "title": "तावान",
+   "first": "मानसरोवर १",
+   "count": null,
+   "words": 2322
+  },
+  {
+   "n": 22,
+   "file": "22.json",
+   "title": "दिल की रानी",
+   "first": "मानसरोवर १",
+   "count": null,
+   "words": 6784
+  },
+  {
+   "n": 23,
+   "file": "23.json",
+   "title": "दूध का दाम",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 1198
+  },
+  {
+   "n": 24,
+   "file": "24.json",
+   "title": "दो बैलों की कथा",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 4252
+  },
+  {
+   "n": 25,
+   "file": "25.json",
+   "title": "धिक्कार",
+   "first": "मानसरोवर १",
+   "count": null,
+   "words": 6026
+  },
+  {
+   "n": 26,
+   "file": "26.json",
+   "title": "नया विवाह",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 4816
+  },
+  {
+   "n": 27,
+   "file": "27.json",
+   "title": "नशा",
+   "first": "मानसरोवर १",
+   "count": null,
+   "words": 2749
+  },
+  {
+   "n": 28,
+   "file": "28.json",
+   "title": "नेउर",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 3366
+  },
+  {
+   "n": 29,
+   "file": "29.json",
+   "title": "न्याय",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 3007
+  },
+  {
+   "n": 30,
+   "file": "30.json",
+   "title": "पूस की रात",
+   "first": "मानसरोवर १",
+   "count": null,
+   "words": 2118
+  },
+  {
+   "n": 31,
+   "file": "31.json",
+   "title": "बड़े भाई साहब",
+   "first": "मानसरोवर १",
+   "count": null,
+   "words": 3606
+  },
+  {
+   "n": 32,
+   "file": "32.json",
+   "title": "बालक",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 3059
+  },
+  {
+   "n": 33,
+   "file": "33.json",
+   "title": "बेटोंवाली विधवा",
+   "first": "मानसरोवर १",
+   "count": null,
+   "words": 7022
+  },
+  {
+   "n": 34,
+   "file": "34.json",
+   "title": "मनोवृत्ति",
+   "first": "मानसरोवर १",
+   "count": null,
+   "words": 2059
+  },
+  {
+   "n": 35,
+   "file": "35.json",
+   "title": "माँ",
+   "first": "मानसरोवर १",
+   "count": null,
+   "words": 6026
+  },
+  {
+   "n": 36,
+   "file": "36.json",
+   "title": "मिस पद्मा",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 2281
+  },
+  {
+   "n": 37,
+   "file": "37.json",
+   "title": "मुफ्त का यश",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 2624
+  },
+  {
+   "n": 38,
+   "file": "38.json",
+   "title": "मोटर के छींटे",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 1370
+  },
+  {
+   "n": 39,
+   "file": "39.json",
+   "title": "रसिक सम्पादक",
+   "first": "मानसरोवर १",
+   "count": null,
+   "words": 2393
+  },
+  {
+   "n": 40,
+   "file": "40.json",
+   "title": "लॉटरी",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 5400
+  },
+  {
+   "n": 41,
+   "file": "41.json",
+   "title": "विद्रोही",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 4802
+  },
+  {
+   "n": 42,
+   "file": "42.json",
+   "title": "वेश्या",
+   "first": "मानसरोवर २",
+   "count": null,
+   "words": 7591
+  },
+  {
+   "n": 43,
+   "file": "43.json",
+   "title": "शांति",
+   "first": "मानसरोवर १",
+   "count": null,
+   "words": 5274
+  },
+  {
+   "n": 44,
+   "file": "44.json",
+   "title": "सुभागी",
+   "first": "मानसरोवर १",
+   "count": null,
+   "words": 2236
+  },
+  {
+   "n": 45,
+   "file": "45.json",
+   "title": "स्वामिनी",
+   "first": "मानसरोवर १",
+   "count": null,
+   "words": 5652
+  }
+ ]
+}

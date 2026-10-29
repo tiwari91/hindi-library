@@ -65,6 +65,17 @@
    "default_hide": ["tr", "note"],
    "recite": true,
    "sources": ["manas"]
+  },
+  {
+   "id": "premchand",
+   "title": "प्रेमचंद की कहानियाँ",
+   "title_en": "Premchand: stories",
+   "by": "मुंशी प्रेमचंद · मानसरोवर (भाग १ और २)",
+   "desc": "45 of Premchand's own Hindi stories, including ईदगाह, पूस की रात, दो बैलों की कथा and बड़े भाई साहब, from the Mansarovar volumes. Only stories fully proofread on Wikisource are included.",
+   "script": "hi",
+   "kind": "prose",
+   "unit": "",
+   "sources": ["premchand"]
   }
  ],
  "puranas": [
@@ -88,6 +99,14 @@
   {"title": "ब्रह्माण्ड पुराण", "title_en": "Brahmanda Purana"}
  ],
  "sources": {
+  "premchand": {
+   "title": "मानसरोवर, भाग १ और २ — प्रेमचंद",
+   "where": "Hindi Wikisource transcriptions of the Mansarovar volumes (Saraswati Press, Banaras)",
+   "url": "https://hi.wikisource.org/wiki/%E0%A4%AE%E0%A4%BE%E0%A4%A8%E0%A4%B8%E0%A4%B0%E0%A5%8B%E0%A4%B5%E0%A4%B0_%E0%A5%A7",
+   "licence": "Public domain in India (Premchand died in 1936); Wikisource transcription CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "note": "Premchand's own Hindi stories, not translations. A story is included only when every scan page it uses is marked proofread or validated on Wikisource; 8 stories were left out because some of their pages are not yet proofread (घर जमाई, गुल्ली-डण्डा, ठाकुर का कुआँ, लांछन, शिकार, रियासत का दीवान, बासी भात में खुदा का साझा, शूद्रा). Page numbers and running headers are removed; the words are as on Wikisource. Each story links to its Wikisource page."
+  },
   "sa-parashara": {
    "title": "पराशरस्मृतिः — संस्कृत पाठ (Sanskrit text)",
    "where": "Sanskrit Wikisource (sa.wikisource.org), via the Parāśara Smṛti reader (github.com/tiwari91/parashara-smriti, commit 7636992)",
