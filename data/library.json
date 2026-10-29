@@ -44,14 +44,15 @@
    "title": "रामचरितमानस · बालकाण्ड",
    "title_en": "Ramcharitmanas · Bal Kand",
    "by": "गोस्वामी तुलसीदास · टीका: महावीरप्रसाद मालवीय ‘वीर’",
-   "desc": "Tulsidas' Awadhi verses with a Hindi meaning and the editor's notes (Belvedere Press, 1925). Doha 1 to about 290; the rest of Bal Kand is not yet proofread on Wikisource.",
+   "desc": "Tulsidas' Awadhi verses with a Hindi meaning, the editor's notes (Belvedere Press, 1925) and a plain-English meaning. Doha 1 to about 290; the rest of Bal Kand is not yet proofread on Wikisource.",
    "script": "hi",
    "kind": "verse",
    "unit": "",
-   "layers": {"text": "मूल", "tr": "Roman", "hi": "अर्थ", "note": "टिप्पणी"},
+   "layers": {"text": "मूल", "tr": "Roman", "hi": "अर्थ", "en": "English", "note": "टिप्पणी"},
    "default_hide": ["tr", "note"],
+   "en_note": "The English meanings are plain renderings written with Claude directly from the Awadhi for this reader. They are not a scholarly translation.",
    "recite": true,
-   "sources": ["manas"]
+   "sources": ["manas", "claude-en"]
   },
   {
    "id": "manas-sundar",
