@@ -13,6 +13,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from wiki import wikitext, html as page_html, ROOT
 from iast import iast
 from build_premchand import Paras
+from cleanup import clean_item, verse_end, END_FORMS, SPEAKER_LINE
 
 HOST = "sa.wikisource.org"
 DEV = "०१२३४५६७८९"
@@ -39,11 +40,17 @@ def verses(lines, chap, numbered=False):
     """Group lines into items: headings, speakers (attached to the next verse) and verses."""
     items, buf, speaker = [], [], None
     k = 0
+    last_n = 0
 
     def flush():
-        nonlocal buf, speaker, k
+        nonlocal buf, speaker, k, last_n
         if not buf:
             return
+        if speaker and not re.search(r"उवाच|ुवाच|ऊचुः|ूचुः|ऊचतुः|ूचतुः", speaker) and SPEAKER_LINE.match(buf[0]):
+            # what looked like a speaker is a section title (it ends in "ः -"); the real speaker follows
+            k += 1
+            items.append({"id": f"{chap}.{k}", "h": speaker})
+            speaker = None
         k += 1
         text = "\n".join(buf)
         m = re.search(r"([०-९0-9]+)\s*(॥|।।|।)?\s*$", buf[-1])
@@ -54,8 +61,36 @@ def verses(lines, chap, numbered=False):
             it["speaker"] = speaker
         it["text"] = text
         it["tr"] = "\n".join(iast(l) for l in buf)
+        clean_item(it)   # verse numbers, dandas, footnote marks, speaker line (tools/cleanup.py)
+        if it.pop("_drop", False):   # only editors' notes, no verse text
+            k -= 1
+            buf, speaker = [], None
+            return
+        prev = items[-1] if items else None
+        if prev and "text" in prev and it.get("n") and prev.get("n") == it["n"] and not it.get("speaker"):
+            # the source numbers both halves of one verse ("... ॥ १ ॥" twice): join them into one verse
+            plines = prev["text"].split("\n")
+            plines[-1] = re.sub(r"\s*॥ [०-९]+ ॥$", " ।", plines[-1])
+            prev["text"] = "\n".join(plines + it["text"].split("\n"))
+            prev["tr"] = "\n".join(iast(l) for l in prev["text"].split("\n"))
+            k -= 1
+            buf, speaker = [], None
+            return
+        if it.get("n"):
+            try:
+                last_n = int(undev(it["n"]))
+            except ValueError:
+                pass
         items.append(it)
         buf, speaker = [], None
+
+    def ends_verse(l):
+        """In numbered texts a verse ends at its number. A number written only before a danda
+        ("पुनातु१।") counts when it is the next number, so a footnote mark before a danda does not."""
+        if END_FORMS[0].search(l) and verse_end(l):
+            return True
+        ve = verse_end(l)
+        return bool(ve) and int(ve[1]) == last_n + 1
 
     for l in lines:
         l = re.sub(r"\s+", " ", l).strip()
@@ -70,7 +105,7 @@ def verses(lines, chap, numbered=False):
             speaker = re.sub(r"\s*[-–—:]+$", "", l).strip()
             continue
         buf.append(l)
-        if (NUM_END.search(l) or len(buf) >= 6) if numbered else (END.search(l) or len(buf) >= 4):
+        if (ends_verse(l) or len(buf) >= 6) if numbered else (END.search(l) or len(buf) >= 4):
             flush()
     flush()
     return items

@@ -15,10 +15,26 @@ def first_line(it):
     return (it.get("text") or "").split("\n")[0].strip()
 
 
+def same_line(a, b, speaker=None):
+    """Compare first lines after the shared clean-up (tools/cleanup.py), so English written
+    before a clean-up still finds its verse. A first line that was only a speaker ("श्रीभगवानुवाच")
+    is now the verse's speaker label, so it matches that."""
+    from cleanup import clean_line, SPEAKER_LINE
+    a, b = a.strip(), b.strip()
+    m = SPEAKER_LINE.match(a)
+    if m and speaker and m.group(1).strip() == speaker.strip():
+        return True
+    return a == b or clean_line(a, True) == clean_line(b, True) or clean_line(a, False) == clean_line(b, False)
+
+
 def merge(book):
     rows = []
     for f in sorted(glob.glob(os.path.join(ROOT, "sources", "en", book, "*.json"))):
         rows += json.load(open(f, encoding="utf-8"))
+    if not rows:
+        # without a sources/en/<book> folder there is nothing to merge; never wipe a book's English
+        print(f"{book}: no English in sources/en/{book}; nothing changed")
+        return False
     want = {(str(r["n"]), r["id"]): r for r in rows}
     toc = json.load(open(os.path.join(ROOT, "data", book, "index.json"), encoding="utf-8"))
     added, bad, verses = 0, [], 0
@@ -29,11 +45,17 @@ def merge(book):
             if "text" not in it:
                 continue
             verses += 1
-            r = want.pop((str(c["n"]), it["id"]), None)
+            it.pop("en", None)
+            sp = it.get("speaker")
+            r = want.get((str(c["n"]), it["id"]))
+            if not r or not same_line(r["first"], first_line(it), sp):
+                # the verse moved (ids are positions): find its English by its first line in this chapter
+                r = next((x for k, x in want.items() if k[0] == str(c["n"]) and same_line(x["first"], first_line(it))), None)
             if not r:
-                continue
-            if r["first"].strip() != first_line(it) or not r["en"].strip():
                 bad.append((c["n"], it["id"]))
+                continue
+            want.pop((str(r["n"]), r["id"]), None)
+            if not r["en"].strip():
                 continue
             it["en"] = r["en"].strip()
             added += 1

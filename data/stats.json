@@ -2,28 +2,28 @@
  "gita": {
   "chapters": 18,
   "verses": 700,
-  "words": 7847,
+  "words": 9247,
   "with_en": 700,
   "minutes": 233
  },
  "parashara": {
   "chapters": 12,
   "verses": 583,
-  "words": 7910,
+  "words": 8034,
   "with_en": 583,
   "minutes": 194
  },
  "manas-bal": {
   "chapters": 12,
   "verses": 1626,
-  "words": 30173,
+  "words": 33988,
   "with_en": 1626,
   "minutes": 542
  },
  "manas-sundar": {
   "chapters": 2,
   "verses": 340,
-  "words": 7022,
+  "words": 7683,
   "with_en": 340,
   "minutes": 113
  },
@@ -36,141 +36,141 @@
  },
  "agni-purana": {
   "chapters": 383,
-  "verses": 16204,
-  "words": 151922,
+  "verses": 11956,
+  "words": 155711,
   "with_en": 0,
-  "minutes": 5401
+  "minutes": 3985
  },
  "brahma-purana": {
   "chapters": 246,
-  "verses": 13984,
-  "words": 157346,
+  "verses": 13980,
+  "words": 171258,
   "with_en": 0,
-  "minutes": 4661
+  "minutes": 4660
  },
  "brahmanda-purana": {
   "chapters": 156,
-  "verses": 13653,
-  "words": 171803,
+  "verses": 13649,
+  "words": 172555,
   "with_en": 0,
-  "minutes": 4551
+  "minutes": 4550
  },
  "brahmavaivarta-purana": {
   "chapters": 276,
-  "verses": 20646,
-  "words": 272976,
+  "verses": 20642,
+  "words": 280047,
   "with_en": 0,
-  "minutes": 6882
+  "minutes": 6881
  },
  "bhavishya-purana": {
   "chapters": 585,
-  "verses": 26056,
-  "words": 349582,
+  "verses": 26048,
+  "words": 355097,
   "with_en": 0,
-  "minutes": 8685
+  "minutes": 8683
  },
  "padma-purana": {
   "chapters": 693,
-  "verses": 42653,
-  "words": 530173,
+  "verses": 49456,
+  "words": 636001,
   "with_en": 0,
-  "minutes": 14218
+  "minutes": 16485
  },
  "varaha-purana": {
   "chapters": 218,
   "verses": 10559,
-  "words": 144078,
+  "words": 148758,
   "with_en": 0,
   "minutes": 3520
  },
  "narada-purana": {
   "chapters": 207,
-  "verses": 18093,
-  "words": 226537,
+  "verses": 18072,
+  "words": 228653,
   "with_en": 0,
-  "minutes": 6031
+  "minutes": 6024
  },
  "matsya-purana": {
   "chapters": 291,
-  "verses": 13044,
-  "words": 148279,
+  "verses": 13025,
+  "words": 157690,
   "with_en": 0,
-  "minutes": 4348
+  "minutes": 4342
  },
  "linga-purana": {
   "chapters": 163,
-  "verses": 8917,
-  "words": 100189,
+  "verses": 8930,
+  "words": 109298,
   "with_en": 0,
-  "minutes": 2972
+  "minutes": 2977
  },
  "kurma-purana": {
   "chapters": 99,
-  "verses": 5903,
-  "words": 70441,
+  "verses": 5894,
+  "words": 78033,
   "with_en": 0,
-  "minutes": 1968
+  "minutes": 1965
  },
  "vamana-purana": {
   "chapters": 96,
-  "verses": 5539,
-  "words": 66052,
+  "verses": 5488,
+  "words": 75045,
   "with_en": 0,
-  "minutes": 1846
+  "minutes": 1829
  },
  "shiva-purana": {
   "chapters": 457,
-  "verses": 22184,
-  "words": 291034,
+  "verses": 24198,
+  "words": 311385,
   "with_en": 0,
-  "minutes": 7395
+  "minutes": 8066
  },
  "garuda-purana": {
   "chapters": 318,
   "verses": 12254,
-  "words": 167938,
+  "words": 167612,
   "with_en": 0,
   "minutes": 4085
  },
  "markandeya-purana": {
   "chapters": 133,
-  "verses": 6103,
-  "words": 68183,
+  "verses": 6228,
+  "words": 81481,
   "with_en": 0,
-  "minutes": 2034
+  "minutes": 2076
  },
  "devi-mahatmya": {
   "chapters": 13,
   "verses": 589,
-  "words": 6161,
+  "words": 7783,
   "with_en": 0,
   "minutes": 196
  },
  "vishnu-purana": {
   "chapters": 126,
-  "verses": 5788,
-  "words": 70339,
+  "verses": 5777,
+  "words": 72952,
   "with_en": 0,
-  "minutes": 1929
+  "minutes": 1926
  },
  "bhagavata": {
   "chapters": 335,
-  "verses": 13375,
-  "words": 183038,
+  "verses": 13430,
+  "words": 186945,
   "with_en": 0,
-  "minutes": 4458
+  "minutes": 4477
  },
  "chanakya-niti": {
   "chapters": 15,
   "verses": 300,
-  "words": 3955,
+  "words": 4558,
   "with_en": 300,
   "minutes": 100
  },
  "vishnu-sahasranama": {
   "chapters": 7,
   "verses": 214,
-  "words": 1863,
+  "words": 2365,
   "with_en": 214,
   "minutes": 71
  },
@@ -184,7 +184,7 @@
  "shiva-sahasranama": {
   "chapters": 1,
   "verses": 182,
-  "words": 1798,
+  "words": 2089,
   "with_en": 182,
   "minutes": 61
  }

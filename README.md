@@ -24,6 +24,30 @@ It is a plain static site: no build step, no framework.
 To try it locally: `python3 -m http.server 8000` in this folder, then open
 http://localhost:8000/.
 
+## How a verse is identified
+
+Every verse has a stable address: **book / chapter file / verse id**.
+
+- `book` is the folder name in `data/` (for example `bhavishya-purana`).
+- The chapter is the entry in `data/<book>/index.json`: its `file` (for example `01-001.json`,
+  meaning part 1, adhyaya 1) and its running number `n` (used in links, `#/<book>/<n>`).
+- Inside a chapter file each verse has an `id`. For most books it is `<n>.<position>`: the chapter's
+  running number and the verse's place in the chapter, counting every item (headings included) from 1.
+  The Gita uses `<chapter>.<verse>` (for example `2.47`); Ramcharitmanas and Premchand use the
+  position alone.
+- `n` on a verse is only the label the source prints (its own verse number). It can repeat inside a
+  chapter, so never key anything to it. Verses with `"pre": true` are an opening invocation with
+  its own numbering; a chapter with `"numbering": "position"` is shown by position because the
+  source's numbers repeat.
+
+So `bhavishya-purana / 01-001.json / 1.24` always means the 24th item of Brahma parva, adhyaya 1.
+These ids are final as of the clean-up of October 2026 (`tools/cleanup.py`, checked with
+`tools/audit.py`). A rebuild from the same Wikisource pages gives the same ids; if a source page
+changes upstream, compare `first` lines before re-attaching English (as `tools/add_en.py` does).
+
+After rebuilding any verse book, run `python3 tools/cleanup.py <book>` (it is safe to run more than
+once) and `python3 tools/audit.py` to count anything left over.
+
 ## English mode
 
 The हिन्दी / English switch in the header (or a link ending in `?lang=en`, for example
