@@ -83,6 +83,14 @@
    "sources": ["premchand"]
   },
   {
+   "id": "narada-purana", "purana": true, "title": "नारदपुराणम्", "title_en": "Narada Purana", "by": "वेदव्यास",
+   "desc": "Purvardha (125 chapters) and Uttarardha (82 chapters) in Sanskrit with Roman transliteration, from Sanskrit Wikisource; complete.",
+   "script": "sa", "kind": "verse", "unit": "", "verse": "श्लोक", "layers": {"text": "संस्कृत", "tr": "Roman"},
+   "recite": true, "no_search": true,
+   "ocr_note": "This text is typed on Sanskrit Wikisource and has not been checked against a printed edition there; a few typing errors may remain. Verse breaks follow the verse numbers in the source.",
+   "sources": ["sa-puranas"]
+  },
+  {
    "id": "matsya-purana", "purana": true, "title": "मत्स्यपुराणम्", "title_en": "Matsya Purana", "by": "वेदव्यास",
    "desc": "291 chapters in Sanskrit with Roman transliteration, from Sanskrit Wikisource; complete.",
    "script": "sa", "kind": "verse", "unit": "", "verse": "श्लोक", "layers": {"text": "संस्कृत", "tr": "Roman"},
@@ -299,7 +307,7 @@
   {"title": "विष्णु पुराण", "title_en": "Vishnu Purana", "book": "vishnu-purana"},
   {"title": "शिव पुराण", "title_en": "Shiva Purana", "book": "shiva-purana"},
   {"title": "श्रीमद्भागवत पुराण", "title_en": "Bhagavata Purana", "book": "bhagavata"},
-  {"title": "नारद पुराण", "title_en": "Narada Purana"},
+  {"title": "नारद पुराण", "title_en": "Narada Purana", "book": "narada-purana"},
   {"title": "मार्कण्डेय पुराण", "title_en": "Markandeya Purana", "book": "markandeya-purana"},
   {"title": "अग्नि पुराण", "title_en": "Agni Purana"},
   {"title": "भविष्य पुराण", "title_en": "Bhavishya Purana"},
