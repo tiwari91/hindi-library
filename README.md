@@ -62,7 +62,12 @@ http://localhost:8000/.
      card open straight into a chapter.
    - Add the source under `sources` with `title`, `where`, `url`, `licence`, `licence_url` and a
      `note`. It then shows on the Sources page automatically.
-4. Run the site locally, check a chapter at phone and desktop width in light and dark mode, then
+4. **English meanings** are kept apart from the generated data, in `sources/en/<book>/*.json`
+   (`{"n", "id", "first", "en"}`, where `first` is the first line of the original verse). Run
+   `python3 tools/add_en.py <book>` to copy them into the data files; it refuses any entry whose
+   first line no longer matches, so rebuilding a book can never put English on the wrong verse.
+   Run it again after every rebuild of that book. Add `"en": "English"` to the book's `layers`.
+5. Run the site locally, check a chapter at phone and desktop width in light and dark mode, then
    commit and push. GitHub Pages publishes `main` automatically.
 
 ## Books imported from other readers

@@ -314,6 +314,7 @@
 					onclick: (e) => { S.one[b.id] = !isOne(b); save(); e.currentTarget.setAttribute("aria-pressed", String(S.one[b.id])); if (S.one[b.id]) openRecite(b, meta.n, null); } },
 					"हमेशा एक-एक · Always one at a time")) : null,
 			b.ocr_note ? h("p", { class: "ocr-note", lang: "hi" }, b.ocr_note) : null,
+			b.en_note ? h("p", { class: "ocr-note", lang: "en" }, b.en_note) : null,
 			doc.note ? h("p", { class: "ocr-note" }, doc.note) : null);
 		const body = b.kind === "prose"
 			? h("div", { class: "prose", lang: "hi" }, doc.items.map((it) => renderItem(b, meta.n, it)))

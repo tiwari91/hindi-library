@@ -5,7 +5,7 @@
    "title": "श्रीमद्भगवद्गीता",
    "title_en": "Bhagavad Gita",
    "by": "व्यास · हिन्दी अर्थ: महात्मा गांधी (अनासक्तियोग)",
-   "desc": "18 chapters, 700 verses: Sanskrit, Roman transliteration and Gandhi's Hindi meaning.",
+   "desc": "18 chapters, 700 verses: Sanskrit, Roman transliteration, Gandhi's Hindi meaning and a plain-English meaning.",
    "script": "sa",
    "kind": "verse",
    "unit": "अध्याय",
@@ -190,6 +190,14 @@
   {"title": "ब्रह्माण्ड पुराण", "title_en": "Brahmanda Purana"}
  ],
  "sources": {
+  "claude-en": {
+   "title": "English meanings — plain renderings written with Claude",
+   "where": "Written for this site (stored in sources/en/ in the repository)",
+   "url": "https://github.com/tiwari91/hindi-library/tree/main/sources/en",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "note": "Plain renderings written with Claude directly from the original Sanskrit or Awadhi, one short meaning per verse. They are not a scholarly translation and are not taken from any published translation; check a printed edition before relying on a point. No free public-domain English that lines up verse by verse was found: K. T. Telang's 1882 Gita (Sacred Books of the East, vol. 8) is continuous prose without verse numbers, and is incomplete on Wikisource."
+  },
   "sa-bhagavata": {
    "title": "श्रीमद्भागवतपुराणम् — Sanskrit Wikisource",
    "where": "Sanskrit Wikisource (sa.wikisource.org)",
