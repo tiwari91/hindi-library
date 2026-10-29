@@ -12,3 +12,8 @@ Names in simple roman spelling, no diacritics.
 - Purana "Purana", Bharata "Bharata" (the Mahabharata), Bhavishya "Bhavishya"
 - "mahabaho": "mighty-armed one"; "rajendra": "best of kings"; "nripottama": "best of kings"
 - Brackets [ ] only for a brief clarifying word.
+- Vikramaditya: the king of Ujjayini; Vaitala: the spirit who tells him tales and tests him with questions; Suta: the narrator
+- Satyanarayana: Vishnu worshipped as "the Lord of Truth" (vow in the Kali age); Kali: the present age
+- Prithviraj (also Mahiraja, Bhumiraja): king of Ajmer and Dehli; Jayachandra: king of Kanyakubja; Parimala: king of Mahavati
+- Udayasimha: "Krishna's part", later Udal; Ahlada: Alha; Devasimha, Balakhani, Brahmananda, Talana, Desharaja, Vatsaraja: heroes of Mahavati
+- Isha-masiha, Mahamada: names as the text gives them; the text's portrayals are reported as given
