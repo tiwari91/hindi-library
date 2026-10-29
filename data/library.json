@@ -1,0 +1,58 @@
+{
+ "books": [
+  {
+   "id": "gita",
+   "title": "श्रीमद्भगवद्गीता",
+   "title_en": "Bhagavad Gita",
+   "by": "व्यास · हिन्दी अर्थ: महात्मा गांधी (अनासक्तियोग)",
+   "desc": "18 chapters, 700 verses: Sanskrit, Roman transliteration and Gandhi's Hindi meaning.",
+   "script": "sa",
+   "kind": "verse",
+   "unit": "अध्याय",
+   "unit_en": "Chapter",
+   "verse": "श्लोक",
+   "layers": {"text": "संस्कृत", "tr": "Roman", "hi": "हिन्दी अर्थ"},
+   "ocr_note": "हिन्दी अर्थ गांधीजी के ‘अनासक्तियोग’ (सस्ता साहित्य मंडल, 1949 संस्करण) से है। यह विकिस्रोत पर स्कैन का OCR पाठ है, जिसकी अभी जाँच (proofreading) नहीं हुई है, इसलिए कहीं-कहीं अक्षर ग़लत हो सकते हैं। हर अर्थ के साथ स्कैन पृष्ठ का लिंक है। The Hindi meaning is unproofread OCR from the Wikisource scan of Gandhi's Anasaktiyoga; some letters may be wrong. Each meaning links to its scan page.",
+   "recite": true,
+   "sources": ["sa-gita", "anasakti"]
+  }
+ ],
+ "puranas": [
+  {"title": "ब्रह्म पुराण", "title_en": "Brahma Purana"},
+  {"title": "पद्म पुराण", "title_en": "Padma Purana"},
+  {"title": "विष्णु पुराण", "title_en": "Vishnu Purana"},
+  {"title": "शिव पुराण", "title_en": "Shiva Purana"},
+  {"title": "श्रीमद्भागवत पुराण", "title_en": "Bhagavata Purana"},
+  {"title": "नारद पुराण", "title_en": "Narada Purana"},
+  {"title": "मार्कण्डेय पुराण", "title_en": "Markandeya Purana"},
+  {"title": "अग्नि पुराण", "title_en": "Agni Purana"},
+  {"title": "भविष्य पुराण", "title_en": "Bhavishya Purana"},
+  {"title": "ब्रह्मवैवर्त पुराण", "title_en": "Brahmavaivarta Purana"},
+  {"title": "लिङ्ग पुराण", "title_en": "Linga Purana"},
+  {"title": "वराह पुराण", "title_en": "Varaha Purana"},
+  {"title": "स्कन्द पुराण", "title_en": "Skanda Purana"},
+  {"title": "वामन पुराण", "title_en": "Vamana Purana"},
+  {"title": "कूर्म पुराण", "title_en": "Kurma Purana"},
+  {"title": "मत्स्य पुराण", "title_en": "Matsya Purana"},
+  {"title": "गरुड पुराण", "title_en": "Garuda Purana"},
+  {"title": "ब्रह्माण्ड पुराण", "title_en": "Brahmanda Purana"}
+ ],
+ "sources": {
+  "sa-gita": {
+   "title": "भगवद्गीता — संस्कृत पाठ (Sanskrit text)",
+   "where": "Sanskrit Wikisource (sa.wikisource.org)",
+   "url": "https://sa.wikisource.org/wiki/%E0%A4%AD%E0%A4%97%E0%A4%B5%E0%A4%A6%E0%A5%8D%E0%A4%97%E0%A5%80%E0%A4%A4%E0%A4%BE",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "note": "Verse text only, taken from the 18 chapter pages. The Roman transliteration is made from it by a fixed rule (tools/iast.py)."
+  },
+  "anasakti": {
+   "title": "अनासक्तियोग — मोहनदास करमचंद गांधी (Hindi meaning)",
+   "where": "Hindi Wikisource scan of the 1949 (6th) edition, Sasta Sahitya Mandal, New Delhi; first published 1929–30. Scan from the Digital Library of India.",
+   "url": "https://hi.wikisource.org/wiki/%E0%A4%B5%E0%A4%BF%E0%A4%B7%E0%A4%AF%E0%A4%B8%E0%A5%82%E0%A4%9A%E0%A5%80:%E0%A4%85%E0%A4%A8%E0%A4%BE%E0%A4%B8%E0%A4%95%E0%A5%8D%E0%A4%A4%E0%A4%BF%E0%A4%AF%E0%A5%8B%E0%A4%97.djvu",
+   "licence": "Public domain in India (PD-India); text pages on Wikisource are CC BY-SA 4.0",
+   "licence_url": "https://commons.wikimedia.org/wiki/File:%E0%A4%85%E0%A4%A8%E0%A4%BE%E0%A4%B8%E0%A4%95%E0%A5%8D%E0%A4%A4%E0%A4%BF%E0%A4%AF%E0%A5%8B%E0%A4%97.djvu",
+   "note": "Gandhi died in 1948, so his writings are public domain in India (life + 60 years). The Hindi version is an unnamed rendering of Gandhi's Gujarati, published by Sasta Sahitya Mandal. The text here is the unproofread OCR on Wikisource, used as it stands: only running headers, page numbers, scan noise and Gandhi's notes (टिप्पणी) are left out. Verses 6.42–6.45 (scan page blank), 8.20 and 18.73–18.74 (OCR too damaged) have no meaning."
+  }
+ }
+}

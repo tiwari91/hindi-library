@@ -1,0 +1,131 @@
+{
+ "book": "gita",
+ "chapters": [
+  {
+   "n": 1,
+   "file": "01.json",
+   "title": "अर्जुनविषादयोगः",
+   "title_tr": "arjunaviṣādayogaḥ",
+   "count": 47
+  },
+  {
+   "n": 2,
+   "file": "02.json",
+   "title": "साङ्ख्ययोगः",
+   "title_tr": "sāṅkhyayogaḥ",
+   "count": 72
+  },
+  {
+   "n": 3,
+   "file": "03.json",
+   "title": "कर्मयोगः",
+   "title_tr": "karmayogaḥ",
+   "count": 43
+  },
+  {
+   "n": 4,
+   "file": "04.json",
+   "title": "ज्ञानकर्मसंन्यासयोगः",
+   "title_tr": "jñānakarmasaṃnyāsayogaḥ",
+   "count": 42
+  },
+  {
+   "n": 5,
+   "file": "05.json",
+   "title": "कर्मसंन्यासयोगः",
+   "title_tr": "karmasaṃnyāsayogaḥ",
+   "count": 29
+  },
+  {
+   "n": 6,
+   "file": "06.json",
+   "title": "आत्मसंयमयोगः",
+   "title_tr": "ātmasaṃyamayogaḥ",
+   "count": 47
+  },
+  {
+   "n": 7,
+   "file": "07.json",
+   "title": "ज्ञानविज्ञानयोगः",
+   "title_tr": "jñānavijñānayogaḥ",
+   "count": 30
+  },
+  {
+   "n": 8,
+   "file": "08.json",
+   "title": "अक्षरब्रह्मयोगः",
+   "title_tr": "akṣarabrahmayogaḥ",
+   "count": 28
+  },
+  {
+   "n": 9,
+   "file": "09.json",
+   "title": "राजविद्याराजगुह्ययोगः",
+   "title_tr": "rājavidyārājaguhyayogaḥ",
+   "count": 34
+  },
+  {
+   "n": 10,
+   "file": "10.json",
+   "title": "विभूतियोगः",
+   "title_tr": "vibhūtiyogaḥ",
+   "count": 42
+  },
+  {
+   "n": 11,
+   "file": "11.json",
+   "title": "विश्वरूपदर्शनयोगः",
+   "title_tr": "viśvarūpadarśanayogaḥ",
+   "count": 55
+  },
+  {
+   "n": 12,
+   "file": "12.json",
+   "title": "भक्तियोगः",
+   "title_tr": "bhaktiyogaḥ",
+   "count": 20
+  },
+  {
+   "n": 13,
+   "file": "13.json",
+   "title": "क्षेत्रक्षेत्रज्ञविभागयोगः",
+   "title_tr": "kṣetrakṣetrajñavibhāgayogaḥ",
+   "count": 34
+  },
+  {
+   "n": 14,
+   "file": "14.json",
+   "title": "गुणत्रयविभागयोगः",
+   "title_tr": "guṇatrayavibhāgayogaḥ",
+   "count": 27
+  },
+  {
+   "n": 15,
+   "file": "15.json",
+   "title": "पुरुषोत्तमयोगः",
+   "title_tr": "puruṣottamayogaḥ",
+   "count": 20
+  },
+  {
+   "n": 16,
+   "file": "16.json",
+   "title": "दैवासुरसंपद्विभागयोगः",
+   "title_tr": "daivāsurasaṃpadvibhāgayogaḥ",
+   "count": 24
+  },
+  {
+   "n": 17,
+   "file": "17.json",
+   "title": "श्रद्धात्रयविभागयोगः",
+   "title_tr": "śraddhātrayavibhāgayogaḥ",
+   "count": 28
+  },
+  {
+   "n": 18,
+   "file": "18.json",
+   "title": "मोक्षसंन्यासयोगः",
+   "title_tr": "mokṣasaṃnyāsayogaḥ",
+   "count": 78
+  }
+ ]
+}

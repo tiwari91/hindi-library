@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>हिन्दी पुस्तकालय · Hindi Library</title>
+<meta name="description" content="Read the Bhagavad Gita, Ramcharitmanas, Premchand and other Hindi and Sanskrit classics online, chapter by chapter, from public-domain and openly licensed sources.">
+<meta name="theme-color" content="#faf4e8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d111e" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gentium+Book+Plus:ital,wght@0,400;0,700;1,400&family=Hind:wght@400;500;600&family=Noto+Serif+Devanagari:wght@400;500;600&family=Tiro+Devanagari+Sanskrit&display=swap">
+<link rel="stylesheet" href="assets/app.css">
+<script>
+try {
+	var s = JSON.parse(localStorage.getItem("hl:v1") || "{}");
+	if (s.theme === "light" || s.theme === "dark") document.documentElement.setAttribute("data-theme", s.theme);
+	if (s.scale) document.documentElement.style.setProperty("--scale", s.scale);
+} catch (e) {}
+</script>
+</head>
+<body>
+<header class="topbar">
+	<nav class="bar" aria-label="Main">
+		<a class="brand" href="#/"><b>हिन्दी पुस्तकालय</b><span>Hindi Library</span></a>
+		<a class="ibtn" href="#/search" id="nav-search" hidden aria-label="Search · खोजें" title="Search">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
+		</a>
+		<a class="ibtn" href="#/saved" id="nav-saved" hidden aria-label="Saved verses · सहेजे श्लोक" title="Saved verses">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M6.5 3.5h11v17l-5.5-4-5.5 4z"/></svg>
+		</a>
+		<button class="ibtn" id="nav-settings" aria-label="Reading settings · सेटिंग" title="Reading settings">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+		</button>
+	</nav>
+</header>
+<main class="wrap" id="view" tabindex="-1"><p class="loading">लोड हो रहा है…</p></main>
+<footer class="site" id="footer">
+	<p>Texts are public domain or openly licensed; see <a href="#/sources">Sources and licences · स्रोत</a>. Site content is shared under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. <a href="https://github.com/tiwari91/hindi-library">Code on GitHub</a>.</p>
+</footer>
+<noscript><p style="padding:1rem">This reader needs JavaScript.</p></noscript>
+<script src="assets/app.js"></script>
+</body>
+</html>

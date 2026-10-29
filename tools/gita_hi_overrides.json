@@ -1,0 +1,14 @@
+{
+  "_about": "Hand fixes for the OCR Hindi meanings. Only two kinds are allowed: 'remove' deletes an exact string that is not part of the meaning (running headers, stray Sanskrit, scan noise); 'split' cuts one group at an exact string and gives the second part to another verse, dropping the Sanskrit in between. Nothing is ever added or reworded.",
+  "remove": {
+    "8.19": ["यः "],
+    "14.10": [" चौपाया पुनविनामयोप"],
+    "14.4": ["याः।", " और तमस्"]
+  },
+  "split": {
+    "6.41": {"after": "परम गतिको पाता", "skip_to": "।।४।। ", "verse": 46}
+  },
+  "drop": {
+    "18.73": "The OCR line for 18.73 is garbled and the meaning of 18.74 is joined to it; both are left out."
+  }
+}
