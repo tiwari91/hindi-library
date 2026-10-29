@@ -643,6 +643,12 @@ body.lang-en .puranas .pchip span { font-family: var(--f-ui); }
 
 /* help page and the link in the Aa sheet */
 .nobr { white-space: nowrap; }
+/* a chapter's English translation given as one passage (Vishnu Purana) */
+.en-chapter { margin: 1rem 0 0; padding: .6rem .9rem; border: 1px solid var(--rule); border-radius: 12px; background: var(--surface); }
+.en-chapter summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
+.en-chapter p, .en-sheet p { font-family: var(--f-lat); font-size: calc(var(--lat-size) * var(--scale)); line-height: calc(1.75 * var(--lhk)); }
+.en-sheet { max-width: 42rem; }
+.rc-top .en-btn { min-height: 40px; }
 .help h2 { font-size: 1.12rem; margin: 1.6rem 0 .3rem; }
 .help p { line-height: 1.7; }
 .sheet-help { margin: 0 0 1rem; font-size: .92rem; }

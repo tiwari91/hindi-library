@@ -254,7 +254,10 @@
    "title": "विष्णुपुराणम्",
    "title_en": "Vishnu Purana",
    "by": "पराशर",
-   "desc": "All six amshas, 126 chapters, in Sanskrit with Roman transliteration, from Sanskrit Wikisource.",
+   "desc": "All six amshas, 126 chapters, in Sanskrit with Roman transliteration, from Sanskrit Wikisource, and M. N. Dutt's English translation (1896) for every chapter.",
+   "en_source": "M. N. Dutt's translation (1896), one passage per chapter",
+   "en_source_note": "Public domain, from Project Gutenberg eBook #66208. Dutt's translation follows the chapters, not single verses, so each chapter's English is shown as one passage (the “English” button at the top).",
+   "en_sources": ["dutt-vishnu"],
    "script": "sa",
    "kind": "verse",
    "unit": "",
@@ -381,6 +384,14 @@
   {"title": "ब्रह्माण्ड पुराण", "title_en": "Brahmanda Purana", "book": "brahmanda-purana"}
  ],
  "sources": {
+  "dutt-vishnu": {
+   "title": "A Prose English Translation of Vishnupuranam, by Manmatha Nath Dutt (Calcutta, 1896), based on H. H. Wilson",
+   "where": "Project Gutenberg eBook #66208 (transcribed by James Simmons from the Internet Archive scans)",
+   "url": "https://www.gutenberg.org/ebooks/66208",
+   "licence": "Public domain (published 1896; Dutt died in 1912)",
+   "licence_url": "https://www.gutenberg.org/policy/license.html",
+   "note": "Shown one passage per chapter, as printed; the translator's footnotes and note numbers are left out (tools/add_vishnu_dutt.py). The printed text has no break between chapters 37 and 38 of Part V, so that passage covers both."
+  },
   "besant-gita": {
    "title": "The Bhagavad-Gita, translated by Annie Besant (4th edition, 1922)",
    "where": "English Wikisource transcription of the 1922 edition (Theosophical Publishing House)",

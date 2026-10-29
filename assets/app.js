@@ -234,7 +234,7 @@
 	const verseWord = (b) => (EN() ? (b.verse ? "Verse" : "") : b.verse || "");
 	// "Chapter 2 of 18" (stories: "Story 3 of 45")
 	function posLabel(b, i, n) {
-		if (EN()) return (b.kind === "prose" ? "Story " : b.unit ? "Chapter " : "Part ") + i + " of " + n;
+		if (EN()) return (b.kind === "prose" ? "Story " : b.unit || b.purana ? "Chapter " : "Part ") + i + " of " + n;
 		return (b.kind === "prose" ? "कहानी " : b.unit ? b.unit + " " : "भाग ") + dev(i) + " / " + dev(n) + " · " + (b.kind === "prose" ? "Story " : "Chapter ") + i + " of " + n;
 	}
 	function verseUrl(b, n, id) { return "#/" + b.id + "/" + n + "/" + encodeURIComponent(id); }
@@ -292,6 +292,35 @@
 		if (b.en_note) return "Machine translation, not proofread";
 		return "";
 	}
+	// some books (the Vishnu Purana) have English for a whole chapter rather than for each verse
+	let curDoc = null;
+	const hasChapterEn = (doc) => !!(doc && (doc.en_chapter || doc.en_chapter_ref));
+	function chapterEnBody(b, doc) {
+		if (doc.en_chapter_ref) return [h("p", null, "The English translation of this chapter is printed together with chapter " + doc.en_chapter_ref + "; open that chapter to read it.")];
+		return [doc.en_chapter_note ? h("p", { class: "note" }, doc.en_chapter_note) : null].concat(doc.en_chapter.map((p) => h("p", null, p)));
+	}
+	function chapterEnBox(b, doc) {
+		if (!hasChapterEn(doc)) return null;
+		return h("details", { class: "en-chapter", lang: "en" },
+			h("summary", null, "English translation of this chapter · " + (b.en_source || "")),
+			...chapterEnBody(b, doc));
+	}
+	function openChapterEn(b, doc) {
+		const scrim = h("div", { class: "scrim" });
+		const close = () => { scrim.remove(); sheet.remove(); };
+		scrim.addEventListener("click", close);
+		const sheet = h("div", { class: "sheet en-sheet", role: "dialog", "aria-modal": "true", "aria-label": "English translation of this chapter", lang: "en" },
+			h("h2", null, "English translation of this chapter"),
+			h("p", { class: "note" }, b.en_source || ""),
+			...chapterEnBody(b, doc),
+			h("button", { class: "chip", onclick: close }, "Close"));
+		sheet.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
+		document.body.append(scrim, sheet);
+		const hd = sheet.querySelector("h2");
+		hd.tabIndex = -1;
+		hd.focus({ preventScroll: true });
+		sheet.scrollTop = 0;
+	}
 	function renderItemEn(b, n, it, opts) {
 		const idv = opts.recite ? null : "v-" + it.id;
 		if (it.h) return h("h3", { class: "sec-h", lang: "en", text: toEn(it.h) });
@@ -315,7 +344,9 @@
 		} else if (it.en_ref) {
 			mw.append(h("div", { class: "meaning ref", lang: "en" }, "The English meaning is given with verse " + it.en_ref + "."));
 		} else if (!isProse && opts.recite) {
-			mw.append(h("p", { class: "note", lang: "en" }, NO_EN));
+			mw.append(h("p", { class: "note", lang: "en" }, hasChapterEn(curDoc)
+				? "This chapter's English translation is one passage for the whole chapter: tap “English” at the top to read it."
+				: NO_EN));
 		}
 		if (it.note && b.note_lang === "en") mw.append(h("p", { class: "note", lang: "en" }, it.note));
 		if (mw.childNodes.length) {
@@ -543,6 +574,7 @@
 		const ch = await chapter(b, n);
 		if (!ch) return viewMissing();
 		const { doc, meta, toc: t, index } = ch;
+		curDoc = doc;
 		applyLayers(b);
 		setTitle(bTitle(b) + " · " + chapterTitle(b, meta));
 		S.lastBook = b.id;
@@ -568,6 +600,7 @@
 					T("▶ एक-एक श्लोक · One verse at a time", "▶ One verse at a time") + (b.mala ? " + mala" : ""))) : null,
 			ocr && !(en && b.hi_only_ocr) ? h("p", { class: "ocr-note", lang: en ? "en" : "hi" }, ocr) : null,
 			en ? enNote(b) : b.en_note ? h("p", { class: "ocr-note", lang: "en" }, b.en_note) : null,
+			chapterEnBox(b, doc),
 			doc.note ? h("p", { class: "ocr-note" }, en ? toEn(doc.note) : doc.note) : null);
 		// in one-verse or page mode the reader covers the screen, so the long list is not built behind it
 		const covered = isOne(b) || (b.kind === "prose" && !S.scrollProse);
@@ -768,6 +801,7 @@
 		if (fromId) i = Math.max(0, items.findIndex((x) => x.id === fromId));
 		else if (saved && String(saved.n) === String(n)) i = Math.max(0, items.findIndex((x) => x.id === saved.id));
 		closeRecite();
+		curDoc = ch.doc;
 		RC = { b, ch, items, i };
 		const card = h("div", { class: "rc-card", "aria-live": "polite" });
 		const bar = h("i");
@@ -782,8 +816,9 @@
 				h("div", { class: "rc-top" },
 					h("a", { class: "ibtn", href: "#/" + b.id, "aria-label": T("Contents · सूची", "Contents"), title: T("Contents · सूची", "Contents") }, svg(ICON.list)),
 					h("a", { class: "where", href: "#/" + b.id, title: T("सूची पर जाएँ · Back to contents", "Back to the contents") }, h("b", { class: !EN() && b.script === "sa" ? "sa" : null }, bTitle(b)),
-						h("span", null, chapterTitle(b, ch.meta) + (ch.toc.chapters.length > 1 ? " · " + (EN() ? (b.unit ? "Ch. " : "Part ") + (ch.index + 1) + " of " + ch.toc.chapters.length : dev(ch.index + 1) + "/" + dev(ch.toc.chapters.length)) : ""))),
+						h("span", null, chapterTitle(b, ch.meta) + (ch.toc.chapters.length > 1 ? " · " + (EN() ? (b.unit || b.purana ? "Ch. " : "Part ") + (ch.index + 1) + " of " + ch.toc.chapters.length : dev(ch.index + 1) + "/" + dev(ch.toc.chapters.length)) : ""))),
 					goToBox(b, ch.toc, n, true),
+					hasChapterEn(ch.doc) ? h("button", { class: "chip en-btn", title: "English translation of this chapter", onclick: () => openChapterEn(b, ch.doc) }, "English") : null,
 					h("button", { class: "ibtn", "aria-label": T("Whole chapter · पूरा अध्याय", "Whole chapter"), title: T("Whole chapter · पूरा अध्याय", "Whole chapter"), onclick: toWhole }, svg(ICON.scroll)),
 					h("button", { class: "ibtn aa", "aria-label": T("अक्षर, दूरी और रंग · Text size, spacing and colours", "Text size, spacing and colours"), title: T("अक्षर, दूरी और रंग · Text size, spacing and colours", "Text size, spacing and colours"), onclick: openSettings }, "Aa")),
 				h("div", { class: "rc-bar" }, bar)),
