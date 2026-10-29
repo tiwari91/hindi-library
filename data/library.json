@@ -81,6 +81,39 @@
    "sources": ["premchand"]
   },
   {
+   "id": "markandeya-purana",
+   "purana": true,
+   "title": "मार्कण्डेयपुराणम्",
+   "title_en": "Markandeya Purana",
+   "by": "मार्कण्डेय",
+   "desc": "133 of its 134 adhyayas in Sanskrit with Roman transliteration, from Sanskrit Wikisource (adhyaya 37 is missing there). Adhyayas 81–93 are the Devi Mahatmya.",
+   "script": "sa",
+   "kind": "verse",
+   "unit": "",
+   "verse": "श्लोक",
+   "layers": {"text": "संस्कृत", "tr": "Roman"},
+   "recite": true,
+   "no_search": true,
+   "ocr_note": "This text is typed on Sanskrit Wikisource and has not been checked against a printed edition there; a few typing errors may remain.",
+   "sources": ["sa-markandeya"]
+  },
+  {
+   "id": "devi-mahatmya",
+   "shelf": "stotra",
+   "title": "देवीमाहात्म्यम् · दुर्गासप्तशती",
+   "title_en": "Devi Mahatmya (Durga Saptashati)",
+   "by": "मार्कण्डेयपुराण, अध्याय ८१–९३",
+   "desc": "The 13 chapters of the Devi Mahatmya, 589 ślokas, in Sanskrit with Roman transliteration, from the Markandeya Purana on Sanskrit Wikisource.",
+   "script": "sa",
+   "kind": "verse",
+   "unit": "अध्याय",
+   "verse": "श्लोक",
+   "layers": {"text": "संस्कृत", "tr": "Roman"},
+   "recite": true,
+   "ocr_note": "This text is typed on Sanskrit Wikisource and has not been checked against a printed edition there; a few typing errors may remain. Verse numbers are those of the Markandeya Purana (81.1 and so on).",
+   "sources": ["sa-markandeya"]
+  },
+  {
    "id": "vishnu-purana",
    "purana": true,
    "title": "विष्णुपुराणम्",
@@ -199,7 +232,7 @@
   {"title": "शिव पुराण", "title_en": "Shiva Purana"},
   {"title": "श्रीमद्भागवत पुराण", "title_en": "Bhagavata Purana", "book": "bhagavata"},
   {"title": "नारद पुराण", "title_en": "Narada Purana"},
-  {"title": "मार्कण्डेय पुराण", "title_en": "Markandeya Purana"},
+  {"title": "मार्कण्डेय पुराण", "title_en": "Markandeya Purana", "book": "markandeya-purana"},
   {"title": "अग्नि पुराण", "title_en": "Agni Purana"},
   {"title": "भविष्य पुराण", "title_en": "Bhavishya Purana"},
   {"title": "ब्रह्मवैवर्त पुराण", "title_en": "Brahmavaivarta Purana"},
@@ -213,6 +246,14 @@
   {"title": "ब्रह्माण्ड पुराण", "title_en": "Brahmanda Purana"}
  ],
  "sources": {
+  "sa-markandeya": {
+   "title": "मार्कण्डेयपुराणम् — Sanskrit Wikisource",
+   "where": "Sanskrit Wikisource (sa.wikisource.org)",
+   "url": "https://sa.wikisource.org/wiki/%E0%A4%AE%E0%A4%BE%E0%A4%B0%E0%A5%8D%E0%A4%95%E0%A4%A3%E0%A5%8D%E0%A4%A1%E0%A5%87%E0%A4%AF%E0%A4%AA%E0%A5%81%E0%A4%B0%E0%A4%BE%E0%A4%A3%E0%A4%AE%E0%A5%8D",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "note": "The traditional Sanskrit text is public domain. The Wikisource pages hold several adhyayas each; they are split at each closing ‘इति श्रीमार्कण्डेयपुराणे…’ line. 133 of 134 adhyayas are included; adhyaya 37 is not on Wikisource. The Devi Mahatmya (Durga Saptashati) is adhyayas 81–93 of this text. Notes on the Wikisource pages are left out. The Roman transliteration is made by a fixed rule."
+  },
   "sa-vishnu-purana": {
    "title": "विष्णुपुराणम् — Sanskrit Wikisource",
    "where": "Sanskrit Wikisource (sa.wikisource.org)",
