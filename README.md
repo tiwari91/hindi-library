@@ -65,6 +65,16 @@ http://localhost:8000/.
 4. Run the site locally, check a chapter at phone and desktop width in light and dark mode, then
    commit and push. GitHub Pages publishes `main` automatically.
 
+## Books imported from other readers
+
+- **Parāśara Smṛti** (`data/parashara/`): all 583 ślokas, copied from
+  [tiwari91/parashara-smriti](https://github.com/tiwari91/parashara-smriti) at commit `7636992`
+  with `python3 tools/import_parashara.py <clone>`. Sanskrit from Sanskrit Wikisource (CC BY-SA
+  4.0); the English meanings were written with Claude for that reader and are labelled as such.
+  Its reader features live on here for every book: one verse at a time (`"one": true` opens a
+  book that way), "Go to" a chapter or verse, "Hide meaning until I tap" (in settings), text size
+  and arrow keys.
+
 ## Licence
 
 Text content is shared under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/),

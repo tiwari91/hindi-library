@@ -239,6 +239,29 @@ main:focus { outline: none; }
 .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 .chip.ghost { border-style: dashed; }
 
+/* "Hide meaning until I tap" */
+.reveal { display: none; margin-top: .7rem; }
+body[data-tap="1"] .reveal:not(.done) { display: inline-block; }
+body[data-tap="1"] .mwrap:not(.open) { display: none; }
+
+/* Go to chapter / verse */
+.goto { display: flex; gap: 6px; margin: .9rem 0 0; }
+.goto select, .goto input {
+	min-height: 40px; border: 1px solid var(--rule); border-radius: 12px; background: var(--paper); color: var(--ink);
+	font: inherit; font-size: .92rem; padding: 0 .6rem; min-width: 0;
+}
+.goto select { flex: 1 1 auto; max-width: 20rem; font-family: var(--f-hi); }
+.goto input { flex: 0 0 8.5rem; }
+.goto input[aria-invalid="true"] { border-color: #c0392b; }
+.rc-goto { max-width: 42rem; width: 100%; margin: 0 auto; padding: 0 12px 8px; }
+.rc-goto .goto { margin: 0; }
+
+/* About this text */
+details.about { margin: 1.1rem 0 0; border: 1px solid var(--rule); border-radius: 14px; padding: .2rem 1rem; background: var(--surface); }
+details.about summary { cursor: pointer; padding: .6rem 0; font-size: .85rem; letter-spacing: .06em; font-weight: 600; color: var(--ink-2); }
+details.about p { margin: 0 0 .8rem; font-size: .95rem; }
+details.about p[lang="en"] { font-family: var(--f-lat); }
+
 .verse {
 	padding: 1.1rem 0 1.2rem;
 	border-bottom: 1px solid var(--rule);

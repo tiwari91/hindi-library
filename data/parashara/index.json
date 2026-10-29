@@ -1,0 +1,89 @@
+{
+ "book": "parashara",
+ "chapters": [
+  {
+   "n": 1,
+   "file": "01.json",
+   "title": "प्रथमोऽध्यायः",
+   "title_en": "Chapter 1",
+   "count": 67
+  },
+  {
+   "n": 2,
+   "file": "02.json",
+   "title": "द्वितीयोऽध्यायः",
+   "title_en": "Chapter 2",
+   "count": 15
+  },
+  {
+   "n": 3,
+   "file": "03.json",
+   "title": "तृतीयोऽध्यायः",
+   "title_en": "Chapter 3",
+   "count": 48
+  },
+  {
+   "n": 4,
+   "file": "04.json",
+   "title": "चतुर्थोऽध्यायः",
+   "title_en": "Chapter 4",
+   "count": 33
+  },
+  {
+   "n": 5,
+   "file": "05.json",
+   "title": "पञ्चमोऽध्यायः",
+   "title_en": "Chapter 5",
+   "count": 25
+  },
+  {
+   "n": 6,
+   "file": "06.json",
+   "title": "षष्ठोऽध्यायः",
+   "title_en": "Chapter 6",
+   "count": 75
+  },
+  {
+   "n": 7,
+   "file": "07.json",
+   "title": "सप्तमोऽध्यायः",
+   "title_en": "Chapter 7",
+   "count": 38
+  },
+  {
+   "n": 8,
+   "file": "08.json",
+   "title": "अष्टमोऽध्यायः",
+   "title_en": "Chapter 8",
+   "count": 42
+  },
+  {
+   "n": 9,
+   "file": "09.json",
+   "title": "नवमोऽध्यायः",
+   "title_en": "Chapter 9",
+   "count": 61
+  },
+  {
+   "n": 10,
+   "file": "10.json",
+   "title": "दशमोऽध्यायः",
+   "title_en": "Chapter 10",
+   "count": 41
+  },
+  {
+   "n": 11,
+   "file": "11.json",
+   "title": "एकादशोऽध्यायः",
+   "title_en": "Chapter 11",
+   "count": 56
+  },
+  {
+   "n": 12,
+   "file": "12.json",
+   "title": "द्वादशोऽध्यायः",
+   "title_en": "Chapter 12",
+   "count": 82
+  }
+ ]
+}

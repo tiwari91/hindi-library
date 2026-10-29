@@ -10,6 +10,7 @@
 	S.hide = S.hide || {};
 	S.last = S.last || {};
 	S.mala = S.mala || {};
+	S.one = S.one || {};
 	function save() {
 		try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* private mode: keep working without saving */ }
 	}
@@ -113,6 +114,7 @@
 		else document.documentElement.removeAttribute("data-theme");
 	}
 	function applyScale() { document.documentElement.style.setProperty("--scale", S.scale || 1); }
+	function applyTap() { if (S.tap) document.body.dataset.tap = "1"; else delete document.body.dataset.tap; }
 
 	// ---------- rendering pieces ----------
 	function lines(text, cls) {
@@ -145,6 +147,8 @@
 		const parts = [head];
 		if (it.text) parts.push(lines(it.text, scriptCls));
 		if (it.tr) parts.push(lines(it.tr, "tr-text"));
+		// meanings and notes sit in one box that "Hide meaning until I tap" can fold away
+		const mw = h("div", { class: "mwrap" });
 		if (it.hi) {
 			const lab = [];
 			if (it.hi_group) lab.push((b.verse || "") + " " + it.hi_group[0] + "–" + it.hi_group[1] + " का अर्थ");
@@ -154,12 +158,17 @@
 					it.hi_src ? h("a", { href: it.hi_src, target: "_blank", rel: "noopener" }, "स्कैन देखें") : null));
 			}
 			m.append(it.hi);
-			parts.push(m);
+			mw.append(m);
 		} else if (it.hi_ref) {
-			parts.push(h("div", { class: "meaning ref", lang: "hi" }, "अर्थ आगे " + (b.verse || "") + " " + it.hi_ref + " के साथ है।"));
+			mw.append(h("div", { class: "meaning ref", lang: "hi" }, "अर्थ आगे " + (b.verse || "") + " " + it.hi_ref + " के साथ है।"));
 		}
-		if (it.en) parts.push(h("div", { class: "meaning en", lang: "en" }, it.en));
-		if (it.note) parts.push(h("p", { class: "note", lang: b.note_lang || "hi" }, it.note));
+		if (it.en) mw.append(h("div", { class: "meaning en", lang: "en" }, it.en));
+		if (it.note) mw.append(h("p", { class: "note", lang: b.note_lang || "hi" }, it.note));
+		if (mw.childNodes.length) {
+			const rv = h("button", { class: "chip ghost reveal", type: "button" }, "अर्थ दिखाएँ · Show meaning");
+			rv.addEventListener("click", () => { rv.classList.add("done"); mw.classList.add("open"); });
+			parts.push(rv, mw);
+		}
 		return h("article", { class: "verse", id: opts.recite ? null : "v-" + it.id, "data-id": it.id }, parts);
 	}
 
@@ -221,7 +230,8 @@
 			h("p", { class: "eyebrow" }, h("a", { href: "#/" }, "पुस्तकालय"), " · ", b.title_en),
 			h("h1", { class: b.script === "sa" ? "sa" : null }, b.title),
 			b.by ? h("p", { class: "sub" }, b.by) : null,
-			b.desc ? h("p", { class: "lede" }, b.desc) : null)];
+			b.desc ? h("p", { class: "lede" }, b.desc) : null,
+			aboutBox(b))];
 		if (L) {
 			const c = t.chapters.find((x) => String(x.n) === String(L.n));
 			if (c) parts.push(h("a", { class: "resume", href: L.id ? verseUrl(b, L.n, L.id) : "#/" + b.id + "/" + L.n },
@@ -235,6 +245,50 @@
 		if (b.sources) parts.push(h("p", { class: "note" }, "स्रोत · Sources: ", h("a", { href: "#/sources" }, b.sources.map((s) => LIB.sources[s] ? LIB.sources[s].where.split(" (")[0] : s).join(", "))));
 		view.replaceChildren(...parts);
 	}
+
+	function aboutBox(b) {
+		if (!b.about) return null;
+		return h("details", { class: "about" }, h("summary", null, "इस ग्रंथ के बारे में · About this text"),
+			b.about.map((p) => h("p", { lang: /[ऀ-ॿ]/.test(p) ? "hi" : "en" }, p)));
+	}
+
+	// "Go to": a chapter list and a box for a verse number such as 3.16, or 16 in this chapter
+	const toAscii = (s) => String(s).replace(/[०-९]/g, (d) => DEV.indexOf(d));
+	async function goTo(b, curN, raw, inRecite) {
+		const v = toAscii(raw).replace(/[।॥|\s]/g, "");
+		if (!v) return false;
+		const m = v.match(/^(\d+)[.:](.+)$/);
+		const n = m ? m[1] : String(curN);
+		const want = m ? m[2] : v;
+		const ch = await chapter(b, n);
+		if (!ch) return false;
+		const it = ch.doc.items.find((x) => x.id === n + "." + want || x.id === want && !x.h && !x.gap) ||
+			ch.doc.items.find((x) => x.n && toAscii(x.n).split("(")[0] === want);
+		if (!it) return false;
+		if (inRecite) openRecite(b, n, it.id);
+		else location.hash = verseUrl(b, n, it.id);
+		return true;
+	}
+	function goToBox(b, t, curN, inRecite) {
+		if (b.kind === "prose") return null;
+		const sel = h("select", { "aria-label": "Chapter · अध्याय" }, t.chapters.map((c) =>
+			h("option", { value: c.n, selected: String(c.n) === String(curN) }, dev(c.label || c.n) + ". " + c.title)));
+		sel.addEventListener("change", () => {
+			if (inRecite) openRecite(b, sel.value, null);
+			else location.hash = "#/" + b.id + "/" + sel.value;
+		});
+		const inp = h("input", { type: "text", inputmode: "decimal", placeholder: "Go to · " + (b.verse || "verse"), "aria-label": "Go to verse, for example 3.16" });
+		inp.addEventListener("keydown", async (e) => {
+			if (e.key !== "Enter") return;
+			e.preventDefault();
+			if (await goTo(b, sel.value, inp.value, inRecite)) { inp.value = ""; inp.blur(); }
+			else { inp.select(); inp.setAttribute("aria-invalid", "true"); setTimeout(() => inp.removeAttribute("aria-invalid"), 1200); }
+		});
+		return h("div", { class: "goto" }, sel, inp);
+	}
+
+	// one verse at a time: a per-book choice; some books (b.one) start that way
+	const isOne = (b) => !!b.recite && (b.id in S.one ? S.one[b.id] : !!b.one);
 
 	let observer = null;
 	async function viewChapter(b, n, focusId) {
@@ -252,7 +306,12 @@
 			h("h1", { class: b.script === "sa" ? "sa" : null }, doc.title || chapterTitle(b, meta)),
 			meta.title_tr ? h("p", { class: "tr" }, meta.title_tr) : null,
 			layerChips(b),
-			b.recite ? h("div", { class: "layers" }, h("button", { class: "chip ghost", onclick: () => openRecite(b, meta.n, null) }, "▶ एक-एक करके पढ़ें · Recite mode" + (b.mala ? " + mala" : ""))) : null,
+			goToBox(b, t, meta.n, false),
+			b.recite ? h("div", { class: "layers" },
+				h("button", { class: "chip ghost", onclick: () => openRecite(b, meta.n, null) }, "▶ एक-एक करके पढ़ें · Recite mode" + (b.mala ? " + mala" : "")),
+				h("button", { class: "chip ghost", "aria-pressed": String(isOne(b)), title: "Always open this book one verse at a time",
+					onclick: (e) => { S.one[b.id] = !isOne(b); save(); e.currentTarget.setAttribute("aria-pressed", String(S.one[b.id])); if (S.one[b.id]) openRecite(b, meta.n, null); } },
+					"हमेशा एक-एक · Always one at a time")) : null,
 			b.ocr_note ? h("p", { class: "ocr-note", lang: "hi" }, b.ocr_note) : null,
 			doc.note ? h("p", { class: "ocr-note" }, doc.note) : null);
 		const body = b.kind === "prose"
@@ -291,6 +350,7 @@
 			}, { rootMargin: "-80px 0px -70% 0px" });
 			view.querySelectorAll("[id^='v-']").forEach((el) => observer.observe(el));
 		}
+		if (isOne(b)) await openRecite(b, meta.n, focusId || null);
 	}
 
 	function layerChips(b) {
@@ -371,6 +431,8 @@
 					h("button", { onclick: () => setSize(-0.1), "aria-label": "Smaller" }, "अ−"),
 					h("button", { "aria-pressed": "true", disabled: true }, sizeOut),
 					h("button", { onclick: () => setSize(0.1), "aria-label": "Larger" }, "अ+"))),
+			h("div", { class: "row" }, h("span", null, "Meaning · अर्थ"),
+				seg([["show", "दिखाएँ · Show"], ["tap", "टैप पर · Hide until I tap"]], () => S.tap ? "tap" : "show", (v) => { S.tap = v === "tap"; applyTap(); save(); })),
 			h("button", { class: "chip", onclick: close }, "बंद करें · Close"));
 		document.body.append(scrim, sheet);
 		sheet.querySelector("button").focus();
@@ -404,6 +466,7 @@
 					h("button", { class: "ibtn", "aria-label": "Close recite mode", onclick: closeRecite }, svg(ICON.close)),
 					where,
 					h("button", { class: "ibtn", "aria-label": "Settings", onclick: openSettings }, "अ")),
+				h("div", { class: "rc-goto" }, goToBox(b, ch.toc, n, true)),
 				h("div", { class: "rc-bar" }, bar)),
 			body, foot);
 		document.body.append(root);
@@ -458,11 +521,13 @@
 		}
 	}
 	document.addEventListener("keydown", (e) => {
-		if (!RC) return;
-		if (e.target && /input|textarea/i.test(e.target.tagName)) return;
+		if (!RC || document.querySelector(".sheet")) return;
+		const tg = e.target;
+		if (tg && tg.closest && tg.closest("input, select, textarea, [contenteditable]")) return;
+		if (e.key === "Escape") return closeRecite();
+		if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
 		if (e.key === "ArrowRight" || e.key === "PageDown") { e.preventDefault(); RC.go(1); }
 		else if (e.key === "ArrowLeft" || e.key === "PageUp") { e.preventDefault(); RC.go(-1); }
-		else if (e.key === "Escape") closeRecite();
 		else if ((e.key === " " || e.key === "Enter") && RC.b.mala && !(e.target && e.target.closest && e.target.closest("button:not(.mala-btn)"))) { e.preventDefault(); RC.count && RC.count(); }
 	});
 
@@ -566,6 +631,7 @@
 	})();
 
 	applyLayers(null);
+	applyTap();
 	getJSON("data/library.json").then((lib) => {
 		LIB = lib;
 		document.dispatchEvent(new CustomEvent("hl:ready"));
