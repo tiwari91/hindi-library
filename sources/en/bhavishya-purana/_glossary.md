@@ -17,3 +17,7 @@ Names in simple roman spelling, no diacritics.
 - Prithviraj (also Mahiraja, Bhumiraja): king of Ajmer and Dehli; Jayachandra: king of Kanyakubja; Parimala: king of Mahavati
 - Udayasimha: "Krishna's part", later Udal; Ahlada: Alha; Devasimha, Balakhani, Brahmananda, Talana, Desharaja, Vatsaraja: heroes of Mahavati
 - Isha-masiha, Mahamada: names as the text gives them; the text's portrayals are reported as given
+- Krishna Chaitanya (also Yajnamsha, "part of Yajna"): the teacher in the Pratisarga Parva who is questioned by Ramanuja, Shankara and others; Ramananda, Kabir, Nanak, Namadeva, Raidas, Madhva, Nimbaditya, Vishnusvami: teachers and poets presented as births of gods
+- Jagannath: Vishnu at Puri; Kalki: the future avatar, born at Sambhala to Vishnuyasha
+- Mleccha: the text's word for foreign or non-Vedic people, reported as given; Kali: the age and its personified spirit; Bali, Maya: demon lords who work against the gods
+- Babara, Homayu, Akabara: rulers of Delhi as spelled in the text
