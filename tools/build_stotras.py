@@ -8,7 +8,7 @@ The words are used exactly as on Wikisource. This script only splits lines into 
 (a verse ends at ॥ or ।।, or after four lines), turns "X उवाच" lines into speakers and
 "॥ X ॥" lines into headings, and adds a Roman transliteration made by tools/iast.py.
 """
-import json, os, re, sys, urllib.parse
+import html, json, os, re, sys, urllib.parse
 sys.path.insert(0, os.path.dirname(__file__))
 from wiki import wikitext, html as page_html, ROOT
 from iast import iast
@@ -28,7 +28,7 @@ def clean_wiki(text):
     text = re.sub(r"<center>|</center>|<br\s*/?>", "\n", text)
     text = re.sub(r"'''(.*?)'''", r"॥ \1 ॥", text)
     text = re.sub(r"<[^>]+>", "", text)
-    text = text.replace("&#32;", " ").replace(" ", " ")
+    text = html.unescape(text).replace("\xa0", " ")   # numeric entities ("&#2404;", "&#32;") and "&nbsp;"
     return [l.strip() for l in text.split("\n")]
 
 

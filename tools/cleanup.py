@@ -65,6 +65,7 @@ def strip_footnotes(s):
         keep[key] = mm.group(0)
         return key
     s = MID_MARK.sub(protect, s)
+    s = re.sub(r"&#[0-9]+;|&#[xX][0-9a-fA-F]+;", protect, s)   # a leftover HTML entity: its digits are not footnote marks
     s = re.sub(r"\[\[[^\]]*\]\]", "", s)                                     # Wikisource links to a quoted Vedic mantra "[[...|३६.२४]]"
     s = re.sub(r"\S*\|" + NUM + r"(?:\." + NUM + r")*\]\]", "", s)          # the same, cut in two by a line break
     s = re.sub(r"\{\s*" + NUM + r"\s*\}", "", s)                            # "{१५९}"
