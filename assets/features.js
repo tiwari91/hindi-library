@@ -4,7 +4,9 @@
 	"use strict";
 	const HL = window.HL;
 	if (!HL) return;
-	const { S, save, h, svg, ICON, dev, toast, getJSON, toc, chapter, bookById, verseUrl, toolMakers, homeExtras, routes } = HL;
+	const { S, save, h, svg, ICON, dev, toast, getJSON, toc, chapter, bookById, verseUrl, toolMakers, homeExtras, routes, EN, T, iast, toEn, bTitle, cTitle } = HL;
+	const num = (x) => (EN() ? String(x) : dev(x));
+	const label = (n) => (EN() ? toEn(String(n || "")).replace(/[०-९]/g, (d) => "०१२३४५६७८९".indexOf(d)) : n);
 	const view = document.getElementById("view");
 	const readable = () => HL.books().filter((b) => !b.link && !b.hidden && !b.no_search);
 	document.getElementById("nav-search").hidden = false;
@@ -55,7 +57,7 @@
 					const main = it.text || it.p || it.poem;
 					if (!main) continue;
 					const all = [main, it.hi, it.en, it.note].filter(Boolean).join(" \n ");
-					rows.push({ b, n: c.n, ct: c.title, it, dv: plainDev(all), lat: fold(all + " " + (it.tr || "")) });
+					rows.push({ b, n: c.n, ct: c.title, c, it, dv: plainDev(all), lat: fold(all + " " + (it.tr || "")), en: it.en ? " " + it.en.toLowerCase().replace(/[^a-z0-9\s]/g, " ") : "" });
 				}
 			}));
 			onProgress && onProgress(++done, list.length);
@@ -71,30 +73,49 @@
 		return (from ? "…" : "") + s.slice(from, from + 170) + (from + 170 < s.length ? "…" : "");
 	}
 	routes.search = async (r) => {
-		document.title = "Search · हिन्दी पुस्तकालय";
+		document.title = T("Search · हिन्दी पुस्तकालय", "Search · Hindi Library");
+		const en = EN();
 		const q0 = r.n || "";
-		const input = h("input", { type: "search", value: q0, placeholder: "कृष्ण, krishna, dharma…", "aria-label": "Search all books", autocomplete: "off" });
+		const input = h("input", { type: "search", value: q0, placeholder: en ? "krishna, dharma, mind…" : "कृष्ण, krishna, dharma…", "aria-label": "Search all books", autocomplete: "off" });
 		const status = h("p", { class: "note", role: "status" });
 		const out = h("ol", { class: "results" });
-		const form = h("form", { class: "searchbox", role: "search" }, input, h("button", { class: "chip", type: "submit" }, "खोजें · Search"));
+		const form = h("form", { class: "searchbox", role: "search" }, input, h("button", { class: "chip", type: "submit" }, T("खोजें · Search", "Search")));
 		form.addEventListener("submit", (e) => { e.preventDefault(); location.hash = "#/search/" + encodeURIComponent(input.value.trim()); });
 		view.replaceChildren(h("section", { class: "hero" },
-			h("p", { class: "eyebrow" }, h("a", { href: "#/" }, "पुस्तकालय"), " · Search"),
-			h("h1", null, "खोजें · Search"),
-			h("p", { class: "lede" }, "Search every book (except the Bhagavata Purana, which is too large to search on a phone). Type in Devanagari (धर्म) or in English letters (dharma, krishna).")), form, status, out);
+			h("p", { class: "eyebrow" }, h("a", { href: "#/" }, T("पुस्तकालय", "Library")), " · Search"),
+			h("h1", null, T("खोजें · Search", "Search")),
+			h("p", { class: "lede" }, en
+				? "Search the verses, transliteration and English meanings of every book except the Puranas (too large to search on a phone). Type a word in English letters, such as dharma, krishna or mind."
+				: "Search every book (except the Puranas, which are too large to search on a phone). Type in Devanagari (धर्म) or in English letters (dharma, krishna).")), form, status, out);
 		if (!q0) { input.focus(); return; }
-		status.textContent = "खोज रहे हैं… Searching…";
+		status.textContent = T("खोज रहे हैं… Searching…", "Searching…");
 		const rows = await buildIndex((d, n) => { status.textContent = "Loading books " + d + "/" + n + "…"; });
 		const dq = isDev(q0) ? plainDev(q0) : null;
 		const lq = fold(q0).trim();
 		if (!dq && lq.length < 2) { status.textContent = "Type at least two letters."; return; }
-		const hits = rows.filter((x) => dq ? x.dv.includes(dq) : x.lat.includes(" " + lq));
-		status.textContent = hits.length ? hits.length + " results" + (hits.length > 200 ? " (showing the first 200)" : "") : "कुछ नहीं मिला · Nothing found.";
+		// English words in the meanings match as typed; Sanskrit words match through the folded spelling
+		const eq = " " + q0.toLowerCase().trim();
+		const hits = rows.filter((x) => dq ? x.dv.includes(dq) : x.lat.includes(" " + lq) || (x.en && x.en.includes(eq)));
+		status.textContent = hits.length ? hits.length + " results" + (hits.length > 200 ? " (showing the first 200)" : "") : "";
+		if (!hits.length) {
+			out.replaceChildren(h("li", { class: "empty" }, en
+				? "Nothing found for “" + q0 + "”. Try a shorter word, a different spelling (krishna or krsna), or a word from the English meaning."
+				: "कुछ नहीं मिला · Nothing found for “" + q0 + "”. छोटा शब्द या दूसरी वर्तनी आज़माएँ · Try a shorter word or another spelling."));
+			return;
+		}
 		out.replaceChildren(...hits.slice(0, 200).map((x) => h("li", null,
 			h("a", { href: verseUrl(x.b, x.n, x.it.id) },
-				h("span", { class: "rb" }, x.b.title, " · ", x.ct, x.it.n ? " · " + x.it.n : ""),
-				h("span", { class: "rt" }, snippet(x.it.text || x.it.p || x.it.poem, q0))))));
+				h("span", { class: "rb" }, bTitle(x.b), " · ", en ? cTitle(x.c) : x.ct, x.it.n ? " · " + label(x.it.n) : ""),
+				h("span", { class: "rt" }, en
+					? snippetEn(x, q0)
+					: snippet(x.it.text || x.it.p || x.it.poem, q0))))));
 	};
+	function snippetEn(x, q) {
+		const it = x.it;
+		const s = it.en && it.en.toLowerCase().includes(q.toLowerCase()) ? it.en : (it.tr || iast(it.text || it.p || it.poem || ""));
+		const t = String(s).replace(/\s+/g, " ");
+		return t.length > 170 ? t.slice(0, 170) + "…" : t;
+	}
 
 	// ---------- saved verses (bookmarks) ----------
 	S.marks = Array.isArray(S.marks) ? S.marks : [];
@@ -102,35 +123,38 @@
 	const isMarked = (k) => S.marks.some((m) => m.k === k);
 	toolMakers.push((b, n, it) => {
 		const k = markKey(b, n, it.id);
-		const btn = h("button", { class: "ibtn mark", "aria-pressed": String(isMarked(k)), title: "सहेजें · Save this verse", "aria-label": "Save this verse" }, svg(ICON.mark));
+		const btn = h("button", { class: "ibtn mark", "aria-pressed": String(isMarked(k)), title: T("सहेजें · Save this verse", "Save this verse"), "aria-label": "Save this verse" }, svg(ICON.mark));
 		btn.addEventListener("click", () => {
 			if (isMarked(k)) S.marks = S.marks.filter((m) => m.k !== k);
 			else S.marks.unshift({ k, b: b.id, n, id: it.id, vn: it.n || "", t: String(it.text || it.p || it.poem || "").split("\n")[0].slice(0, 120), at: Date.now() });
 			save();
 			btn.setAttribute("aria-pressed", String(isMarked(k)));
-			toast(isMarked(k) ? "सहेजा गया · Saved" : "हटाया गया · Removed");
+			toast(isMarked(k) ? T("सहेजा गया · Saved", "Saved") : T("हटाया गया · Removed", "Removed"));
 		});
 		return btn;
 	});
 	routes.saved = () => {
-		document.title = "Saved verses · हिन्दी पुस्तकालय";
+		document.title = T("Saved verses · हिन्दी पुस्तकालय", "Saved verses · Hindi Library");
+		const en = EN();
 		const list = h("ol", { class: "results" });
 		function paint() {
 			const marks = S.marks.filter((m) => bookById(m.b));
 			list.replaceChildren(...marks.map((m) => {
 				const b = bookById(m.b);
-				const rm = h("button", { class: "linkish", type: "button" }, "हटाएँ · Remove");
+				const rm = h("button", { class: "linkish", type: "button" }, T("हटाएँ · Remove", "Remove"));
 				rm.addEventListener("click", () => { S.marks = S.marks.filter((x) => x.k !== m.k); save(); paint(); });
 				return h("li", null, h("a", { href: verseUrl(b, m.n, m.id) },
-					h("span", { class: "rb" }, b.title, " · ", (b.unit ? b.unit + " " : "") + dev(m.n), m.vn ? " · " + m.vn : ""),
-					h("span", { class: "rt" }, m.t)), rm);
+					h("span", { class: "rb" }, bTitle(b), " · ", en ? (b.unit ? "Chapter " : "Part ") + m.n : (b.unit ? b.unit + " " : "") + dev(m.n), m.vn ? " · " + label(m.vn) : ""),
+					h("span", { class: "rt" }, en ? iast(m.t) : m.t)), rm);
 			}));
-			if (!marks.length) list.replaceChildren(h("li", { class: "empty" }, "अभी कुछ सहेजा नहीं गया। Nothing saved yet: tap the bookmark next to any verse."));
+			if (!marks.length) list.replaceChildren(h("li", { class: "empty" }, en
+				? "Nothing saved yet. While reading, tap the bookmark button next to a verse to keep it here."
+				: "अभी कुछ सहेजा नहीं गया। Nothing saved yet: tap the bookmark next to any verse."));
 		}
 		paint();
 		view.replaceChildren(h("section", { class: "hero" },
-			h("p", { class: "eyebrow" }, h("a", { href: "#/" }, "पुस्तकालय"), " · Saved"),
-			h("h1", null, "सहेजे श्लोक · Saved verses"),
+			h("p", { class: "eyebrow" }, h("a", { href: "#/" }, T("पुस्तकालय", "Library")), " · Saved"),
+			h("h1", null, T("सहेजे श्लोक · Saved verses", "Saved verses")),
 			h("p", { class: "lede" }, "Saved on this device only.")), list);
 	};
 
@@ -149,6 +173,11 @@
 		const verses = ch.doc.items.filter((x) => x.text);
 		const it = verses[Math.min(k, verses.length - 1)];
 		if (!it) return null;
+		if (EN()) return h("section", { class: "votd", lang: "en" },
+			h("p", { class: "eyebrow" }, "Verse of the day"),
+			h("p", { class: "tr-text votd-tr" }, it.tr || iast(it.text)),
+			it.en ? h("p", { class: "votd-hi votd-en" }, it.en) : null,
+			h("a", { href: verseUrl(b, c.n, it.id) }, "Bhagavad Gita " + c.n + "." + label(it.n || "") + " →"));
 		return h("section", { class: "votd" },
 			h("p", { class: "eyebrow" }, "आज का श्लोक · Verse of the day"),
 			h("p", { class: "sa-text" }, it.text),
@@ -165,23 +194,27 @@
 		if ("onvoiceschanged" in synth) synth.addEventListener("voiceschanged", loadVoices);
 		const pick = () => voices.find((v) => /^sa/i.test(v.lang)) || voices.find((v) => /^hi/i.test(v.lang)) || voices.find((v) => /^(mr|ne)/i.test(v.lang)) || null;
 		let speaking = null;
+		const pickEn = () => voices.find((v) => /^en-IN/i.test(v.lang)) || voices.find((v) => /^en-GB/i.test(v.lang)) || voices.find((v) => /^en/i.test(v.lang)) || null;
+		// English mode: read the English meaning, or the transliteration without accents so an English voice can say it
+		const plainLatin = (s) => String(s).normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/'/g, "");
 		toolMakers.push((b, n, it) => {
-			const text = it.text || it.hi || it.en;
+			const en = EN();
+			const text = en ? it.en || plainLatin(it.tr || iast(it.text || it.hi || "")) : it.text || it.hi || it.en;
 			if (!text) return null;
-			const btn = h("button", { class: "ibtn speak", title: "सुनें · Read aloud", "aria-label": "Read aloud" }, svg(ICON.speak));
+			const btn = h("button", { class: "ibtn speak", title: T("सुनें · Read aloud", "Read aloud"), "aria-label": "Read aloud" }, svg(ICON.speak));
 			btn.addEventListener("click", () => {
 				if (speaking === btn) { synth.cancel(); speaking = null; btn.removeAttribute("aria-pressed"); return; }
 				synth.cancel();
 				document.querySelectorAll(".ibtn.speak[aria-pressed]").forEach((x) => x.removeAttribute("aria-pressed"));
 				const u = new SpeechSynthesisUtterance(String(text).replace(/[॥|]+\s*[०-९0-9.]*\s*[॥|]*/g, ". ").replace(/।/g, ","));
-				const v = it.text || it.hi ? pick() : null;
-				if (v) { u.voice = v; u.lang = v.lang; } else u.lang = it.text || it.hi ? "hi-IN" : "en-IN";
+				const v = en ? pickEn() : it.text || it.hi ? pick() : null;
+				if (v) { u.voice = v; u.lang = v.lang; } else u.lang = en ? "en-IN" : it.text || it.hi ? "hi-IN" : "en-IN";
 				u.rate = 0.85;
 				u.onend = u.onerror = () => { if (speaking === btn) { speaking = null; btn.removeAttribute("aria-pressed"); } };
 				speaking = btn;
 				btn.setAttribute("aria-pressed", "true");
 				synth.speak(u);
-				if (!v && (it.text || it.hi)) toast("No Hindi voice on this device; using the default voice.");
+				if (!v && !en && (it.text || it.hi)) toast("No Hindi voice on this device; using the default voice.");
 			});
 			return btn;
 		});

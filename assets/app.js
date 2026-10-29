@@ -11,8 +11,85 @@
 	S.last = S.last || {};
 	S.mala = S.mala || {};
 	S.one = S.one || {};
+	S.hideEn = S.hideEn || {};
 	function save() {
 		try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* private mode: keep working without saving */ }
+	}
+
+	// ---------- language: "hi" (default, Devanagari with English help) or "en" (English only) ----------
+	// a link can carry ?lang=en or ?lang=hi after the route, e.g. #/gita/2?lang=en
+	function langFromUrl() {
+		const m = location.hash.match(/[?&]lang=(en|hi)\b/);
+		if (m) { S.lang = m[1] === "en" ? "en" : undefined; save(); }
+	}
+	langFromUrl();
+	const EN = () => S.lang === "en";
+	const T = (hi, en) => (EN() ? en : hi);
+
+	// Devanagari -> IAST, the same fixed rule as tools/iast.py (used for English mode)
+	const IV = { "अ": "a", "आ": "ā", "इ": "i", "ई": "ī", "उ": "u", "ऊ": "ū", "ऋ": "ṛ", "ॠ": "ṝ", "ऌ": "ḷ", "ए": "e", "ऐ": "ai", "ओ": "o", "औ": "au", "ऑ": "ŏ" };
+	const IM = { "ा": "ā", "ि": "i", "ी": "ī", "ु": "u", "ू": "ū", "ृ": "ṛ", "ॄ": "ṝ", "ॢ": "ḷ", "े": "e", "ै": "ai", "ो": "o", "ौ": "au", "ॉ": "ŏ" };
+	const IC = { "क": "k", "ख": "kh", "ग": "g", "घ": "gh", "ङ": "ṅ", "च": "c", "छ": "ch", "ज": "j", "झ": "jh", "ञ": "ñ", "ट": "ṭ", "ठ": "ṭh", "ड": "ḍ", "ढ": "ḍh", "ण": "ṇ",
+		"त": "t", "थ": "th", "द": "d", "ध": "dh", "न": "n", "प": "p", "फ": "ph", "ब": "b", "भ": "bh", "म": "m", "य": "y", "र": "r", "ल": "l", "ळ": "ḷ", "व": "v", "श": "ś", "ष": "ṣ", "स": "s", "ह": "h" };
+	const INUK = { "क": "q", "ख": "ḵh", "ग": "ġ", "ज": "z", "ड": "ṛ", "ढ": "ṛh", "फ": "f" };
+	// candrabindu as ṁ: the combining m̐ is missing from most fonts
+	const IO = { "ं": "ṃ", "ः": "ḥ", "ँ": "ṁ", "ऽ": "'", "॥": "||", "।": "|", "ॐ": "oṃ", "॰": "." };
+	// Hindi (not Sanskrit) drops the "a" at the end of a word: "aur", "kar", "premchand"
+	function iastHi(s) {
+		// per word: a final consonant + "a" loses the "a" when the word has another vowel before it
+		// (not after a conjunct: "nitya", "mastiṣka" keep it)
+		return iast(s).replace(/\s*\|\|?/g, ".").replace(/[^\s,.;:!?"“”‘’()\-–—|]+/g, (w) => {
+			const m = w.match(/^(.*[aāiīuūeoṛṃṁ](?:kh|gh|ch|jh|ṭh|ḍh|th|dh|ph|bh|[^aāiīuūeoṛṃḥṁ'h]))a$/);
+			return m ? m[1] : w;
+		});
+	}
+	function iast(s) {
+		// NFC keeps nukta letters (क़, ड़) as letter + ़, which the loop below expects
+		const a = Array.from(String(s).normalize("NFC"));
+		let out = "";
+		for (let i = 0; i < a.length; i++) {
+			const ch = a[i];
+			if (IC[ch]) {
+				let base = IC[ch], nx = a[i + 1];
+				if (nx === "़") { base = INUK[ch] || base; i++; nx = a[i + 1]; }
+				out += base;
+				if (nx === "्") { i++; continue; }
+				if (IM[nx]) { out += IM[nx]; i++; continue; }
+				out += "a";
+				continue;
+			}
+			if (IV[ch]) out += IV[ch];
+			else if (IO[ch]) out += IO[ch];
+			else if (DEVD.includes(ch)) out += DEVD.indexOf(ch);
+			else if (IM[ch]) out += IM[ch];
+			else if (ch === "्" || ch === "़" || ch === "‌" || ch === "‍") { /* skip */ }
+			else out += ch;
+		}
+		return out;
+	}
+	const DEVD = "०१२३४५६७८९";
+	const hasDev = (s) => /[ऀ-ॿ]/.test(String(s || ""));
+	// common words in titles and labels, then everything else by rule
+	const WORDS = [[/अध्यायः?|अध्याय/g, "Chapter"], [/भागः?|भाग/g, "Part"], [/दोहा/g, "Doha"], [/चौपाई/g, "Chaupai"], [/सोरठा/g, "Sortha"], [/छन्द/g, "Chhand"], [/श्लोक/g, "Verse"], [/सूची/g, "Contents"]];
+	function toEn(s) {
+		if (!hasDev(s)) return s;
+		let t = String(s);
+		for (const [re, w] of WORDS) t = t.replace(re, w);
+		return t.replace(/[ऀ-ॿ‌‍]+(?:[\s\-–—]*[ऀ-ॿ‌‍]+)*/g, (run) => {
+			const r = iast(run);
+			return r.charAt(0).toUpperCase() + r.slice(1);
+		});
+	}
+	// keep only the English sentences of a mixed Hindi/English note
+	function enPart(s) {
+		if (!s) return "";
+		const parts = String(s).split(/(?<=[.!?।])\s+/).filter((x) => !hasDev(x));
+		return parts.join(" ");
+	}
+	// a book note in English mode: notes about the Hindi meaning do not apply, since no Hindi is shown
+	function enNoteFor(b, s) {
+		const t = enPart(s);
+		return /Hindi meaning|Hindi text|scan page/i.test(t) && b.layers && b.layers.hi ? "" : t;
 	}
 
 	// ---------- small helpers ----------
@@ -98,12 +175,22 @@
 	// ---------- applying settings ----------
 	// which layers (text, tr, hi, en, note) are hidden is remembered per book
 	let curBook = null;
+	// English mode: no Devanagari text or Hindi meaning; transliteration, English and English notes can be toggled
+	const enLayers = (b) => ["tr", "en"].concat(b && b.layers && b.layers.note && b.note_lang === "en" ? ["note"] : []);
 	function hidden(b, k) {
+		if (EN()) {
+			if (k === "text" || k === "hi" || (k === "note" && !(b && b.note_lang === "en"))) return true;
+			const he = b && S.hideEn[b.id];
+			return !!(he && he[k]);
+		}
 		const hb = b && S.hide[b.id];
 		if (hb && k in hb) return hb[k];
 		return !!(b && b.default_hide && b.default_hide.includes(k));
 	}
-	function setHidden(b, k, v) { (S.hide[b.id] = S.hide[b.id] || {})[k] = v; }
+	function setHidden(b, k, v) {
+		const store = EN() ? S.hideEn : S.hide;
+		(store[b.id] = store[b.id] || {})[k] = v;
+	}
 	function applyLayers(b) {
 		if (b !== undefined) curBook = b;
 		for (const k of ["text", "tr", "hi", "en", "note"]) {
@@ -127,13 +214,24 @@
 			return m ? h("span", { class: "ln" }, m[1] + " ", h("span", { class: "vend" }, m[2])) : h("span", { class: "ln" }, l);
 		}));
 	}
+	const cap = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
+	// a chapter's name in the current language
+	function cTitle(c) {
+		if (!EN()) return c.title;
+		return c.title_en || (c.title_tr ? cap(c.title_tr) : toEn(c.title));
+	}
+	const bTitle = (b) => (EN() ? b.title_en || toEn(b.title) : b.title);
+	const groupLabel = (g) => (EN() && g ? (g.includes(" · ") ? g.split(" · ").slice(1).join(" · ") : toEn(g)) : g);
 	function chapterTitle(b, meta) {
+		if (EN()) return (b.unit ? "Chapter " + meta.n + " · " : "") + cTitle(meta);
 		return (b.unit ? b.unit + " " + dev(meta.n) + " · " : "") + meta.title;
 	}
+	const verseWord = (b) => (EN() ? (b.verse ? "Verse" : "") : b.verse || "");
 	function verseUrl(b, n, id) { return "#/" + b.id + "/" + n + "/" + encodeURIComponent(id); }
 
 	function renderItem(b, n, it, opts) {
 		opts = opts || {};
+		if (EN()) return renderItemEn(b, n, it, opts);
 		if (it.h) return h("h3", { class: "sec-h", text: it.h });
 		if (it.gap) return h("p", { class: "ocr-note gap" },
 			"स्कैन पृष्ठ " + it.gap + (it.gap_to ? "–" + it.gap_to : "") + " का पाठ विकिस्रोत पर अभी जाँचा (proofread) नहीं गया है, इसलिए यहाँ छोड़ा गया है। ",
@@ -167,7 +265,7 @@
 			mw.append(h("div", { class: "meaning ref", lang: "hi" }, "अर्थ आगे " + (b.verse || "") + " " + it.hi_ref + " के साथ है।"));
 		}
 		if (it.en) mw.append(h("div", { class: "meaning en", lang: "en" },
-			opts.recite && b.en_note ? h("span", { class: "mlabel" }, "English · written with Claude, not a scholarly translation") : null, it.en));
+			b.en_source ? h("span", { class: "mlabel" }, "English · " + b.en_source) : b.en_note ? h("span", { class: "mlabel" }, "English · machine translation, not proofread") : null, it.en));
 		if (it.note) mw.append(h("p", { class: "note", lang: b.note_lang || "hi" }, it.note));
 		if (mw.childNodes.length) {
 			const rv = h("button", { class: "chip ghost reveal", type: "button" }, "अर्थ दिखाएँ · Show meaning");
@@ -177,16 +275,60 @@
 		return h("article", { class: "verse", id: opts.recite ? null : "v-" + it.id, "data-id": it.id }, parts);
 	}
 
+	// English mode: Roman transliteration instead of Devanagari, and the English meaning where one exists
+	const NO_EN = "A free English translation of this text is not available yet, so only the transliteration is shown.";
+	function enLabel(b) {
+		if (b.en_source) return b.en_source;
+		if (b.en_note) return "Machine translation, not proofread";
+		return "";
+	}
+	function renderItemEn(b, n, it, opts) {
+		const idv = opts.recite ? null : "v-" + it.id;
+		if (it.h) return h("h3", { class: "sec-h", lang: "en", text: toEn(it.h) });
+		if (it.gap) return h("p", { class: "ocr-note gap", lang: "en" },
+			"Scan page " + toAscii(it.gap) + (it.gap_to ? "–" + toAscii(it.gap_to) : "") + " is not yet proofread on Wikisource, so it is left out here. ",
+			h("a", { href: it.src, target: "_blank", rel: "noopener" }, "See the scan"));
+		const isProse = it.p != null || it.poem != null;
+		const orig = it.text || it.p || it.poem || "";
+		const tr = it.tr || (orig ? (b.script === "hi" || b.kind === "prose" ? iastHi(orig) : iast(orig)) : "");
+		const vl = it.n ? (verseWord(b) ? verseWord(b) + " " : "") + toAscii(toEn(it.n)) : "#";
+		const head = isProse ? null : h("div", { class: "vhead" },
+			h("a", { class: "vnum", href: verseUrl(b, n, it.id), "aria-label": "Link to this verse" }, vl),
+			it.speaker ? h("span", { class: "speaker", lang: "en" }, cap(iast(it.speaker))) : null,
+			opts.recite ? null : h("span", { class: "vtools" }, ...verseTools(b, n, it)));
+		const parts = head ? [head] : [];
+		if (tr) parts.push(isProse ? h("p", { class: "tr-text prose-tr", lang: "sa-Latn" }, tr) : lines(tr, "tr-text"));
+		const mw = h("div", { class: "mwrap" });
+		if (it.en) {
+			const lab = enLabel(b);
+			mw.append(h("div", { class: "meaning en", lang: "en" }, lab ? h("span", { class: "mlabel" }, lab) : null, it.en));
+		} else if (it.en_ref) {
+			mw.append(h("div", { class: "meaning ref", lang: "en" }, "The English meaning is given with verse " + it.en_ref + "."));
+		} else if (!isProse && opts.recite) {
+			mw.append(h("p", { class: "note", lang: "en" }, NO_EN));
+		}
+		if (it.note && b.note_lang === "en") mw.append(h("p", { class: "note", lang: "en" }, it.note));
+		if (mw.childNodes.length) {
+			const rv = h("button", { class: "chip ghost reveal", type: "button" }, "Show meaning");
+			rv.addEventListener("click", () => { rv.classList.add("done"); mw.classList.add("open"); });
+			parts.push(rv, mw);
+		}
+		if (isProse) return h("div", { class: "verse prose-en", id: idv, lang: "en" }, parts);
+		return h("article", { class: "verse", id: idv, "data-id": it.id, lang: "en" }, parts);
+	}
+
 	// verse tool buttons; filled in by features that register themselves
 	const toolMakers = [];
 	function verseTools(b, n, it) { return toolMakers.map((f) => f(b, n, it)).filter(Boolean); }
 	toolMakers.push((b, n, it) => b.recite ? h("button", {
-		class: "ibtn", title: "एक-एक करके पढ़ें · Recite from here", "aria-label": "Recite from here",
+		class: "ibtn", title: T("एक-एक करके पढ़ें · Recite from here", "Recite from here"), "aria-label": "Recite from here",
 		onclick: () => openRecite(b, n, it.id),
 	}, svg(ICON.recite)) : null);
 
 	// ---------- views ----------
-	function setTitle(t) { document.title = t ? t + " · हिन्दी पुस्तकालय" : "हिन्दी पुस्तकालय · Hindi Library"; }
+	function setTitle(t) {
+		document.title = EN() ? (t ? t + " · Hindi Library" : "Hindi Library") : (t ? t + " · हिन्दी पुस्तकालय" : "हिन्दी पुस्तकालय · Hindi Library");
+	}
 
 	const homeExtras = []; // features can add blocks to the home page
 
@@ -195,36 +337,43 @@
 		const frag = [];
 		view.classList.add("wide");
 		frag.push(h("section", { class: "hero home" },
-			h("h1", null, "हिन्दी पुस्तकालय"),
-			h("p", { class: "lede" }, "Gita, Ramcharitmanas, Premchand, stotras and more, from free sources, one verse at a time.")));
+			h("h1", null, T("हिन्दी पुस्तकालय", "Hindi Library")),
+			h("p", { class: "lede" }, EN()
+				? "The Gita, the Ramcharitmanas, Premchand, stotras and the Puranas, from free sources, in Roman transliteration with English meanings where a free translation exists."
+				: "Gita, Ramcharitmanas, Premchand, stotras and more, from free sources, one verse at a time.")));
 		const top = h("div", { class: "home-top" });
 		const lb = S.lastBook && bookById(S.lastBook);
 		if (lb && S.last[lb.id]) {
 			const L = S.last[lb.id];
-			let where = (lb.unit || "") + " " + dev(L.n);
+			let where = EN() ? (lb.unit ? "Chapter " : "Part ") + L.n : (lb.unit || "") + " " + dev(L.n);
 			try { const c = (await toc(lb)).chapters.find((x) => String(x.n) === String(L.n)); if (c) where = chapterTitle(lb, c); } catch (e) { /* keep the number */ }
 			top.append(h("a", { class: "resume", href: L.id ? verseUrl(lb, L.n, L.id) : "#/" + lb.id + "/" + L.n },
-				h("span", null, h("small", null, "पढ़ना जारी रखें · Continue reading"), h("b", null, lb.title), h("span", null, where)), "→"));
+				h("span", null, h("small", null, T("पढ़ना जारी रखें · Continue reading", "Continue reading")), h("b", null, bTitle(lb)), h("span", null, where)), "→"));
 		}
 		for (const f of homeExtras) { const el = await f(); if (el) top.append(el); }
 		if (top.childNodes.length) frag.push(top);
 		const shown = books().filter((b) => !b.purana && !b.hidden);
-		const groups = [["ग्रंथ · Books", shown.filter((b) => b.shelf !== "stotra")], ["स्तोत्र · Stotras and chants", shown.filter((b) => b.shelf === "stotra")]];
+		const groups = [[T("ग्रंथ · Books", "Books"), shown.filter((b) => b.shelf !== "stotra")], [T("स्तोत्र · Stotras and chants", "Stotras and chants"), shown.filter((b) => b.shelf === "stotra")]];
 		for (const [label, list] of groups) {
 			frag.push(h("h2", { class: "shelf" }, label));
 			frag.push(h("ul", { class: "books" }, list.map((b) => h("li", null, bookCard(b)))));
 		}
-		frag.push(h("h2", { class: "shelf" }, "पुराण · The 18 Mahapuranas"));
+		frag.push(h("h2", { class: "shelf" }, T("पुराण · The 18 Mahapuranas", "The 18 Mahapuranas")));
 		frag.push(h("ul", { class: "puranas" }, LIB.puranas.map((p) => {
 			const b = p.book && bookById(p.book);
+			const name = EN() ? h("span", null, p.title_en.replace(/ Purana$/, "")) : h("span", { class: "sa" }, p.title);
 			return h("li", null, b
-				? h("a", { class: "pchip", href: "#/" + b.id, title: p.title_en + (p.partial ? " (partial: " + p.partial + ")" : "") }, h("span", { class: "sa" }, p.title), h("small", null, p.partial ? "partial" : "read"))
-				: h("span", { class: "pchip soon", title: p.title_en + " (coming)" }, h("span", { class: "sa" }, p.title), h("small", null, "coming")));
+				? h("a", { class: "pchip", href: "#/" + b.id, title: p.title_en + (p.partial ? " (partial: " + p.partial + ")" : "") }, name, h("small", null, p.partial ? "partial" : "read"))
+				: h("span", { class: "pchip soon", title: p.title_en + " (coming)" }, name, h("small", null, "coming")));
 		})));
 		view.replaceChildren(...frag);
 	}
 	function bookCard(b) {
 		const href = b.link || (b.open ? "#/" + b.open : "#/" + b.id);
+		if (EN()) return h("a", { class: "card", href, rel: b.link ? "noopener" : null, title: b.desc || null },
+			h("span", { class: "t en" }, bTitle(b)),
+			h("span", { class: "e" }, b.en_source ? "English: " + b.en_source.replace(/^English (translation|meanings?)[: ]*/i, "") : b.en_note ? "English: machine translation" : "Transliteration"),
+			b.desc ? h("span", { class: "d" }, b.desc) : null);
 		return h("a", { class: "card", href, rel: b.link ? "noopener" : null, title: b.desc || null },
 			h("span", { class: "t" + (b.script === "sa" ? " sa" : "") }, b.title),
 			h("span", { class: "e" }, b.title_en),
@@ -232,33 +381,48 @@
 	}
 
 	async function viewBook(b) {
-		setTitle(b.title);
+		setTitle(bTitle(b));
 		const t = await toc(b);
 		const L = S.last[b.id];
+		const en = EN();
 		const parts = [h("section", { class: "hero" },
-			h("p", { class: "eyebrow" }, h("a", { href: "#/" }, "पुस्तकालय"), " · ", b.title_en),
-			h("h1", { class: b.script === "sa" ? "sa" : null }, b.title),
-			b.by ? h("p", { class: "sub" }, b.by) : null,
-			b.desc ? h("p", { class: "lede" }, b.desc) : null,
+			h("p", { class: "eyebrow" }, h("a", { href: "#/" }, T("पुस्तकालय", "Library")), " · ", b.title_en),
+			h("h1", { class: !en && b.script === "sa" ? "sa" : null }, bTitle(b)),
+			b.by ? h("p", { class: "sub" }, en ? (b.by_en || toEn(b.by)) : b.by) : null,
+			b.desc ? h("p", { class: "lede" }, en ? toEn(b.desc) : b.desc) : null,
+			en ? enNote(b) : null,
 			aboutBox(b))];
 		if (L) {
 			const c = t.chapters.find((x) => String(x.n) === String(L.n));
 			if (c) parts.push(h("a", { class: "resume", href: L.id ? verseUrl(b, L.n, L.id) : "#/" + b.id + "/" + L.n },
-				h("span", null, "जहाँ छोड़ा था वहीं से · Continue: ", h("b", null, chapterTitle(b, c))), "→"));
+				h("span", null, T("जहाँ छोड़ा था वहीं से · Continue: ", "Continue: "), h("b", null, chapterTitle(b, c))), "→"));
 		}
-		parts.push(h("ul", { class: "toc" + (b.script === "sa" ? " sa" : "") }, t.chapters.map((c, i) => [c.group && c.group !== (t.chapters[i - 1] || {}).group ? h("li", { class: "grp" }, c.group) : null, h("li", { class: L && String(L.n) === String(c.n) ? "here" : null },
+		const num = (x) => (en ? String(x) : dev(x));
+		parts.push(h("ul", { class: "toc" + (!en && b.script === "sa" ? " sa" : "") + (en ? " en" : "") }, t.chapters.map((c, i) => [c.group && c.group !== (t.chapters[i - 1] || {}).group ? h("li", { class: "grp" }, groupLabel(c.group)) : null, h("li", { class: L && String(L.n) === String(c.n) ? "here" : null },
 			h("a", { href: "#/" + b.id + "/" + c.n },
-				h("span", { class: "n" }, dev(c.label || c.n)),
-				h("span", { class: "nm" }, h("span", { class: "dv" }, c.title), c.first ? h("span", { class: "fl" }, c.first) : null, c.title_tr ? h("span", { class: "tr" }, c.title_tr) : null, c.title_en ? h("span", { class: "tr" }, c.title_en) : null),
-				c.count ? h("span", { class: "ct" }, dev(c.count) + (b.kind === "prose" ? "" : " " + (b.verse || ""))) : null))]).flat()));
-		if (b.sources) parts.push(h("p", { class: "note" }, "स्रोत · Sources: ", h("a", { href: "#/sources" }, b.sources.map((s) => LIB.sources[s] ? LIB.sources[s].where.split(" (")[0] : s).join(", "))));
+				h("span", { class: "n" }, num(c.label || c.n)),
+				en
+					? h("span", { class: "nm" }, h("span", { class: "dv" }, cTitle(c)), c.first ? h("span", { class: "tr" }, iast(c.first)) : null)
+					: h("span", { class: "nm" }, h("span", { class: "dv" }, c.title), c.first ? h("span", { class: "fl" }, c.first) : null, c.title_tr ? h("span", { class: "tr" }, c.title_tr) : null, c.title_en ? h("span", { class: "tr" }, c.title_en) : null),
+				c.count ? h("span", { class: "ct" }, num(c.count) + (b.kind === "prose" ? "" : " " + (en ? (c.count === 1 ? "verse" : "verses") : b.verse || ""))) : null))]).flat()));
+		if (b.sources) parts.push(h("p", { class: "note" }, T("स्रोत · Sources: ", "Sources: "), h("a", { href: "#/sources" }, b.sources.map((s) => LIB.sources[s] ? toEn(LIB.sources[s].where.split(" (")[0]) : s).join(", "))));
 		view.replaceChildren(...parts);
+	}
+
+	// English mode: say where the English comes from, or that there is none yet
+	function enNote(b) {
+		if (b.kind === "prose") return h("p", { class: "ocr-note", lang: "en" }, "This is Hindi prose. In English mode it is shown in Roman transliteration; a free English translation is not available yet.");
+		if (b.en_source) return h("p", { class: "ocr-note", lang: "en" }, "English meaning: " + b.en_source + ". " + (b.en_source_note || ""));
+		if (b.en_note) return h("p", { class: "ocr-note", lang: "en" }, "English meaning: machine translation, not proofread. " + b.en_note);
+		return h("p", { class: "ocr-note", lang: "en" }, NO_EN);
 	}
 
 	function aboutBox(b) {
 		if (!b.about) return null;
-		return h("details", { class: "about" }, h("summary", null, "इस ग्रंथ के बारे में · About this text"),
-			b.about.map((p) => h("p", { lang: /[ऀ-ॿ]/.test(p) ? "hi" : "en" }, p)));
+		const paras = EN() ? b.about.filter((p) => !hasDev(p)) : b.about;
+		if (!paras.length) return null;
+		return h("details", { class: "about" }, h("summary", null, T("इस ग्रंथ के बारे में · About this text", "About this text")),
+			paras.map((p) => h("p", { lang: hasDev(p) ? "hi" : "en" }, p)));
 	}
 
 	// "Go to": a chapter list and a box for a verse number such as 3.16, or 16 in this chapter
@@ -280,13 +444,13 @@
 	}
 	function goToBox(b, t, curN, inRecite) {
 		if (b.kind === "prose") return null;
-		const sel = h("select", { "aria-label": "Chapter · अध्याय" }, t.chapters.map((c) =>
-			h("option", { value: c.n, selected: String(c.n) === String(curN) }, dev(c.label || c.n) + ". " + c.title)));
+		const sel = h("select", { "aria-label": T("Chapter · अध्याय", "Chapter") }, t.chapters.map((c) =>
+			h("option", { value: c.n, selected: String(c.n) === String(curN) }, (EN() ? String(c.label || c.n) : dev(c.label || c.n)) + ". " + cTitle(c))));
 		sel.addEventListener("change", () => {
 			if (inRecite) openRecite(b, sel.value, null);
 			else location.hash = "#/" + b.id + "/" + sel.value;
 		});
-		const inp = h("input", { type: "text", inputmode: "decimal", placeholder: "Go to · " + (b.verse || "verse"), "aria-label": "Go to verse, for example 3.16" });
+		const inp = h("input", { type: "text", inputmode: "decimal", placeholder: EN() ? "Go to verse" : "Go to · " + (b.verse || "verse"), "aria-label": "Go to verse, for example 3.16" });
 		inp.addEventListener("keydown", async (e) => {
 			if (e.key !== "Enter") return;
 			e.preventDefault();
@@ -305,34 +469,36 @@
 		if (!ch) return viewMissing();
 		const { doc, meta, toc: t, index } = ch;
 		applyLayers(b);
-		setTitle(b.title + " · " + chapterTitle(b, meta));
+		setTitle(bTitle(b) + " · " + chapterTitle(b, meta));
 		S.lastBook = b.id;
 		if (!S.last[b.id] || String(S.last[b.id].n) !== String(n)) S.last[b.id] = { n: meta.n };
 		save();
 
+		const en = EN();
+		const ocr = en ? enNoteFor(b, b.ocr_note) : b.ocr_note;
 		const head = h("header", { class: "chap-head" },
-			h("p", { class: "crumbs" }, h("a", { href: "#/" + b.id }, b.title), " · ", h("a", { href: "#/" + b.id }, "सूची")),
-			h("h1", { class: b.script === "sa" ? "sa" : null }, doc.title || chapterTitle(b, meta)),
-			meta.title_tr ? h("p", { class: "tr" }, meta.title_tr) : null,
+			h("p", { class: "crumbs" }, h("a", { href: "#/" + b.id }, bTitle(b)), " · ", h("a", { href: "#/" + b.id }, T("सूची", "Contents"))),
+			h("h1", { class: !en && b.script === "sa" ? "sa" : null }, en ? chapterTitle(b, meta) : doc.title || chapterTitle(b, meta)),
+			!en && meta.title_tr ? h("p", { class: "tr" }, meta.title_tr) : null,
 			layerChips(b),
 			goToBox(b, t, meta.n, false),
 			b.recite ? h("div", { class: "layers" },
 				h("button", { class: "chip ghost", onclick: () => { S.one[b.id] = true; save(); openRecite(b, meta.n, null); } },
-					"▶ एक-एक श्लोक · One verse at a time" + (b.mala ? " + mala" : ""))) : null,
-			b.ocr_note ? h("p", { class: "ocr-note", lang: "hi" }, b.ocr_note) : null,
-			b.en_note ? h("p", { class: "ocr-note", lang: "en" }, b.en_note) : null,
-			doc.note ? h("p", { class: "ocr-note" }, doc.note) : null);
+					T("▶ एक-एक श्लोक · One verse at a time", "▶ One verse at a time") + (b.mala ? " + mala" : ""))) : null,
+			ocr && !(en && b.hi_only_ocr) ? h("p", { class: "ocr-note", lang: en ? "en" : "hi" }, ocr) : null,
+			en ? enNote(b) : b.en_note ? h("p", { class: "ocr-note", lang: "en" }, b.en_note) : null,
+			doc.note ? h("p", { class: "ocr-note" }, en ? toEn(doc.note) : doc.note) : null);
 		// in one-verse or page mode the reader covers the screen, so the long list is not built behind it
 		const covered = isOne(b) || (b.kind === "prose" && !S.scrollProse);
 		const body = covered ? h("div")
 			: b.kind === "prose"
-			? h("div", { class: "prose", lang: "hi" }, doc.items.map((it) => renderItem(b, meta.n, it)))
+			? h("div", { class: "prose", lang: en ? "en" : "hi" }, doc.items.map((it) => renderItem(b, meta.n, it)))
 			: h("div", { class: "verses" }, doc.items.map((it) => renderItem(b, meta.n, it)));
 		const prev = t.chapters[index - 1], next = t.chapters[index + 1];
 		const pager = h("nav", { class: "pager", "aria-label": "Chapters" },
-			prev ? h("a", { class: "prev", href: "#/" + b.id + "/" + prev.n }, h("small", null, "← पिछला"), h("span", null, prev.title)) : null,
-			next ? h("a", { class: "next", href: "#/" + b.id + "/" + next.n }, h("small", null, "अगला →"), h("span", null, next.title)) : null);
-		const src = doc.src ? h("p", { class: "note" }, "स्रोत पृष्ठ · Source page: ", h("a", { href: doc.src, target: "_blank", rel: "noopener" }, decodeURIComponent(doc.src).replace(/^https:\/\//, ""))) : null;
+			prev ? h("a", { class: "prev", href: "#/" + b.id + "/" + prev.n }, h("small", null, T("← पिछला", "← Previous")), h("span", null, cTitle(prev))) : null,
+			next ? h("a", { class: "next", href: "#/" + b.id + "/" + next.n }, h("small", null, T("अगला →", "Next →")), h("span", null, cTitle(next))) : null);
+		const src = doc.src ? h("p", { class: "note" }, T("स्रोत पृष्ठ · Source page: ", "Source page: "), h("a", { href: doc.src, target: "_blank", rel: "noopener" }, en ? toEn(decodeURIComponent(doc.src).replace(/^https:\/\//, "").replace(/_/g, " ")) : decodeURIComponent(doc.src).replace(/^https:\/\//, ""))) : null;
 		view.replaceChildren(head, body, pager, src || "");
 
 		// jump to verse, or the saved place
@@ -368,11 +534,13 @@
 
 	function layerChips(b, onChange) {
 		if (!b.layers) return null;
-		const keys = Object.keys(b.layers);
+		const EN_NAMES = { tr: "Transliteration", en: "English", note: "Notes" };
+		const keys = EN() ? enLayers(b).filter((k) => k !== "en" || b.layers.en) : Object.keys(b.layers);
+		const label = (k) => (EN() ? EN_NAMES[k] || k : b.layers[k]);
 		if (keys.length < 2) return null;
 		const group = h("div", { class: "layers", role: "group", "aria-label": "Show or hide" });
 		const btns = keys.map((k) => {
-			const btn = h("button", { class: "chip", "aria-pressed": hidden(b, k) ? "false" : "true" }, b.layers[k]);
+			const btn = h("button", { class: "chip", "aria-pressed": hidden(b, k) ? "false" : "true" }, label(k));
 			btn.addEventListener("click", () => {
 				setHidden(b, k, !hidden(b, k));
 				// never hide everything except notes
@@ -389,23 +557,24 @@
 
 	function viewSources() {
 		setTitle("Sources and licences");
+		const en = EN();
 		const parts = [h("section", { class: "hero" },
-			h("p", { class: "eyebrow" }, "Sources and licences · स्रोत और लाइसेंस"),
-			h("h1", null, "स्रोत और लाइसेंस"),
+			h("p", { class: "eyebrow" }, T("Sources and licences · स्रोत और लाइसेंस", "About this site")),
+			h("h1", null, T("स्रोत और लाइसेंस", "Sources and licences")),
 			h("p", { class: "lede" }, "Every text on this site comes from a public-domain or openly licensed source. Nothing is copied from modern copyrighted translations. Where a source is CC BY-SA, this site's content is shared under CC BY-SA 4.0 too, and you may reuse it under the same licence with credit."))];
 		const doc = h("div", { class: "doc" });
 		for (const b of books()) {
 			if (!b.sources || b.hidden) continue;
-			doc.append(h("h2", null, b.title + " · " + b.title_en));
-			for (const sid of b.sources) {
+			doc.append(h("h2", null, en ? bTitle(b) : b.title + " · " + b.title_en));
+			for (const sid of b.sources.concat(b.en_sources || [])) {
 				const s = LIB.sources[sid];
 				if (!s) continue;
 				doc.append(h("div", { class: "src" },
-					h("h3", null, s.title),
-					h("p", null, s.where),
+					h("h3", null, en ? s.title_en || toEn(s.title) : s.title),
+					h("p", null, en ? toEn(s.where) : s.where),
 					h("p", null, h("a", { href: s.url, target: "_blank", rel: "noopener" }, "Source link"), " · ",
 						s.licence_url ? h("a", { class: "lic", href: s.licence_url, target: "_blank", rel: "noopener" }, s.licence) : h("span", { class: "lic" }, s.licence)),
-					s.note ? h("p", null, s.note) : null));
+					s.note ? h("p", null, en ? toEn(s.note) : s.note) : null));
 			}
 		}
 		doc.append(h("h2", null, "This site"),
@@ -417,7 +586,7 @@
 	}
 	function viewMissing() {
 		setTitle("Not found");
-		view.replaceChildren(h("p", { class: "empty" }, "यह पृष्ठ नहीं मिला। ", h("a", { href: "#/" }, "मुखपृष्ठ पर जाएँ")));
+		view.replaceChildren(h("p", { class: "empty" }, T("यह पृष्ठ नहीं मिला। ", "Page not found. "), h("a", { href: "#/" }, T("मुखपृष्ठ पर जाएँ", "Go to the home page"))));
 	}
 
 	// ---------- settings sheet ----------
@@ -440,28 +609,30 @@
 		const rb = RC ? RC.b : (r.n && bookById(r.book)) || null;
 		const refit = () => { if (RC && RC.fit) RC.fit(); };
 		const sheet = h("div", { class: "sheet", role: "dialog", "aria-modal": "true", "aria-label": "Reading settings" },
-			h("h2", null, "पढ़ने की सेटिंग · Reading settings"),
-			rb && rb.layers && Object.keys(rb.layers).length > 1 ? h("div", { class: "row" }, h("span", null, "Show · दिखाएँ"), layerChips(rb, refit)) : null,
-			rb && rb.recite && rb.kind !== "prose" ? h("div", { class: "row" }, h("span", null, "Reading · पढ़ने का ढंग"),
-				seg([["one", "एक-एक श्लोक · One verse"], ["all", "पूरा अध्याय · Whole chapter"]], () => isOne(rb) ? "one" : "all", (v) => {
+			h("h2", null, T("पढ़ने की सेटिंग · Reading settings", "Reading settings")),
+			h("div", { class: "row" }, h("span", null, T("Language · भाषा", "Language")),
+				seg([["hi", "हिन्दी"], ["en", "English"]], () => (EN() ? "en" : "hi"), (v) => { close(); setLang(v); })),
+			rb && rb.layers ? (() => { const lc = layerChips(rb, refit); return lc ? h("div", { class: "row" }, h("span", null, T("Show · दिखाएँ", "Show")), lc) : null; })() : null,
+			rb && rb.recite && rb.kind !== "prose" ? h("div", { class: "row" }, h("span", null, T("Reading · पढ़ने का ढंग", "Reading")),
+				seg([["one", T("एक-एक श्लोक · One verse", "One verse")], ["all", T("पूरा अध्याय · Whole chapter", "Whole chapter")]], () => isOne(rb) ? "one" : "all", (v) => {
 					S.one[rb.id] = v === "one"; save();
 					if (v === "all" && RC) { closeRecite(); close(); route(); }
 					else if (v === "one" && !RC) { close(); route(); }
 				})) : null,
-			rb && rb.kind === "prose" ? h("div", { class: "row" }, h("span", null, "Reading · पढ़ने का ढंग"),
-				seg([["pages", "पन्ने · Pages"], ["scroll", "स्क्रॉल · Scroll"]], () => S.scrollProse ? "scroll" : "pages", (v) => {
+			rb && rb.kind === "prose" ? h("div", { class: "row" }, h("span", null, T("Reading · पढ़ने का ढंग", "Reading")),
+				seg([["pages", T("पन्ने · Pages", "Pages")], ["scroll", T("स्क्रॉल · Scroll", "Scroll")]], () => S.scrollProse ? "scroll" : "pages", (v) => {
 					S.scrollProse = v === "scroll"; save(); if (RC) closeRecite(); close(); route();
 				})) : null,
-			h("div", { class: "row" }, h("span", null, "Theme · रंग"),
-				seg([["auto", "Auto"], ["light", "दिन · Light"], ["dark", "रात · Dark"]], () => S.theme || "auto", (v) => { S.theme = v === "auto" ? undefined : v; applyTheme(); save(); })),
-			h("div", { class: "row" }, h("span", null, "Text size · अक्षर का आकार"),
+			h("div", { class: "row" }, h("span", null, T("Theme · रंग", "Theme")),
+				seg([["auto", "Auto"], ["light", T("दिन · Light", "Light")], ["dark", T("रात · Dark", "Dark")]], () => S.theme || "auto", (v) => { S.theme = v === "auto" ? undefined : v; applyTheme(); save(); })),
+			h("div", { class: "row" }, h("span", null, T("Text size · अक्षर का आकार", "Text size")),
 				h("div", { class: "seg" },
-					h("button", { onclick: () => setSize(-0.1), "aria-label": "Smaller" }, "अ−"),
+					h("button", { onclick: () => setSize(-0.1), "aria-label": "Smaller" }, T("अ−", "A−")),
 					h("button", { "aria-pressed": "true", disabled: true }, sizeOut),
-					h("button", { onclick: () => setSize(0.1), "aria-label": "Larger" }, "अ+"))),
-			h("div", { class: "row" }, h("span", null, "Meaning · अर्थ"),
-				seg([["show", "दिखाएँ · Show"], ["tap", "टैप पर · Hide until I tap"]], () => S.tap ? "tap" : "show", (v) => { S.tap = v === "tap"; applyTap(); save(); refit(); })),
-			h("button", { class: "chip", onclick: close }, "बंद करें · Close"));
+					h("button", { onclick: () => setSize(0.1), "aria-label": "Larger" }, T("अ+", "A+")))),
+			h("div", { class: "row" }, h("span", null, T("Meaning · अर्थ", "Meaning")),
+				seg([["show", T("दिखाएँ · Show", "Show")], ["tap", T("टैप पर · Hide until I tap", "Hide until I tap")]], () => S.tap ? "tap" : "show", (v) => { S.tap = v === "tap"; applyTap(); save(); refit(); })),
+			h("button", { class: "chip", onclick: close }, T("बंद करें · Close", "Close")));
 		document.body.append(scrim, sheet);
 		sheet.querySelector("button").focus();
 		sheet.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
@@ -475,7 +646,9 @@
 		if (!ch) return;
 		// gaps stay in, so a reader sees where unproofread scan pages were left out
 		const items = ch.doc.items.filter((x) => x.text || x.p || x.poem || x.gap);
-		const srcNote = b.note_short || (b.ocr_note ? (b.ocr_note.match(/[A-Z][^.]*\./) || [""])[0] : "");
+		let srcNote = b.note_short || (b.ocr_note ? (b.ocr_note.match(/[A-Z][^.]*\./) || [""])[0] : "");
+		// in English mode the Hindi-meaning OCR note does not apply (no Hindi is shown)
+		if (EN()) srcNote = enNoteFor(b, srcNote);
 		if (!items.length) return;
 		let i = 0;
 		const saved = S.last[b.id] && S.last[b.id].rc;
@@ -487,18 +660,18 @@
 		const bar = h("i");
 		const pos = h("span", { class: "rc-pos" });
 		const tools = h("span", { class: "rc-tools" });
-		const prevBtn = h("button", { class: "rc-nav", "aria-label": "Previous · पिछला", onclick: () => go(-1) }, svg(ICON.prev), h("span", { class: "w" }, "पिछला"));
-		const nextBtn = h("button", { class: "rc-nav", "aria-label": "Next · अगला", onclick: () => go(1) }, h("span", { class: "w" }, "अगला"), svg(ICON.next));
+		const prevBtn = h("button", { class: "rc-nav", "aria-label": T("Previous · पिछला", "Previous"), onclick: () => go(-1) }, svg(ICON.prev), h("span", { class: "w" }, T("पिछला", "Previous")));
+		const nextBtn = h("button", { class: "rc-nav", "aria-label": T("Next · अगला", "Next"), onclick: () => go(1) }, h("span", { class: "w" }, T("अगला", "Next")), svg(ICON.next));
 		const foot = h("div", { class: "rc-foot" }, prevBtn, h("div", { class: "rc-mid" }, pos, tools, b.mala ? malaWidget(b) : null), nextBtn);
 		const body = h("div", { class: "rc-body" }, card);
 		const root = h("div", { class: "recite", role: "dialog", "aria-modal": "true", "aria-label": b.title_en + ", one verse at a time" },
 			h("div", null,
 				h("div", { class: "rc-top" },
-					h("a", { class: "ibtn", href: "#/" + b.id, "aria-label": "Contents · सूची", title: "Contents · सूची" }, svg(ICON.list)),
-					h("a", { class: "where", href: "#/" + b.id }, h("b", { class: b.script === "sa" ? "sa" : null }, b.title), h("span", null, chapterTitle(b, ch.meta))),
+					h("a", { class: "ibtn", href: "#/" + b.id, "aria-label": T("Contents · सूची", "Contents"), title: T("Contents · सूची", "Contents") }, svg(ICON.list)),
+					h("a", { class: "where", href: "#/" + b.id }, h("b", { class: !EN() && b.script === "sa" ? "sa" : null }, bTitle(b)), h("span", null, chapterTitle(b, ch.meta))),
 					goToBox(b, ch.toc, n, true),
-					h("button", { class: "ibtn", "aria-label": "Whole chapter · पूरा अध्याय", title: "Whole chapter · पूरा अध्याय", onclick: toWhole }, svg(ICON.scroll)),
-					h("button", { class: "ibtn", "aria-label": "Settings · सेटिंग", title: "Settings", onclick: openSettings }, svg(ICON.sliders))),
+					h("button", { class: "ibtn", "aria-label": T("Whole chapter · पूरा अध्याय", "Whole chapter"), title: T("Whole chapter · पूरा अध्याय", "Whole chapter"), onclick: toWhole }, svg(ICON.scroll)),
+					h("button", { class: "ibtn", "aria-label": T("Settings · सेटिंग", "Settings"), title: "Settings", onclick: openSettings }, svg(ICON.sliders))),
 				h("div", { class: "rc-bar" }, bar)),
 			body, foot);
 		document.body.append(root);
@@ -514,7 +687,7 @@
 			const it = RC.items[RC.i];
 			card.replaceChildren(renderItem(b, n, it, { recite: true }), srcNote && !it.gap ? h("p", { class: "rc-src" }, srcNote) : "");
 			pos.textContent = (RC.i + 1) + " of " + RC.items.length;
-			pos.title = dev(RC.i + 1) + " / " + dev(RC.items.length);
+			pos.title = EN() ? "" : dev(RC.i + 1) + " / " + dev(RC.items.length);
 			tools.replaceChildren(...toolMakers.slice(1).map((f) => f(b, n, it)).filter(Boolean));
 			bar.style.width = ((RC.i + 1) / RC.items.length * 100) + "%";
 			prevBtn.disabled = RC.i === 0 && ch.index === 0;
@@ -554,19 +727,19 @@
 	function openPages(b, ch) {
 		closeRecite();
 		const { doc, meta, toc: t, index } = ch;
-		const cols = h("div", { class: "pg-cols", lang: "hi" }, h("h1", { class: "pg-title" }, doc.title || meta.title), doc.items.map((it) => renderItem(b, meta.n, it, { recite: true })));
+		const cols = h("div", { class: "pg-cols", lang: EN() ? "en" : "hi" }, h("h1", { class: "pg-title" }, EN() ? cTitle(meta) : doc.title || meta.title), doc.items.map((it) => renderItem(b, meta.n, it, { recite: true })));
 		const viewport = h("div", { class: "pg-view" }, cols);
 		const pos = h("span", { class: "rc-pos" });
 		const bar = h("i");
-		const prevBtn = h("button", { class: "rc-nav", "aria-label": "Previous page · पिछला", onclick: () => go(-1) }, svg(ICON.prev), h("span", { class: "w" }, "पिछला"));
-		const nextBtn = h("button", { class: "rc-nav", "aria-label": "Next page · अगला", onclick: () => go(1) }, h("span", { class: "w" }, "अगला"), svg(ICON.next));
-		const root = h("div", { class: "recite pages", role: "dialog", "aria-modal": "true", "aria-label": (doc.title || meta.title) + ", page by page" },
+		const prevBtn = h("button", { class: "rc-nav", "aria-label": T("Previous page · पिछला", "Previous page"), onclick: () => go(-1) }, svg(ICON.prev), h("span", { class: "w" }, T("पिछला", "Previous")));
+		const nextBtn = h("button", { class: "rc-nav", "aria-label": T("Next page · अगला", "Next page"), onclick: () => go(1) }, h("span", { class: "w" }, T("अगला", "Next")), svg(ICON.next));
+		const root = h("div", { class: "recite pages", role: "dialog", "aria-modal": "true", "aria-label": cTitle(meta) + ", page by page" },
 			h("div", null,
 				h("div", { class: "rc-top" },
-					h("a", { class: "ibtn", href: "#/" + b.id, "aria-label": "Contents · सूची", title: "Contents · सूची" }, svg(ICON.list)),
-					h("a", { class: "where", href: "#/" + b.id }, h("b", null, b.title), h("span", null, meta.title)),
-					h("button", { class: "ibtn", "aria-label": "Scroll view · स्क्रॉल", title: "Scroll view · स्क्रॉल", onclick: () => { S.scrollProse = true; save(); closeRecite(); route(); } }, svg(ICON.scroll)),
-					h("button", { class: "ibtn", "aria-label": "Settings · सेटिंग", title: "Settings", onclick: openSettings }, svg(ICON.sliders))),
+					h("a", { class: "ibtn", href: "#/" + b.id, "aria-label": T("Contents · सूची", "Contents"), title: T("Contents · सूची", "Contents") }, svg(ICON.list)),
+					h("a", { class: "where", href: "#/" + b.id }, h("b", null, bTitle(b)), h("span", null, cTitle(meta))),
+					h("button", { class: "ibtn", "aria-label": T("Scroll view · स्क्रॉल", "Scroll view"), title: T("Scroll view · स्क्रॉल", "Scroll view"), onclick: () => { S.scrollProse = true; save(); closeRecite(); route(); } }, svg(ICON.scroll)),
+					h("button", { class: "ibtn", "aria-label": T("Settings · सेटिंग", "Settings"), title: "Settings", onclick: openSettings }, svg(ICON.sliders))),
 				h("div", { class: "rc-bar" }, bar)),
 			viewport,
 			h("div", { class: "rc-foot" }, prevBtn, h("div", { class: "rc-mid" }, pos), nextBtn));
@@ -674,7 +847,7 @@
 		function count() {
 			c.n += 1;
 			let buzz = 25;
-			if (c.n >= 108) { c.n = 0; c.malas += 1; buzz = [60, 50, 60, 50, 120]; toast("एक माला पूरी · One mala complete"); }
+			if (c.n >= 108) { c.n = 0; c.malas += 1; buzz = [60, 50, 60, 50, 120]; toast(T("एक माला पूरी · One mala complete", "One mala complete")); }
 			try { if (navigator.vibrate) navigator.vibrate(buzz); } catch (e) { /* no vibration */ }
 			paint(); save();
 		}
@@ -687,11 +860,44 @@
 
 	// ---------- routing ----------
 	function parseRoute() {
-		const parts = location.hash.replace(/^#\/?/, "").split("/").map((x) => { try { return decodeURIComponent(x); } catch (e) { return x; } });
+		const parts = location.hash.replace(/^#\/?/, "").replace(/\?.*$/, "").split("/").map((x) => { try { return decodeURIComponent(x); } catch (e) { return x; } });
 		return { book: parts[0] || "", n: parts[1], id: parts[2] };
 	}
+
+	// the page frame (header, footer, html lang) in the current language
+	function applyChrome() {
+		const en = EN();
+		document.documentElement.lang = en ? "en" : "hi";
+		document.body.classList.toggle("lang-en", en);
+		const brand = document.querySelector(".brand");
+		if (brand) brand.replaceChildren(h("b", null, T("हिन्दी पुस्तकालय", "Hindi Library")), en ? "" : h("span", null, "Hindi Library"));
+		const set = (id, label) => { const el = $(id); if (el) { el.setAttribute("aria-label", label); el.title = label; } };
+		set("nav-search", T("Search · खोजें", "Search"));
+		set("nav-saved", T("Saved verses · सहेजे श्लोक", "Saved verses"));
+		set("nav-settings", T("Reading settings · सेटिंग", "Reading settings"));
+		document.querySelectorAll("#lang-switch button").forEach((btn) => btn.setAttribute("aria-pressed", String((btn.dataset.lang === "en") === en)));
+		const f = $("footer");
+		if (f) f.replaceChildren(h("p", null, "Texts are public domain or openly licensed; see ",
+			h("a", { href: "#/sources" }, T("Sources and licences · स्रोत", "Sources and licences")), ". Site content is shared under ",
+			h("a", { href: "https://creativecommons.org/licenses/by-sa/4.0/" }, "CC BY-SA 4.0"), ". ",
+			h("a", { href: "https://github.com/tiwari91/hindi-library" }, "Code on GitHub"), "."));
+	}
+	function setLang(v) {
+		S.lang = v === "en" ? "en" : undefined;
+		save();
+		applyChrome();
+		// drop a ?lang= from the address so the choice made here is the one that sticks
+		if (/[?&]lang=/.test(location.hash)) {
+			try { history.replaceState(null, "", location.hash.replace(/[?&]lang=(en|hi)\b/, "")); } catch (e) { /* ignore */ }
+		}
+		route();
+	}
+	document.querySelectorAll("#lang-switch button").forEach((btn) => btn.addEventListener("click", () => setLang(btn.dataset.lang)));
 	const routes = {}; // extra pages registered by features: routes[name] = fn
 	async function route() {
+		const was = S.lang;
+		langFromUrl();
+		if (was !== S.lang) applyChrome();
 		if (RC) closeRecite();
 		view.classList.remove("wide");
 		const r = parseRoute();
@@ -707,7 +913,7 @@
 			}
 		} catch (e) {
 			console.error(e);
-			view.replaceChildren(h("p", { class: "empty" }, "पाठ लोड नहीं हो सका। Could not load this text. ", h("a", { href: "#/" }, "Home")));
+			view.replaceChildren(h("p", { class: "empty" }, T("पाठ लोड नहीं हो सका। Could not load this text. ", "Could not load this text. "), h("a", { href: "#/" }, "Home")));
 		}
 		if (!r.id) {
 			if (!(r.n && bookById(r.book))) window.scrollTo(0, 0);
@@ -717,7 +923,8 @@
 	window.addEventListener("hashchange", route);
 
 	// expose a tiny API for feature modules
-	window.HL = { S, save, h, svg, ICON, dev, toast, getJSON, toc, chapter, bookById, books: () => LIB.books, lib: () => LIB, renderItem, verseUrl, chapterTitle, toolMakers, homeExtras, routes, openRecite, route };
+	window.HL = { S, save, h, svg, ICON, dev, toast, getJSON, toc, chapter, bookById, books: () => LIB.books, lib: () => LIB, renderItem, verseUrl, chapterTitle, toolMakers, homeExtras, routes, openRecite, route,
+		EN, T, iast, toEn, bTitle, cTitle };
 
 	// ---------- start ----------
 	// Left/Right arrow keys move to the previous/next chapter in chapter view
@@ -751,6 +958,7 @@
 
 	applyLayers(null);
 	applyTap();
+	applyChrome();
 	getJSON("data/library.json").then((lib) => {
 		LIB = lib;
 		document.dispatchEvent(new CustomEvent("hl:ready"));

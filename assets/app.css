@@ -282,7 +282,8 @@ body[data-tap="1"] .mwrap:not(.open) { display: none; }
 	min-height: 40px; border: 1px solid var(--rule); border-radius: 12px; background: var(--paper); color: var(--ink);
 	font: inherit; font-size: .92rem; padding: 0 .6rem; min-width: 0;
 }
-.goto select { flex: 1 1 auto; max-width: 20rem; font-family: var(--f-hi); }
+.goto select { flex: 1 1 0; min-width: 0; max-width: 20rem; font-family: var(--f-hi); }
+body.lang-en .goto select { font-family: var(--f-ui); }
 .goto input { flex: 0 0 8.5rem; }
 .goto input[aria-invalid="true"] { border-color: #c0392b; }
 .rc-goto { max-width: 42rem; width: 100%; margin: 0 auto; padding: 0 12px 8px; }
@@ -405,9 +406,10 @@ body[data-hide-note="1"] .note { display: none; }
 .recite {
 	position: fixed; inset: 0; z-index: 50; background: var(--paper);
 	height: 100vh; height: 100dvh;
-	display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
+	display: grid; grid-template-rows: auto minmax(0, 1fr) auto; grid-template-columns: minmax(0, 1fr);
 	padding-top: env(safe-area-inset-top, 0px);
 }
+.recite > * { min-width: 0; }
 .rc-top {
 	display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; padding: 6px 12px;
 	max-width: 60rem; width: 100%; margin: 0 auto;
@@ -471,6 +473,8 @@ body[data-hide-note="1"] .note { display: none; }
 	font-family: var(--f-hi); font-size: calc(var(--hi-size) * 1.05 * var(--scale)); line-height: 1.85;
 }
 .pg-cols p { margin: 0 0 .9em; text-align: justify; hyphens: auto; }
+body.lang-en .pg-cols p { text-align: start; }
+body.lang-en .pg-cols .verse.prose-en { padding: 0; border: 0; }
 .pg-cols .pg-title { font-size: 1.6em; font-weight: 500; margin: 0 0 .6em; line-height: 1.35; }
 .pg-cols .sec-h { text-align: center; color: var(--ink-2); font-size: 1em; margin: 1em 0 .6em; break-after: avoid; }
 
@@ -529,6 +533,26 @@ footer.site a { color: var(--ink-2); }
 	.rc-foot { gap: 10px; }
 	.mala-btn { width: 84px; height: 84px; }
 }
+
+/* language switch in the header */
+.langsw { display: inline-flex; padding: 3px; gap: 2px; border: 1px solid var(--rule); border-radius: 999px; background: var(--surface); flex: none; }
+.langsw button {
+	appearance: none; border: 0; background: transparent; cursor: pointer; color: var(--ink-2);
+	min-height: 38px; min-width: 44px; padding: 0 .7rem; border-radius: 999px; font-size: .86rem;
+}
+.langsw button[lang="hi"] { font-family: var(--f-hi); }
+.langsw button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+
+/* English mode: the Roman transliteration is the main text, so it gets the main size and colour */
+body.lang-en .brand b { font-family: var(--f-ui); }
+body.lang-en .hero h1, body.lang-en .chap-head h1, body.lang-en .card .t, body.lang-en .toc .nm .dv, body.lang-en .pg-title { font-family: var(--f-lat); font-weight: 600; }
+body.lang-en .tr-text { color: var(--ink); font-size: calc(var(--lat-size) * 1.12 * var(--scale)); line-height: 1.75; margin-top: .2rem; }
+body.lang-en .rc-card .tr-text { font-size: calc(var(--lat-size) * 1.25 * var(--scale)); }
+body.lang-en .tr-text.prose-tr { font-size: calc(var(--lat-size) * 1.05 * var(--scale)); line-height: 1.85; margin: 0 0 1.1em; }
+body.lang-en .speaker { font-family: var(--f-lat); font-style: italic; }
+body.lang-en .sec-h { font-family: var(--f-lat); }
+body.lang-en .meaning.en { font-family: var(--f-lat); }
+body.lang-en .puranas .pchip span { font-family: var(--f-ui); }
 
 /* while the reader covers the screen, the page behind it takes no space */
 body.rc-open > main, body.rc-open > footer.site, body.rc-open > header.topbar { display: none; }

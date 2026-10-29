@@ -1,3 +1,4 @@
 sources/cache/
 .DS_Store
 __pycache__/
+.shots/

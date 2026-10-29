@@ -15,6 +15,8 @@
 <script>
 try {
 	var s = JSON.parse(localStorage.getItem("hl:v1") || "{}");
+	var m = location.hash.match(/[?&]lang=(en|hi)\b/);
+	if ((m && m[1] === "en") || (!m && s.lang === "en")) document.documentElement.lang = "en";
 	if (s.theme === "light" || s.theme === "dark") document.documentElement.setAttribute("data-theme", s.theme);
 	if (s.scale) document.documentElement.style.setProperty("--scale", s.scale);
 } catch (e) {}
@@ -24,6 +26,10 @@ try {
 <header class="topbar">
 	<nav class="bar" aria-label="Main">
 		<a class="brand" href="#/"><b>हिन्दी पुस्तकालय</b><span>Hindi Library</span></a>
+		<div class="langsw" id="lang-switch" role="group" aria-label="Language">
+			<button type="button" data-lang="hi" lang="hi" aria-pressed="true">हिन्दी</button>
+			<button type="button" data-lang="en" lang="en" aria-pressed="false">English</button>
+		</div>
 		<a class="ibtn" href="#/search" id="nav-search" hidden aria-label="Search · खोजें" title="Search">
 			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
 		</a>
