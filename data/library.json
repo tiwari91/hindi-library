@@ -83,6 +83,14 @@
    "sources": ["premchand"]
   },
   {
+   "id": "kurma-purana", "purana": true, "title": "कूर्मपुराणम्", "title_en": "Kurma Purana", "by": "वेदव्यास",
+   "desc": "Purva bhaga (53 chapters) and Uttara bhaga (46 chapters) in Sanskrit with Roman transliteration, from Sanskrit Wikisource; complete as given there.",
+   "script": "sa", "kind": "verse", "unit": "", "verse": "श्लोक", "layers": {"text": "संस्कृत", "tr": "Roman"},
+   "recite": true, "no_search": true,
+   "ocr_note": "This text is typed on Sanskrit Wikisource and has not been checked against a printed edition there; a few typing errors may remain. Verse breaks follow the verse numbers in the source.",
+   "sources": ["sa-puranas"]
+  },
+  {
    "id": "vamana-purana", "purana": true, "title": "वामनपुराणम्", "title_en": "Vamana Purana", "by": "वेदव्यास",
    "desc": "96 chapters in Sanskrit with Roman transliteration, from Sanskrit Wikisource; complete as given there.",
    "script": "sa", "kind": "verse", "unit": "", "verse": "श्लोक", "layers": {"text": "संस्कृत", "tr": "Roman"},
@@ -284,7 +292,7 @@
   {"title": "वराह पुराण", "title_en": "Varaha Purana"},
   {"title": "स्कन्द पुराण", "title_en": "Skanda Purana"},
   {"title": "वामन पुराण", "title_en": "Vamana Purana", "book": "vamana-purana"},
-  {"title": "कूर्म पुराण", "title_en": "Kurma Purana"},
+  {"title": "कूर्म पुराण", "title_en": "Kurma Purana", "book": "kurma-purana"},
   {"title": "मत्स्य पुराण", "title_en": "Matsya Purana"},
   {"title": "गरुड पुराण", "title_en": "Garuda Purana", "book": "garuda-purana"},
   {"title": "ब्रह्माण्ड पुराण", "title_en": "Brahmanda Purana"}
