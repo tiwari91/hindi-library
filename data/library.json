@@ -141,7 +141,7 @@
    "desc": "The 13 chapters of the Devi Mahatmya, 589 ślokas, in Sanskrit with Roman transliteration, from the Markandeya Purana on Sanskrit Wikisource.",
    "script": "sa",
    "kind": "verse",
-   "unit": "अध्याय",
+   "unit": "",
    "verse": "श्लोक",
    "layers": {"text": "संस्कृत", "tr": "Roman"},
    "recite": true,
