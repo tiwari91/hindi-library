@@ -54,6 +54,7 @@
   },
   {
    "id": "manas-sundar",
+   "open": "manas-sundar/1",
    "title": "सुन्दरकाण्ड",
    "title_en": "Sundarkand (Ramcharitmanas)",
    "by": "गोस्वामी तुलसीदास · टीका: महावीरप्रसाद मालवीय ‘वीर’",
@@ -76,6 +77,21 @@
    "kind": "prose",
    "unit": "",
    "sources": ["premchand"]
+  },
+  {
+   "id": "chanakya-niti",
+   "title": "चाणक्यनीतिः",
+   "title_en": "Chanakya Niti",
+   "by": "चाणक्य",
+   "desc": "Chanakya's sayings on life, conduct and statecraft: 15 chapters, 300 ślokas in Sanskrit with Roman transliteration. No free Hindi meaning was found, so the original only.",
+   "script": "sa",
+   "kind": "verse",
+   "unit": "अध्याय",
+   "verse": "श्लोक",
+   "layers": {"text": "संस्कृत", "tr": "Roman"},
+   "recite": true,
+   "ocr_note": "This text is typed on Sanskrit Wikisource and has not been checked against a printed edition there; a few typing errors may remain.",
+   "sources": ["sa-chanakya"]
   },
   {
    "id": "vishnu-sahasranama",
@@ -157,6 +173,14 @@
   {"title": "ब्रह्माण्ड पुराण", "title_en": "Brahmanda Purana"}
  ],
  "sources": {
+  "sa-chanakya": {
+   "title": "चाणक्यनीतिः — Sanskrit Wikisource",
+   "where": "Sanskrit Wikisource (sa.wikisource.org)",
+   "url": "https://sa.wikisource.org/wiki/%E0%A4%9A%E0%A4%BE%E0%A4%A3%E0%A4%95%E0%A5%8D%E0%A4%AF%E0%A4%A8%E0%A5%80%E0%A4%A4%E0%A4%BF%E0%A4%83",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "note": "The traditional text is public domain. Verses and numbers are as on the Wikisource page (15 chapters); the Roman transliteration is made by a fixed rule. No openly licensed Hindi meaning was found on Wikisource, so none is given."
+  },
   "sa-vishnu": {
    "title": "श्रीविष्णुसहस्रनामस्तोत्रम् — Sanskrit Wikisource",
    "where": "Sanskrit Wikisource (sa.wikisource.org)",

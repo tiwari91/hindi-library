@@ -31,7 +31,11 @@ def clean_wiki(text):
     return [l.strip() for l in text.split("\n")]
 
 
-def verses(lines, chap):
+NUM_END = re.compile(r"[॥|।]\s*[०-९0-9]+\s*(॥|।।)?\s*$")
+
+
+def verses(lines, chap, numbered=False):
+    """numbered=True: every verse in the source ends with ॥<number>॥, so only that ends a verse."""
     """Group lines into items: headings, speakers (attached to the next verse) and verses."""
     items, buf, speaker = [], [], None
     k = 0
@@ -66,7 +70,7 @@ def verses(lines, chap):
             speaker = re.sub(r"\s*[-–—:]+$", "", l).strip()
             continue
         buf.append(l)
-        if END.search(l) or len(buf) >= 4:
+        if (NUM_END.search(l) or len(buf) >= 6) if numbered else (END.search(l) or len(buf) >= 4):
             flush()
     flush()
     return items
@@ -142,6 +146,17 @@ def shiva():
     items = verses(lines[:end_at], 1)
     items.append({"id": "1.end", "h": colophon})
     write_book("shiva-sahasranama", [("श्रीशिवसहस्रनामस्तोत्रम्", items)], url(title))
+
+
+def chanakya():
+    title = "चाणक्यनीतिः"
+    w = wikitext(HOST, title)
+    w = re.sub(r"\[\[वर्गः:[^\]]*\]\]", "", w)
+    parts = re.split(r"^==\s*(.+?)\s*==\s*$", w, flags=re.M)[1:]
+    chapters = []
+    for i in range(0, len(parts), 2):
+        chapters.append((parts[i].strip(), verses(clean_wiki(parts[i + 1]), len(chapters) + 1, numbered=True)))
+    write_book("chanakya-niti", chapters, url(title))
 
 
 if __name__ == "__main__":
