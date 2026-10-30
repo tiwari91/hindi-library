@@ -582,9 +582,9 @@
 		const box = h("aside", { class: "tip", "aria-label": T("सुझाव · Tips", "How to use this site") },
 			h("h2", null, T("इस साइट को कैसे पढ़ें", "How to use this site")),
 			h("ol", null,
-				h("li", null, T("कोई ग्रंथ चुनें। वह एक-एक श्लोक करके खुलता है; नीचे के ‹ › बटन से आगे-पीछे जाएँ।", "Pick a book. It opens one verse at a time: use the big ‹ › buttons, the arrow keys or a swipe to move.")),
+				h("li", null, T("कोई ग्रंथ चुनें। वह एक-एक श्लोक करके खुलता है; नीचे के ‹ › बटन से आगे-पीछे जाएँ।", "Pick a book. It opens one verse at a time: use the ‹ › buttons at the bottom to move.")),
 				h("li", null, T("ऊपर ‘Aa’ से अक्षर का आकार, पंक्ति की दूरी और रंग बदलें; ‘हिन्दी / English’ से भाषा।", "Use ‘Aa’ at the top for text size, line spacing and colours, and ‘हिन्दी / English’ for the language.")),
-				h("li", null, T("बुकमार्क से श्लोक सहेजें और स्पीकर से सुनें।", "Tap the bookmark to save a verse, the speaker to hear it read aloud, and the search button to find anything."))),
+				h("li", null, T("बुकमार्क से श्लोक सहेजें और स्पीकर से सुनें।", "Tap the bookmark to save a verse and the speaker to hear it read aloud."))),
 			h("p", { class: "tip-actions" },
 				h("button", { class: "chip", type: "button", onclick: () => { S.tipDone = true; save(); box.remove(); } }, T("समझ गया", "Got it")),
 				h("a", { href: "#/help" }, T("पूरी सहायता", "More help"))));
@@ -705,10 +705,12 @@
 			b.recite ? h("div", { class: "layers" },
 				h("button", { class: "chip ghost", onclick: () => { S.one[b.id] = true; save(); openRecite(b, meta.n, null); } },
 					T("▶ एक-एक श्लोक पढ़ें", "▶ One verse at a time") + (b.mala ? " + mala" : ""))) : null,
-			// book-wide notices sit in one folded box, so the first verse is close to the top
+			// book-wide notices sit in one folded box, so the first verse is close to the top;
+			// in English mode a book with no English says so in the open, or the reader wonders why
+			en && !b.en_source && !b.en_note ? enNote(b) : null,
 			notesBox([
 				ocr && !(en && b.hi_only_ocr) ? h("p", { lang: en ? "en" : "hi" }, ocr) : null,
-				en ? enNote(b) : b.en_note ? h("p", { lang: "en" }, b.en_note) : null]),
+				en ? (b.en_source || b.en_note ? enNote(b) : null) : b.en_note ? h("p", { lang: "en" }, b.en_note) : null]),
 			chapterEnBox(b, doc),
 			summaryBox(b, doc),
 			doc.items.some((x) => (x.text || x.p || x.poem) && !x.en && !x.en_ref) ? gtChapterLink(b, doc) : null,
@@ -958,7 +960,7 @@
 		function show() {
 			const it = RC.items[RC.i];
 			// the meaning's own label already warns about scanned text, so the footnote is not repeated
-			const warned = !EN() && it.hi_src && b.ocr_note;
+			const warned = !EN() && it.hi && it.hi_src && b.ocr_note;
 			card.replaceChildren(renderItem(b, n, it, { recite: true }), srcNote && !it.gap && !warned ? h("p", { class: "rc-src" }, srcNote) : "");
 			pos.textContent = (EN() ? "Verse " : "") + (RC.i + 1) + " of " + RC.items.length;
 			pos.title = EN() ? "" : dev(RC.i + 1) + " / " + dev(RC.items.length);

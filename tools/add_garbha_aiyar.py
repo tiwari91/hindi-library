@@ -19,7 +19,10 @@ NOTE = ("Aiyar translated a longer version of the Garbha Upanishad than the Sans
 def paragraphs():
     s = open(RAW, encoding="utf-8").read()
     # the text sits between the "tr. by K. Narayanasvami Aiyar" banner and the footnotes
-    body = s.split("at sacred-texts.com</FONT></P><HR></p>", 1)[1].split("<HR>", 1)[0]
+    banner = "at sacred-texts.com</FONT></P><HR></p>"
+    if banner not in s:
+        raise SystemExit(f"{RAW}: the sacred-texts banner was not found; the saved page's layout has changed")
+    body = s.split(banner, 1)[1].split("<HR>", 1)[0]
     out = []
     for p in re.findall(r"<p>(.*?)</p>", body, flags=re.S | re.I):
         if re.search(r'name="page_\d+"', p, flags=re.I):
