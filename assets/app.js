@@ -310,7 +310,7 @@
 	// "Chapter 2 of 18" (stories: "Story 3 of 45")
 	function posLabel(b, i, n) {
 		if (EN()) return (b.kind === "prose" ? "Story " : b.unit || b.purana ? "Chapter " : "Part ") + i + " of " + n;
-		return (b.kind === "prose" ? "कहानी " : b.unit ? b.unit + " " : "भाग ") + dev(i) + " / " + dev(n) + " · " + (b.kind === "prose" ? "Story " : "Chapter ") + i + " of " + n;
+		return (b.kind === "prose" ? "कहानी " : b.unit ? b.unit + " " : "भाग ") + dev(i) + " / " + dev(n);
 	}
 	function verseUrl(b, n, id) { return "#/" + b.id + "/" + n + "/" + encodeURIComponent(id); }
 
@@ -340,7 +340,7 @@
 		if (it.hi) {
 			const lab = [];
 			if (it.hi_group) lab.push((b.verse || "") + " " + it.hi_group[0] + "–" + it.hi_group[1] + " का अर्थ");
-			if (opts.recite && it.hi_src && b.ocr_note) lab.push("OCR पाठ, जाँचा नहीं · unproofread OCR");
+			if (opts.recite && it.hi_src && b.ocr_note) lab.push("स्कैन से लिया गया अर्थ, अभी जाँचा नहीं; कुछ अक्षर ग़लत हो सकते हैं");
 			const m = h("div", { class: "meaning", lang: "hi" });
 			if (lab.length || it.hi_src) {
 				m.append(h("span", { class: "mlabel" }, lab.join(" "), lab.length && it.hi_src ? " · " : "",
@@ -388,7 +388,7 @@
 		if (!doc.en_summary) return null;
 		const label = "Chapter summary: machine-written, not proofread";
 		if (EN()) return h("div", { class: "en-summary", lang: "en" }, h("p", { class: "mlabel" }, label), h("p", null, doc.en_summary));
-		return h("details", { class: "en-summary", lang: "en" }, h("summary", null, "English summary"), h("p", { class: "mlabel" }, label), h("p", null, doc.en_summary));
+		return h("details", { class: "en-summary", lang: "en" }, h("summary", null, "अध्याय का सार (English) · Chapter summary"), h("p", { class: "mlabel" }, label), h("p", null, doc.en_summary));
 	}
 	function openSummary(doc) {
 		const scrim = h("div", { class: "scrim" });
@@ -490,10 +490,10 @@
 			let where = en ? (lb.unit ? "Chapter " : "Part ") + L.n : (lb.unit || "") + " " + dev(L.n);
 			try { const c = (await toc(lb)).chapters.find((x) => String(x.n) === String(L.n)); if (c) where = chapterTitle(lb, c); } catch (e) { /* keep the number */ }
 			primary = h("a", { class: "resume", href: L.id ? verseUrl(lb, L.n, L.id) : "#/" + lb.id + "/" + L.n },
-				h("span", null, h("small", null, T("जहाँ छोड़ा था वहीं से पढ़ें · Continue where you left off", "Continue where you left off")), h("b", null, bTitle(lb)), h("span", null, where)), h("span", { class: "go", "aria-hidden": "true" }, "→"));
+				h("span", null, h("small", null, T("जहाँ छोड़ा था वहीं से पढ़ें", "Continue where you left off")), h("b", null, bTitle(lb)), h("span", null, where)), h("span", { class: "go", "aria-hidden": "true" }, "→"));
 		} else {
 			primary = h("a", { class: "resume start", href: "#/gita/1" },
-				h("span", null, h("small", null, T("शुरू करें · Start reading", "Start reading")), h("b", null, T("श्रीमद्भगवद्गीता", "Bhagavad Gita")), h("span", null, T("अध्याय १ से · from chapter 1", "from chapter 1"))), h("span", { class: "go", "aria-hidden": "true" }, "→"));
+				h("span", null, h("small", null, T("पढ़ना शुरू करें", "Start reading")), h("b", null, T("श्रीमद्भगवद्गीता", "Bhagavad Gita")), h("span", null, T("अध्याय १ से", "from chapter 1"))), h("span", { class: "go", "aria-hidden": "true" }, "→"));
 		}
 		const q = h("input", { type: "search", name: "q", placeholder: en ? "Search: krishna, dharma, mind…" : "खोजें: कृष्ण, dharma…", "aria-label": T("सभी ग्रंथों में खोजें · Search all books", "Search all books"), autocomplete: "off" });
 		const search = h("form", { class: "searchbox home-search", role: "search" }, q, h("button", { class: "chip", type: "submit" }, T("खोजें", "Search")));
@@ -502,7 +502,7 @@
 			h("h1", null, T("हिन्दी पुस्तकालय", "Hindi Library")),
 			h("p", { class: "lede" }, en
 				? "A free library of Indian classics to read on any screen: the Bhagavad Gita, the Ramcharitmanas, stotras, the Puranas and Premchand's stories, in Roman letters with English meanings where a free translation exists."
-				: "भगवद्गीता, रामचरितमानस, स्तोत्र, पुराण और प्रेमचंद की कहानियाँ — मुक्त स्रोतों से, मूल पाठ में, एक-एक श्लोक करके पढ़ें। A free library of Indian classics, one verse at a time."),
+				: "भगवद्गीता, रामचरितमानस, स्तोत्र, पुराण और प्रेमचंद की कहानियाँ: मूल पाठ में, एक-एक श्लोक करके, मुफ़्त पढ़ें।"),
 			primary, search));
 		const tip = firstTip();
 		if (tip) frag.push(tip);
@@ -513,20 +513,20 @@
 		for (const [key, hi, enName] of SHELVES) {
 			const list = shown.filter((b) => shelfOf(b) === key);
 			if (!list.length) continue;
-			frag.push(h("h2", { class: "shelf" }, T(hi + " · " + enName, enName)));
+			frag.push(h("h2", { class: "shelf" }, T(hi, enName)));
 			frag.push(h("ul", { class: "books" }, list.map((b) => h("li", null, bookCard(b)))));
 		}
-		frag.push(h("h2", { class: "shelf" }, T("पुराण · The 18 Mahapuranas", "Puranas · the 18 Mahapuranas")));
+		frag.push(h("h2", { class: "shelf" }, T("अठारह महापुराण", "Puranas · the 18 Mahapuranas")));
 		frag.push(h("p", { class: "shelf-note" }, en
 			? "Long Sanskrit texts, chapter by chapter, in Roman transliteration."
-			: "संस्कृत में, अध्याय-दर-अध्याय · Sanskrit text with Roman transliteration."));
+			: "संस्कृत मूल पाठ, अध्याय-दर-अध्याय, रोमन लिपि के साथ।"));
 		frag.push(h("ul", { class: "puranas" }, LIB.puranas.map((p) => {
 			const b = p.book && bookById(p.book);
 			const name = EN() ? h("span", null, p.title_en.replace(/ Purana$/, "")) : h("span", { class: "sa" }, p.title);
 			return h("li", null, b
 				? h("a", { class: "pchip", href: "#/" + b.id, title: p.title_en + (p.partial ? " (partial: " + p.partial + ")" : "") }, name,
 					h("small", null, STATS && STATS[b.id] ? (en ? STATS[b.id].chapters + " chapters" : dev(STATS[b.id].chapters) + " अध्याय") : p.partial ? "partial" : "read"))
-				: h("span", { class: "pchip soon", title: p.title_en + " (coming)" }, name, h("small", null, "coming")));
+				: h("span", { class: "pchip soon", title: p.title_en + " (coming)" }, name, h("small", null, T("जल्द", "coming"))));
 		})));
 		view.replaceChildren(...frag);
 	}
@@ -578,14 +578,14 @@
 	function firstTip() {
 		if (S.tipDone) return null;
 		const box = h("aside", { class: "tip", "aria-label": T("सुझाव · Tips", "How to use this site") },
-			h("h2", null, T("इस साइट को कैसे पढ़ें · How to use this site", "How to use this site")),
+			h("h2", null, T("इस साइट को कैसे पढ़ें", "How to use this site")),
 			h("ol", null,
-				h("li", null, T("कोई ग्रंथ चुनें। वह एक-एक श्लोक करके खुलता है; ‹ › बटन, तीर कुंजियाँ या स्वाइप से आगे-पीछे जाएँ।", "Pick a book. It opens one verse at a time: use the big ‹ › buttons, the arrow keys or a swipe to move.")),
+				h("li", null, T("कोई ग्रंथ चुनें। वह एक-एक श्लोक करके खुलता है; नीचे के ‹ › बटन से आगे-पीछे जाएँ।", "Pick a book. It opens one verse at a time: use the big ‹ › buttons, the arrow keys or a swipe to move.")),
 				h("li", null, T("ऊपर ‘Aa’ से अक्षर का आकार, पंक्ति की दूरी और रंग बदलें; ‘हिन्दी / English’ से भाषा।", "Use ‘Aa’ at the top for text size, line spacing and colours, and ‘हिन्दी / English’ for the language.")),
-				h("li", null, T("बुकमार्क से श्लोक सहेजें, स्पीकर से सुनें, और ऊपर खोज से कुछ भी ढूँढ़ें।", "Tap the bookmark to save a verse, the speaker to hear it read aloud, and the search button to find anything."))),
+				h("li", null, T("बुकमार्क से श्लोक सहेजें और स्पीकर से सुनें।", "Tap the bookmark to save a verse, the speaker to hear it read aloud, and the search button to find anything."))),
 			h("p", { class: "tip-actions" },
-				h("button", { class: "chip", type: "button", onclick: () => { S.tipDone = true; save(); box.remove(); } }, T("समझ गया · Got it", "Got it")),
-				h("a", { href: "#/help" }, T("पूरी सहायता · More help", "More help"))));
+				h("button", { class: "chip", type: "button", onclick: () => { S.tipDone = true; save(); box.remove(); } }, T("समझ गया", "Got it")),
+				h("a", { href: "#/help" }, T("पूरी सहायता", "More help"))));
 		return box;
 	}
 
@@ -698,13 +698,15 @@
 			t.chapters.length > 1 ? h("div", { class: "chap-progress", role: "progressbar", "aria-valuemin": "1", "aria-valuemax": String(t.chapters.length), "aria-valuenow": String(index + 1), "aria-label": "Position in the book" },
 				h("i", { style: "width:" + ((index + 1) / t.chapters.length * 100).toFixed(1) + "%" })) : null,
 			!en && meta.title_tr ? h("p", { class: "tr" }, meta.title_tr) : null,
-			layerChips(b),
+			showRow(b),
 			goToBox(b, t, meta.n, false),
 			b.recite ? h("div", { class: "layers" },
 				h("button", { class: "chip ghost", onclick: () => { S.one[b.id] = true; save(); openRecite(b, meta.n, null); } },
-					T("▶ एक-एक श्लोक · One verse at a time", "▶ One verse at a time") + (b.mala ? " + mala" : ""))) : null,
-			ocr && !(en && b.hi_only_ocr) ? h("p", { class: "ocr-note", lang: en ? "en" : "hi" }, ocr) : null,
-			en ? enNote(b) : b.en_note ? h("p", { class: "ocr-note", lang: "en" }, b.en_note) : null,
+					T("▶ एक-एक श्लोक पढ़ें", "▶ One verse at a time") + (b.mala ? " + mala" : ""))) : null,
+			// book-wide notices sit in one folded box, so the first verse is close to the top
+			notesBox([
+				ocr && !(en && b.hi_only_ocr) ? h("p", { lang: en ? "en" : "hi" }, ocr) : null,
+				en ? enNote(b) : b.en_note ? h("p", { lang: "en" }, b.en_note) : null]),
 			chapterEnBox(b, doc),
 			summaryBox(b, doc),
 			doc.items.some((x) => (x.text || x.p || x.poem) && !x.en && !x.en_ref) ? gtChapterLink(b, doc) : null,
@@ -753,6 +755,17 @@
 		else if (b.kind === "prose" && !S.scrollProse) openPages(b, ch);
 	}
 
+	// the layer switches on the chapter page, with a label so they read as show/hide switches
+	function showRow(b) {
+		const lc = layerChips(b);
+		return lc ? h("div", { class: "show-row" }, h("span", { class: "show-lab" }, T("दिखाएँ:", "Show:")), lc) : null;
+	}
+	function notesBox(notes) {
+		const ps = notes.filter(Boolean);
+		if (!ps.length) return null;
+		ps.forEach((p) => p.classList.remove("ocr-note"));
+		return h("details", { class: "notes" }, h("summary", null, T("पाठ और अनुवाद के बारे में ज़रूरी बातें", "About this text and its translation")), ...ps);
+	}
 	function layerChips(b, onChange) {
 		if (!b.layers) return null;
 		const EN_NAMES = { tr: "Transliteration", en: "English", note: "Notes" };
@@ -942,7 +955,9 @@
 		}
 		function show() {
 			const it = RC.items[RC.i];
-			card.replaceChildren(renderItem(b, n, it, { recite: true }), srcNote && !it.gap ? h("p", { class: "rc-src" }, srcNote) : "");
+			// the meaning's own label already warns about scanned text, so the footnote is not repeated
+			const warned = !EN() && it.hi_src && b.ocr_note;
+			card.replaceChildren(renderItem(b, n, it, { recite: true }), srcNote && !it.gap && !warned ? h("p", { class: "rc-src" }, srcNote) : "");
 			pos.textContent = (EN() ? "Verse " : "") + (RC.i + 1) + " of " + RC.items.length;
 			pos.title = EN() ? "" : dev(RC.i + 1) + " / " + dev(RC.items.length);
 			tools.replaceChildren(...toolMakers.slice(1).map((f) => f(b, n, it)).filter(Boolean));

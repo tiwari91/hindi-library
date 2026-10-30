@@ -179,7 +179,7 @@
 			it.en ? h("p", { class: "votd-hi votd-en" }, it.en) : null,
 			h("a", { href: verseUrl(b, c.n, it.id) }, "Bhagavad Gita " + c.n + "." + label(it.n || "") + " →"));
 		return h("section", { class: "votd" },
-			h("p", { class: "eyebrow" }, "आज का श्लोक · Verse of the day"),
+			h("p", { class: "eyebrow" }, "आज का श्लोक"),
 			h("p", { class: "sa-text" }, it.text),
 			it.hi ? h("p", { class: "votd-hi", lang: "hi" }, it.hi) : null,
 			h("a", { href: verseUrl(b, c.n, it.id) }, b.title + " " + dev(c.n) + "." + (it.n || "") + " →"));
