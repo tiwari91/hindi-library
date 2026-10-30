@@ -193,6 +193,8 @@
    "script": "sa", "kind": "verse", "unit": "", "verse": "श्लोक", "layers": {"text": "संस्कृत", "tr": "Roman"},
    "recite": true, "no_search": true,
    "ocr_note": "This text is typed on Sanskrit Wikisource and has not been checked against a printed edition there; a few typing errors may remain. Verse breaks follow the verse numbers in the source.",
+   "en_summaries": true,
+   "en_note": "Each chapter has a short English summary, written by an AI model (Claude) from the Sanskrit and not proofread. The verses themselves are shown in Roman transliteration; a free English translation that lines up with this text is not available.",
    "sources": ["sa-puranas"]
   },
   {
