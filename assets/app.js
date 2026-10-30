@@ -451,6 +451,7 @@
 		} else if (!isProse && opts.recite) {
 			mw.append(h("p", { class: "en-missing", lang: "en" }, hasChapterEn(curDoc)
 				? "This chapter's English translation is one passage for the whole chapter: tap “English” at the top to read it."
+				: curDoc && curDoc.en_summary ? NO_EN + " Tap “Summary” at the top to read this chapter in English, in short."
 				: NO_EN));
 		}
 		if (!isProse && !it.en && !it.en_ref) { const g = gtVerseLink(b, it); if (g) mw.append(g); }
