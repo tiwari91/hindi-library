@@ -140,6 +140,12 @@ home page); run it after adding or rebuilding a book.
   (`tools/build_stotras.py`), and the Hanuman Chalisa card links to the stotra reader. Its recite
   mode and 108-bead mala counter are reader features here: set `"recite": true, "mala": true`.
 
+- **Garbha Upanishad** (`data/garbha-upanishad/`) from Sanskrit Wikisource with
+  `python3 tools/build_upanishad.py`, then `python3 tools/add_en.py garbha-upanishad` (Claude's
+  English for each section, in `sources/en/garbha-upanishad/`) and `python3 tools/add_garbha_aiyar.py`
+  (K. Narayanasvami Aiyar's 1914 translation, public domain, as one passage for the chapter: it
+  follows a longer version of the text, so it cannot sit under single sections).
+
 ## Licence
 
 Text content is shared under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/),

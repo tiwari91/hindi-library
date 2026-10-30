@@ -243,6 +243,8 @@
 	function verseLabel(b, it, doc) {
 		const en = EN();
 		const num = (x) => (en ? toAscii(toEn(String(x))) : String(x));
+		// a label given by the book's build script ("शान्तिपाठ", "खण्ड ३"), where the source prints no number
+		if (it.label) return [en ? it.label_en || toEn(it.label) : it.label, null];
 		if (it.pre && it.n) return [(en ? "Invocation " : "मङ्गलाचरण ") + num(it.n), null];
 		if (doc && doc.numbering === "position" && it._pos) {
 			const main = (en ? "Verse " : (b.verse ? b.verse + " " : "")) + (en ? it._pos : dev(it._pos));
@@ -380,7 +382,7 @@
 	function chapterEnBox(b, doc) {
 		if (!hasChapterEn(doc)) return null;
 		return h("details", { class: "en-chapter", lang: "en" },
-			h("summary", null, "English translation of this chapter · " + (b.en_source || "")),
+			h("summary", null, "English translation of this chapter · " + (b.en_chapter_source || b.en_source || "")),
 			...chapterEnBody(b, doc));
 	}
 	// Machine-written chapter summary (English): open in English mode, a closed box in Hindi mode
@@ -412,7 +414,7 @@
 		scrim.addEventListener("click", close);
 		const sheet = h("div", { class: "sheet en-sheet", role: "dialog", "aria-modal": "true", "aria-label": "English translation of this chapter", lang: "en" },
 			h("h2", null, "English translation of this chapter"),
-			h("p", { class: "note" }, b.en_source || ""),
+			h("p", { class: "note" }, b.en_chapter_source || b.en_source || ""),
 			...chapterEnBody(b, doc),
 			h("button", { class: "chip", onclick: close }, "Close"));
 		sheet.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });

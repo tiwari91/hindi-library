@@ -75,6 +75,25 @@
    "sources": ["manas", "claude-en"]
   },
   {
+   "id": "garbha-upanishad",
+   "title": "गर्भोपनिषत्",
+   "title_en": "Garbha Upanishad",
+   "by": "पिप्पलाद",
+   "by_en": "Pippalada",
+   "desc": "The Upanishad of the embryo: how the body is made of the five elements, how the child grows month by month in the womb, what it remembers there and forgets at birth, and the body seen as a sacrifice. Sanskrit with Roman transliteration and an English meaning for each section, plus K. Narayanasvami Aiyar's 1914 translation.",
+   "script": "sa",
+   "kind": "verse",
+   "unit": "",
+   "verse": "खण्ड",
+   "layers": {"text": "संस्कृत", "tr": "Roman", "en": "English"},
+   "recite": true,
+   "en_note": "Machine translation, not proofread: the English under each section was written by an AI model (Claude) directly from this Sanskrit. K. Narayanasvami Aiyar's 1914 translation is in the “English translation of this chapter” box; it follows a longer version of the text.",
+   "en_chapter_source": "K. Narayanasvami Aiyar's translation (1914)",
+   "ocr_note": "This text is typed on Sanskrit Wikisource and has not been checked against a printed edition there; a few typing errors may remain.",
+   "sources": ["sa-garbha", "claude-en"],
+   "en_sources": ["aiyar-garbha"]
+  },
+  {
    "id": "premchand",
    "title": "प्रेमचंद की कहानियाँ",
    "title_en": "Premchand: stories",
@@ -440,6 +459,22 @@
    "licence": "CC BY-SA 4.0",
    "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
    "note": "The traditional Sanskrit text is public domain. All six amshas (126 chapter pages) as typed on Wikisource; each chapter links to its page. Verse breaks follow the verse numbers in the source; the Roman transliteration is made by a fixed rule. No Hindi or English meaning."
+  },
+  "sa-garbha": {
+   "title": "गर्भोपनिषद् — Sanskrit Wikisource",
+   "where": "Sanskrit Wikisource (sa.wikisource.org)",
+   "url": "https://sa.wikisource.org/wiki/%E0%A4%97%E0%A4%B0%E0%A5%8D%E0%A4%AD%E0%A5%8B%E0%A4%AA%E0%A4%A8%E0%A4%BF%E0%A4%B7%E0%A4%A6%E0%A5%8D",
+   "licence": "CC BY-SA 4.0",
+   "licence_url": "https://creativecommons.org/licenses/by-sa/4.0/",
+   "note": "The traditional text is public domain. The Wikisource page lists sanskritdocuments.org for further reading. Words are as on that page; the section labels (मङ्गलाचरण, शान्तिपाठ, खण्ड १–५) are added here because the page numbers only sections 1–4, and the Roman transliteration is made by a fixed rule (tools/build_upanishad.py)."
+  },
+  "aiyar-garbha": {
+   "title": "Thirty Minor Upanishads, translated by K. Narayanasvami Aiyar (Madras, 1914), no. 16: Garbha-Upanishad",
+   "where": "sacred-texts.com (Internet Sacred Text Archive transcription)",
+   "url": "https://sacred-texts.com/hin/tmu/tmu18.htm",
+   "licence": "Public domain (published 1914; Aiyar died in 1918)",
+   "licence_url": "https://sacred-texts.com/cnote.htm",
+   "note": "Shown as one passage for the chapter, as printed; page numbers and footnotes are left out (tools/add_garbha_aiyar.py). Aiyar translated a longer version of the Upanishad than the Wikisource text, so it is not split under single sections."
   },
   "claude-en": {
    "title": "English meanings — machine translation, not proofread",

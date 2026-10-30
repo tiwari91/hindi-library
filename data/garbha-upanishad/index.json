@@ -1,0 +1,13 @@
+{
+ "book": "garbha-upanishad",
+ "chapters": [
+  {
+   "n": 1,
+   "file": "01.json",
+   "title": "पूर्ण पाठ",
+   "first": "यद्गर्भोपनिषद्वेद्यं गर्भस्य स्वात्मबोधकम् ।",
+   "count": 8,
+   "title_en": "Full text"
+  }
+ ]
+}

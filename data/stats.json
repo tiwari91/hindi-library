@@ -9,7 +9,7 @@
  "parashara": {
   "chapters": 12,
   "verses": 583,
-  "words": 8034,
+  "words": 7910,
   "with_en": 583,
   "minutes": 194
  },
@@ -27,6 +27,13 @@
   "with_en": 340,
   "minutes": 113
  },
+ "garbha-upanishad": {
+  "chapters": 1,
+  "verses": 8,
+  "words": 465,
+  "with_en": 8,
+  "minutes": 3
+ },
  "premchand": {
   "chapters": 45,
   "verses": 0,
@@ -37,37 +44,37 @@
  "agni-purana": {
   "chapters": 383,
   "verses": 11956,
-  "words": 155711,
+  "words": 155674,
   "with_en": 0,
   "minutes": 3985
  },
  "brahma-purana": {
   "chapters": 246,
   "verses": 13980,
-  "words": 171258,
+  "words": 171236,
   "with_en": 0,
   "minutes": 4660
  },
  "brahmanda-purana": {
   "chapters": 156,
   "verses": 13649,
-  "words": 172555,
+  "words": 172549,
   "with_en": 0,
   "minutes": 4550
  },
  "brahmavaivarta-purana": {
   "chapters": 276,
   "verses": 20642,
-  "words": 280047,
+  "words": 280043,
   "with_en": 0,
   "minutes": 6881
  },
  "bhavishya-purana": {
   "chapters": 585,
-  "verses": 26048,
-  "words": 355097,
-  "with_en": 0,
-  "minutes": 8683
+  "verses": 26114,
+  "words": 355075,
+  "with_en": 380,
+  "minutes": 8705
  },
  "padma-purana": {
   "chapters": 693,
@@ -79,7 +86,7 @@
  "varaha-purana": {
   "chapters": 218,
   "verses": 10559,
-  "words": 148758,
+  "words": 148744,
   "with_en": 0,
   "minutes": 3520
  },
@@ -93,21 +100,21 @@
  "matsya-purana": {
   "chapters": 291,
   "verses": 13025,
-  "words": 157690,
+  "words": 157666,
   "with_en": 0,
   "minutes": 4342
  },
  "linga-purana": {
   "chapters": 163,
   "verses": 8930,
-  "words": 109298,
+  "words": 109291,
   "with_en": 0,
   "minutes": 2977
  },
  "kurma-purana": {
   "chapters": 99,
   "verses": 5894,
-  "words": 78033,
+  "words": 78030,
   "with_en": 0,
   "minutes": 1965
  },
@@ -121,14 +128,14 @@
  "shiva-purana": {
   "chapters": 457,
   "verses": 24198,
-  "words": 311385,
+  "words": 311377,
   "with_en": 0,
   "minutes": 8066
  },
  "garuda-purana": {
   "chapters": 318,
   "verses": 12254,
-  "words": 167612,
+  "words": 167591,
   "with_en": 0,
   "minutes": 4085
  },
@@ -156,14 +163,14 @@
  "bhagavata": {
   "chapters": 335,
   "verses": 13430,
-  "words": 186945,
+  "words": 186943,
   "with_en": 0,
   "minutes": 4477
  },
  "chanakya-niti": {
   "chapters": 15,
   "verses": 300,
-  "words": 4558,
+  "words": 4556,
   "with_en": 300,
   "minutes": 100
  },
