@@ -388,9 +388,10 @@
 	// Machine-written chapter summary (English): open in English mode, a closed box in Hindi mode
 	function summaryBox(b, doc) {
 		if (!doc.en_summary) return null;
-		const label = "Chapter summary: machine-written, not proofread";
+		const story = b.kind === "prose";
+		const label = (story ? "Story summary" : "Chapter summary") + ": machine-written, not proofread";
 		if (EN()) return h("div", { class: "en-summary", lang: "en" }, h("p", { class: "mlabel" }, label), h("p", null, doc.en_summary));
-		return h("details", { class: "en-summary", lang: "en" }, h("summary", null, "अध्याय का सार (English) · Chapter summary"), h("p", { class: "mlabel" }, label), h("p", null, doc.en_summary));
+		return h("details", { class: "en-summary", lang: "en" }, h("summary", null, story ? "कहानी का सार (English) · Story summary" : "अध्याय का सार (English) · Chapter summary"), h("p", { class: "mlabel" }, label), h("p", null, doc.en_summary));
 	}
 	function openSummary(doc) {
 		const scrim = h("div", { class: "scrim" });
@@ -622,6 +623,7 @@
 
 	// English mode: say where the English comes from, or that there is none yet
 	function enNote(b) {
+		if (b.kind === "prose" && b.en_note) return h("p", { class: "ocr-note", lang: "en" }, b.en_note);
 		if (b.kind === "prose") return h("p", { class: "ocr-note", lang: "en" }, "This is Hindi prose. In English mode it is shown in Roman transliteration; a free English translation is not available yet.");
 		if (b.en_source) return h("p", { class: "ocr-note", lang: "en" }, "English meaning: " + b.en_source + ". " + (b.en_source_note || ""));
 		if (b.en_note) return h("p", { class: "ocr-note", lang: "en" }, b.en_note);
@@ -1005,7 +1007,7 @@
 		const { doc, meta, toc: t, index } = ch;
 		curDoc = doc;
 		const cols = h("div", { class: "pg-cols", lang: EN() ? "en" : "hi" }, h("h1", { class: "pg-title" }, EN() ? cTitle(meta) : doc.title || meta.title),
-			gtChapterLink(b, doc), doc.items.map((it) => renderItem(b, meta.n, it, { recite: true })));
+			summaryBox(b, doc), gtChapterLink(b, doc), doc.items.map((it) => renderItem(b, meta.n, it, { recite: true })));
 		const viewport = h("div", { class: "pg-view" }, cols);
 		const pos = h("span", { class: "rc-pos" });
 		const bar = h("i");

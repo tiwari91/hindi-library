@@ -102,6 +102,7 @@
    "script": "hi",
    "kind": "prose",
    "unit": "",
+   "en_note": "Each story has a short English summary, written by an AI model (Claude) from the Hindi and not proofread. The story itself is shown in Roman transliteration; a free English translation is not available.",
    "sources": ["premchand"]
   },
   {
