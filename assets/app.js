@@ -182,10 +182,11 @@
 	// which layers (text, tr, hi, en, note) are hidden is remembered per book
 	let curBook = null;
 	// English mode: no Devanagari text or Hindi meaning; transliteration, English and English notes can be toggled
-	const enLayers = (b) => ["tr", "en"].concat(b && b.layers && b.layers.note && b.note_lang === "en" ? ["note"] : []);
+	const enLayers = (b) => (b && b.en_show_text ? ["text"] : []).concat(["tr", "en"], b && b.layers && b.layers.note && b.note_lang === "en" ? ["note"] : []);
 	function hidden(b, k) {
 		if (EN()) {
-			if (k === "text" || k === "hi" || (k === "note" && !(b && b.note_lang === "en"))) return true;
+			// the Devanagari stays out of English mode, except in books that keep it above the Roman (en_show_text)
+			if ((k === "text" && !(b && b.en_show_text)) || k === "hi" || (k === "note" && !(b && b.note_lang === "en"))) return true;
 			const he = b && S.hideEn[b.id];
 			return !!(he && he[k]);
 		}
@@ -777,7 +778,7 @@
 	}
 	function layerChips(b, onChange) {
 		if (!b.layers) return null;
-		const EN_NAMES = { tr: "Transliteration", en: "English", note: "Notes" };
+		const EN_NAMES = { text: "Sanskrit", tr: "Transliteration", en: "English", note: "Notes" };
 		const keys = EN() ? enLayers(b).filter((k) => k !== "en" || b.layers.en) : Object.keys(b.layers);
 		const label = (k) => (EN() ? EN_NAMES[k] || k : b.layers[k]);
 		if (keys.length < 2) return null;
