@@ -345,6 +345,7 @@
    "layers": {"text": "संस्कृत", "tr": "Roman", "en": "English"},
    "recite": true,
    "mala": true,
+   "en_show_text": true,
    "en_note": "Machine translation, not proofread: these English meanings were written by an AI model (Claude) directly from the Sanskrit for this reader. They are not a scholarly translation.",
    "sources": ["sa-vishnu", "claude-en"]
   },

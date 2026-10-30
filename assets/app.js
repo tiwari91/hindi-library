@@ -441,6 +441,8 @@
 			it.speaker ? h("span", { class: "speaker", lang: "en" }, cap(iast(it.speaker))) : null,
 			opts.recite ? null : h("span", { class: "vtools" }, ...verseTools(b, n, it)));
 		const parts = head ? [head] : [];
+		// some books keep the Devanagari above the Roman in English mode
+		if (b.en_show_text && it.text) { const sa = lines(it.text, "sa-text"); sa.lang = "sa"; parts.push(sa); }
 		if (tr) parts.push(isProse ? h("p", { class: "tr-text prose-tr", lang: "sa-Latn" }, tr) : lines(tr, "tr-text"));
 		const mw = h("div", { class: "mwrap" });
 		if (it.en) {
