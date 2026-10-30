@@ -569,7 +569,7 @@
 	function bookCard(b) {
 		const href = b.link || (b.open ? "#/" + b.open : "#/" + b.id);
 		const en = EN();
-		const enInfo = !en ? "" : b.link ? "Transliteration, on a separate site" : b.kind === "prose" ? "Roman transliteration" : b.en_source ? "English: " + b.en_source : b.en_note ? "English: machine translation" : "Transliteration only";
+		const enInfo = !en ? "" : b.link ? "Transliteration, on a separate site" : b.kind === "prose" ? (b.en_summaries ? "English story summaries" : "Roman transliteration") : b.en_source ? "English: " + b.en_source : b.en_summaries ? "English chapter summaries" : b.en_note ? "English: machine translation" : "Transliteration only";
 		return h("a", { class: "card", href, rel: b.link ? "noopener" : null },
 			h("span", { class: "t" + (!en && b.script === "sa" ? " sa" : "") + (en ? " en" : "") }, bTitle(b)),
 			h("span", { class: "e" }, en ? enInfo : b.title_en),
