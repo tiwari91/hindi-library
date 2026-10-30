@@ -256,6 +256,8 @@
    "recite": true,
    "no_search": true,
    "ocr_note": "This text is typed on Sanskrit Wikisource and has not been checked against a printed edition there; a few typing errors may remain.",
+   "en_summaries": true,
+   "en_note": "Each chapter has a short English summary, written by an AI model (Claude) from the Sanskrit and not proofread. The verses themselves are shown in Roman transliteration; a free English translation that lines up with this text is not available.",
    "sources": ["sa-markandeya"]
   },
   {
@@ -272,6 +274,8 @@
    "layers": {"text": "संस्कृत", "tr": "Roman"},
    "recite": true,
    "ocr_note": "This text is typed on Sanskrit Wikisource and has not been checked against a printed edition there; a few typing errors may remain. Verse numbers are those of the Markandeya Purana (81.1 and so on).",
+   "en_summaries": true,
+   "en_note": "Each chapter has a short English summary, written by an AI model (Claude) from the Sanskrit and not proofread. The verses themselves are shown in Roman transliteration; a free English translation that lines up with this text is not available.",
    "sources": ["sa-markandeya"]
   },
   {
