@@ -337,5 +337,70 @@
 			return btn;
 		});
 		window.addEventListener("hashchange", () => { try { synth.cancel(); } catch (e) { /* ignore */ } });
+		// Play in the one-verse reader: read the verse on screen, turn to the next, and so on, across chapters,
+		// until Stop (or the reader is closed). The choice to keep playing carries into the next chapter.
+		let rcPlay = false;
+		const speakText = (it, done) => {
+			const en = EN(), raw = en ? it.en || plainLatin(it.tr || iast(it.text || it.hi || "")) : it.text || it.hi || it.p || it.poem || it.en;
+			if (!raw) { done(); return; }
+			const u = new SpeechSynthesisUtterance(String(raw).replace(/[॥|]+\s*[०-९0-9.]*\s*[॥|]*/g, ". ").replace(/।/g, ","));
+			const v = en ? pickEn() : pick();
+			if (v) { u.voice = v; u.lang = v.lang; } else u.lang = en ? "en-IN" : "hi-IN";
+			u.rate = 0.85; u.onend = done; u.onerror = (e) => { if (e && e.error !== "interrupted" && e.error !== "canceled") done(); };
+			synth.speak(u);
+		};
+		document.addEventListener("hl:recite", (e) => {
+			const { root, top, cur, go, last } = e.detail;
+			if (!top) return;
+			const btn = h("button", { class: "ibtn rc-play", "aria-pressed": String(rcPlay), "aria-label": T("सुनाते चलें · Play", "Play: read verse after verse"), title: T("सुनाते चलें · Play", "Play: read verse after verse") }, svg(rcPlay ? '<rect x="7" y="6" width="3.5" height="12" rx="1"/><rect x="13.5" y="6" width="3.5" height="12" rx="1"/>' : ICON.play));
+			const setIcon = () => { btn.setAttribute("aria-pressed", String(rcPlay)); btn.replaceChildren(svg(rcPlay ? '<rect x="7" y="6" width="3.5" height="12" rx="1"/><rect x="13.5" y="6" width="3.5" height="12" rx="1"/>' : ICON.play)); };
+			const step = () => {
+				if (!rcPlay || !root.isConnected) return;
+				const it = cur();
+				if (!it) return;
+				speakText(it, async () => {
+					if (!rcPlay || !root.isConnected) return;
+					if (last()) { rcPlay = false; setIcon(); toast(T("ग्रंथ पूरा हुआ", "End of the book")); return; }
+					await go(1);
+					if (root.isConnected) setTimeout(step, 300);   // (a new chapter opens its own reader, which carries on)
+				});
+			};
+			btn.addEventListener("click", () => { rcPlay = !rcPlay; try { synth.cancel(); } catch (x) { /* ignore */ } setIcon(); if (rcPlay) step(); });
+			top.insertBefore(btn, top.querySelector(".aa"));
+			if (rcPlay) setTimeout(step, 400);
+		});
+		window.addEventListener("hashchange", () => { if (!document.querySelector(".recite")) rcPlay = false; });
+		// Listen to the whole chapter: verse after verse, each one highlighted and scrolled to as it is read.
+		let play = null;
+		const stopPlay = () => { if (!play) return; play.stop = true; try { synth.cancel(); } catch (e) { /* ignore */ } document.querySelectorAll(".verse.reading, .reading").forEach((x) => x.classList.remove("reading")); if (play.btn) { play.btn.setAttribute("aria-pressed", "false"); play.btn.lastChild.textContent = T(" पूरा अध्याय सुनें", " Listen to the chapter"); } play = null; };
+		window.addEventListener("hashchange", stopPlay);
+		document.addEventListener("hl:chapter", (e) => {
+			const { b, doc, head, covered } = e.detail, en = EN();
+			const items = doc.items.filter((it) => (en ? it.en || it.tr || it.text : it.text || it.hi || it.p || it.poem));
+			if (covered || items.length < 2) return;   // the one-verse reader has its own controls
+			const btn = h("button", { class: "chip listen", type: "button", "aria-pressed": "false" }, svg(ICON.speak), T(" पूरा अध्याय सुनें", " Listen to the chapter"));
+			btn.addEventListener("click", () => {
+				if (play) { stopPlay(); return; }
+				play = { btn, stop: false, i: 0 };
+				btn.setAttribute("aria-pressed", "true"); btn.lastChild.textContent = T(" रोकें", " Stop");
+				const next = () => {
+					if (!play || play.stop) return;
+					if (play.i >= items.length) { stopPlay(); toast(T("अध्याय पूरा हुआ", "End of the chapter")); return; }
+					const it = items[play.i++], el = document.getElementById("v-" + it.id);
+					document.querySelectorAll(".reading").forEach((x) => x.classList.remove("reading"));
+					if (el) { el.classList.add("reading"); el.scrollIntoView({ behavior: "smooth", block: "center" }); }
+					const raw = en ? it.en || plainLatin(it.tr || iast(it.text || "")) : it.text || it.hi || it.p || it.poem;
+					const u = new SpeechSynthesisUtterance(String(raw).replace(/[॥|]+\s*[०-९0-9.]*\s*[॥|]*/g, ". ").replace(/।/g, ","));
+					const v = en ? pickEn() : pick();
+					if (v) { u.voice = v; u.lang = v.lang; } else u.lang = en ? "en-IN" : "hi-IN";
+					u.rate = 0.85;
+					u.onend = () => setTimeout(next, 250);
+					u.onerror = () => { if (play && !play.stop) setTimeout(next, 250); };
+					synth.speak(u);
+				};
+				next();
+			});
+			head.append(h("p", { class: "listen-row" }, btn));
+		});
 	}
 })();

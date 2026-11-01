@@ -733,3 +733,10 @@ html[lang="hi"] h2.shelf, html[lang="hi"] .eyebrow { letter-spacing: .02em; font
 .plan-go { text-decoration: none; }
 .prog-bar.plan-bar { display: block; height: 5px; border-radius: 5px; background: rgba(127, 127, 127, .25); overflow: hidden; margin: 10px 0 4px; }
 .prog-bar.plan-bar i { display: block; height: 100%; background: var(--accent); }
+
+/* listen to the whole chapter */
+.listen-row { margin: 10px 0 0; }
+.chip.listen { display: inline-flex; align-items: center; gap: 4px; }
+.chip.listen svg { width: 16px; height: 16px; }
+.chip.listen[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.reading { background: color-mix(in srgb, var(--accent) 12%, transparent); border-radius: 10px; transition: background .3s; }

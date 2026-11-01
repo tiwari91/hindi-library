@@ -755,6 +755,7 @@
 			next ? h("a", { class: "next", href: "#/" + b.id + "/" + next.n }, h("small", null, T("अगला →", "Next →")), h("span", null, cTitle(next))) : null);
 		const src = doc.src ? h("p", { class: "note" }, T("स्रोत पृष्ठ · Source page: ", "Source page: "), h("a", { href: doc.src, target: "_blank", rel: "noopener" }, en ? toEn(decodeURIComponent(doc.src).replace(/^https:\/\//, "").replace(/_/g, " ")) : decodeURIComponent(doc.src).replace(/^https:\/\//, ""))) : null;
 		view.replaceChildren(head, body, pager, src || "");
+		document.dispatchEvent(new CustomEvent("hl:chapter", { detail: { b, n: meta.n, doc, head, covered } }));   // features add chapter controls (features.js)
 
 		// jump to verse, or the saved place
 		const target = focusId;
@@ -1026,6 +1027,9 @@
 		});
 		show();
 		nextBtn.focus();
+		// features add their own controls to the reader (features.js: play, verse after verse)
+		document.dispatchEvent(new CustomEvent("hl:recite", { detail: { b, root, top: root.querySelector(".rc-top"), cur: () => RC && RC.root === root ? RC.items[RC.i] : null,
+			go: (d) => (RC && RC.root === root ? RC.go(d) : null), last: () => !!RC && RC.i === RC.items.length - 1 && ch.index === ch.toc.chapters.length - 1 } }));
 	}
 	// prose (stories): screen-sized pages laid out with CSS columns; ‹ › turn a page, past the end go to the next story
 	function openPages(b, ch) {
