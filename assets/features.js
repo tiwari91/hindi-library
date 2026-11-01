@@ -169,6 +169,36 @@
 			h("p", { class: "lede" }, "Saved on this device only.")), list);
 	};
 
+	// ---------- sharing a verse: the phone's share sheet, or the text and link copied; WhatsApp as well ----------
+	function shareVerse(title, text, hash) {
+		const url = location.origin + location.pathname + hash;
+		const body = text + "\n\n" + title + "\n" + url;
+		if (navigator.share) { navigator.share({ title, text: text + "\n\n" + title, url }).catch(() => {}); return; }
+		const done = () => toast(T("कॉपी हो गया · Copied", "Copied: paste it anywhere"));
+		if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(body).then(done, () => prompt("Copy:", body));
+		else prompt("Copy:", body);
+	}
+	function shareRow(title, text, hash) {
+		const url = location.origin + location.pathname + hash;
+		const b1 = h("button", { class: "chip", type: "button" }, T("साझा करें · Share", "Share"));
+		b1.addEventListener("click", () => shareVerse(title, text, hash));
+		const wa = h("a", { class: "chip", href: "https://wa.me/?text=" + encodeURIComponent(text + "\n\n" + title + "\n" + url), target: "_blank", rel: "noopener" }, "WhatsApp");
+		return h("p", { class: "share-row" }, b1, " ", wa);
+	}
+	HL.shareRow = shareRow;
+	// a share button on every verse, beside save and read aloud
+	const SHARE_ICON = '<circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.4M8.2 13.2l7.6 4.4"/>';
+	toolMakers.push((b, n, it) => {
+		const main = it.text || it.p || it.poem;
+		if (!main) return null;
+		const btn = h("button", { class: "ibtn share", title: T("साझा करें · Share", "Share this verse"), "aria-label": "Share this verse" }, svg(SHARE_ICON));
+		btn.addEventListener("click", () => {
+			const en = EN(), title = bTitle(b) + " " + (en ? String(n) : dev(n)) + (it.n ? "." + label(it.n) : "");
+			shareVerse(title, en ? (it.tr || iast(main)) + (it.en ? "\n\n" + it.en : "") : main + (it.hi ? "\n\n" + it.hi : ""), verseUrl(b, n, it.id));
+		});
+		return btn;
+	});
+
 	// ---------- verse of the day (same for everyone on a date, by Indian time) ----------
 	homeExtras.push(async () => {
 		const b = bookById("gita");
@@ -188,12 +218,14 @@
 			h("p", { class: "eyebrow" }, "Verse of the day"),
 			h("p", { class: "tr-text votd-tr" }, it.tr || iast(it.text)),
 			it.en ? h("p", { class: "votd-hi votd-en" }, it.en) : null,
-			h("a", { href: verseUrl(b, c.n, it.id) }, "Bhagavad Gita " + c.n + "." + label(it.n || "") + " →"));
+			h("a", { href: verseUrl(b, c.n, it.id) }, "Bhagavad Gita " + c.n + "." + label(it.n || "") + " →"),
+			shareRow("Bhagavad Gita " + c.n + "." + label(it.n || ""), (it.tr || iast(it.text)) + (it.en ? "\n\n" + it.en : ""), verseUrl(b, c.n, it.id)));
 		return h("section", { class: "votd" },
 			h("p", { class: "eyebrow" }, "आज का श्लोक"),
 			h("p", { class: "sa-text" }, it.text),
 			it.hi ? h("p", { class: "votd-hi", lang: "hi" }, it.hi) : null,
-			h("a", { href: verseUrl(b, c.n, it.id) }, b.title + " " + dev(c.n) + "." + (it.n || "") + " →"));
+			h("a", { href: verseUrl(b, c.n, it.id) }, b.title + " " + dev(c.n) + "." + (it.n || "") + " →"),
+			shareRow(b.title + " " + dev(c.n) + "." + (it.n || ""), it.text + (it.hi ? "\n\n" + it.hi : ""), verseUrl(b, c.n, it.id)));
 	});
 
 	// ---------- read aloud ----------

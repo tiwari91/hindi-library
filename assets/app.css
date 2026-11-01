@@ -702,3 +702,7 @@ details.notes summary::after { content: "ⓘ"; margin-left: auto; color: var(--i
 /* wide letter spacing suits English capitals, but breaks up Devanagari words */
 html[lang="hi"] h2.shelf, html[lang="hi"] .eyebrow { letter-spacing: .02em; font-size: .9rem; }
 .meaning[lang="hi"] .mlabel { letter-spacing: 0; }
+
+/* share buttons (verse of the day) */
+.share-row { display: flex; gap: 8px; margin: 10px 0 0; flex-wrap: wrap; }
+.share-row .chip { text-decoration: none; display: inline-flex; align-items: center; }
