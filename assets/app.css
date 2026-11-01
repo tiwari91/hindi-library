@@ -725,3 +725,11 @@ html[lang="hi"] h2.shelf, html[lang="hi"] .eyebrow { letter-spacing: .02em; font
 .results mark { background: color-mix(in srgb, var(--accent) 22%, transparent); color: inherit; border-radius: 3px; padding: 0 1px; }
 .result-books { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
 .result-books .chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+
+/* reading plans on the home page */
+.plan-box { margin: 18px 0; padding: 14px 16px; border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); border-radius: 14px; }
+.plan-pick { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.plan-today { font-weight: 600; margin: 6px 0 2px; }
+.plan-go { text-decoration: none; }
+.prog-bar.plan-bar { display: block; height: 5px; border-radius: 5px; background: rgba(127, 127, 127, .25); overflow: hidden; margin: 10px 0 4px; }
+.prog-bar.plan-bar i { display: block; height: 100%; background: var(--accent); }

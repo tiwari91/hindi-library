@@ -1230,7 +1230,7 @@
 	window.addEventListener("hashchange", route);
 
 	// expose a tiny API for feature modules
-	window.HL = { S, save, h, svg, ICON, dev, toast, getJSON, toc, chapter, bookById, books: () => LIB.books, lib: () => LIB, renderItem, verseUrl, chapterTitle, toolMakers, homeExtras, routes, openRecite, route,
+	window.HL = { route: () => route(), S, save, h, svg, ICON, dev, toast, getJSON, toc, chapter, bookById, books: () => LIB.books, lib: () => LIB, renderItem, verseUrl, chapterTitle, toolMakers, homeExtras, routes, openRecite, route,
 		EN, T, iast, toEn, bTitle, cTitle };
 
 	// ---------- start ----------

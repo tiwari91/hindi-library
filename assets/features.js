@@ -232,6 +232,48 @@
 				card("https://tiwari91.github.io/utsav-sadhana/", T("उत्सव साधना", "Utsav Sadhana"), en ? "Festival-by-festival sadhana" : "त्योहार अनुसार साधना", en ? "Daily checklist, mantras, calendar" : "दैनिक सूची, मंत्र, पंचांग")));
 	});
 
+	// ---------- reading plans: a book in a set number of days, today's reading on the home page ----------
+	const PLANS = [
+		{ id: "gita18", book: "gita", days: 18, hi: "भगवद्गीता १८ दिन में", en: "Bhagavad Gita in 18 days" },
+		{ id: "devi13", book: "devi-mahatmya", days: 13, hi: "दुर्गा सप्तशती १३ दिन में", en: "Devi Mahatmya in 13 days" },
+		{ id: "bal12", book: "manas-bal", days: 12, hi: "बालकाण्ड १२ दिन में", en: "Balakanda in 12 days" },
+		{ id: "chanakya15", book: "chanakya-niti", days: 15, hi: "चाणक्य नीति १५ दिन में", en: "Chanakya Niti in 15 days" },
+		{ id: "kalki35", book: "kalki-purana", days: 35, hi: "कल्कि पुराण ३५ दिन में", en: "Kalki Purana in 35 days" }
+	];
+	const istDay = () => { const d = new Date(Date.now() + 5.5 * 3600e3); return Math.floor(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()) / 864e5); };
+	homeExtras.push(async () => {
+		const en = EN(), P = S.plan && PLANS.find((p) => p.id === S.plan.id), sec = h("section", { class: "plan-box" });
+		if (!P) {
+			const row = h("p", { class: "plan-pick" });
+			for (const p of PLANS) {
+				if (!bookById(p.book)) continue;
+				const b = h("button", { class: "chip", type: "button" }, en ? p.en : p.hi);
+				b.addEventListener("click", () => { S.plan = { id: p.id, start: istDay() }; save(); HL.route ? HL.route() : location.reload(); });
+				row.append(b);
+			}
+			sec.append(h("p", { class: "eyebrow" }, T("पाठ योजना · Reading plan", "Reading plan")), h("p", { class: "note" }, T("रोज़ थोड़ा पढ़ें: एक योजना चुनें, आज का पाठ यहीं दिखेगा।", "Read a little every day: choose a plan and today's reading appears here.")), row);
+			return sec;
+		}
+		const b = bookById(P.book), t = await toc(b), ch = t.chapters, nCh = ch.length;
+		const day = Math.min(P.days, Math.max(1, istDay() - S.plan.start + 1));
+		const upto = Math.ceil(nCh * day / P.days), from = Math.ceil(nCh * (day - 1) / P.days);   // today's chapters: [from, upto)
+		const read = new Set((S.read && S.read[b.id]) || []), done = ch.filter((c) => read.has(String(c.n))).length;
+		const today = ch.slice(from, upto), left = today.filter((c) => !read.has(String(c.n)));
+		const behind = ch.slice(0, from).filter((c) => !read.has(String(c.n))).length;
+		const stop = h("button", { class: "chip", type: "button" }, T("योजना बंद करें · Stop", "Stop plan"));
+		stop.addEventListener("click", () => { delete S.plan; save(); HL.route ? HL.route() : location.reload(); });
+		const link = (c) => h("a", { class: "chip plan-go", href: "#/" + b.id + "/" + c.n }, (en ? cTitle(c) : c.title) || String(c.n));
+		const add = (...xs) => sec.append(...xs.filter(Boolean));
+		add(
+			h("p", { class: "eyebrow" }, (en ? P.en : P.hi) + " · " + T("दिन " + dev(day) + " / " + dev(P.days), "Day " + day + " of " + P.days)),
+			h("p", { class: "plan-today" }, done >= nCh ? T("योजना पूरी हुई। बधाई! 🙏", "Plan complete. Well done! 🙏") : left.length ? T("आज का पाठ:", "Today's reading:") : T("आज का पाठ हो गया ✓", "Today's reading done ✓")),
+			left.length && done < nCh ? h("p", { class: "plan-pick" }, ...left.map(link)) : null,
+			behind ? h("p", { class: "note" }, T("पिछले दिनों के " + dev(behind) + " अध्याय बाकी हैं।", behind + " chapter" + (behind === 1 ? "" : "s") + " from earlier days still to read.")) : null,
+			h("span", { class: "prog-bar plan-bar" }, h("i", { style: "width:" + Math.round(done / nCh * 100) + "%" })),
+			h("p", { class: "note" }, T(dev(done) + " / " + dev(nCh) + " पढ़े · ", done + " of " + nCh + " read · "), stop));
+		return sec;
+	});
+
 	// ---------- verse of the day (same for everyone on a date, by Indian time) ----------
 	homeExtras.push(async () => {
 		const b = bookById("gita");
