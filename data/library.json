@@ -198,6 +198,14 @@
    "sources": ["sa-puranas"]
   },
   {
+   "id": "kalki-purana", "purana": true, "upapurana": true, "title": "कल्किपुराणम्", "title_en": "Kalki Purana", "by": "वेदव्यास",
+   "desc": "An Upapurana on Kalki, the coming tenth avatara of Vishnu: 35 chapters in three amshas, in Sanskrit with Roman transliteration, from Sanskrit Wikisource; complete as given there.",
+   "script": "sa", "kind": "verse", "unit": "", "verse": "श्लोक", "layers": {"text": "संस्कृत", "tr": "Roman"},
+   "recite": true, "no_search": true,
+   "ocr_note": "The Wikisource copy is a study transcription, not a printed edition: the typist split many words with + and - (मुनि+ईश्वर for मुनीश्वर), and these splits are kept because they cannot be joined back safely by rule. The typist's metre marks and notes in English and Hindi are left out. It has not been checked against print; a few typing errors may remain.",
+   "sources": ["sa-puranas"]
+  },
+  {
    "id": "vamana-purana", "purana": true, "title": "वामनपुराणम्", "title_en": "Vamana Purana", "by": "वेदव्यास",
    "desc": "96 chapters in Sanskrit with Roman transliteration, from Sanskrit Wikisource; complete as given there.",
    "script": "sa", "kind": "verse", "unit": "", "verse": "श्लोक", "layers": {"text": "संस्कृत", "tr": "Roman"},

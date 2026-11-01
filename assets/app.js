@@ -535,6 +535,14 @@
 					h("small", null, STATS && STATS[b.id] ? (en ? STATS[b.id].chapters + " chapters" : dev(STATS[b.id].chapters) + " अध्याय") : p.partial ? "partial" : "read"))
 				: h("span", { class: "pchip soon", title: p.title_en + " (coming)" }, name, h("small", null, T("जल्द", "coming"))));
 		})));
+		const upa = books().filter((b) => b.upapurana && !b.hidden);
+		if (upa.length) {
+			frag.push(h("h3", { class: "shelf-sub" }, T("उपपुराण", "Upapuranas")));
+			frag.push(h("ul", { class: "puranas" }, upa.map((b) => h("li", null,
+				h("a", { class: "pchip", href: "#/" + b.id, title: b.title_en },
+					EN() ? h("span", null, b.title_en.replace(/ Purana$/, "")) : h("span", { class: "sa" }, b.title.replace(/पुराणम्$/, " पुराण")),
+					h("small", null, STATS && STATS[b.id] ? (en ? STATS[b.id].chapters + " chapters" : dev(STATS[b.id].chapters) + " अध्याय") : "read"))))));
+		}
 		view.replaceChildren(...frag);
 	}
 	// shelves on the home page
