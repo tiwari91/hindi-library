@@ -21,6 +21,11 @@ It is a plain static site: no build step, no framework.
   Fetched pages are cached in `sources/cache/` (not committed) so a rebuild does not hit
   Wikisource again.
 
+- `data/search/<book>.json` – the search index (folded spelling and English, per verse), built by
+  `python3 tools/build_search.py`. Rebuild it whenever a book's text changes. The Puranas are searched
+  only when the reader asks ("Search the Puranas too").
+- `sw.js` and `manifest.webmanifest` – offline reading (every chapter opened is kept) and install.
+
 To try it locally: `python3 -m http.server 8000` in this folder, then open
 http://localhost:8000/.
 

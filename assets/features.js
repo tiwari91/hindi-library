@@ -199,6 +199,19 @@
 		return btn;
 	});
 
+	// ---------- offline reading and install (sw.js) ----------
+	if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "127.0.0.1" || location.hostname === "localhost")) { navigator.serviceWorker.register("sw.js").catch(() => {}); }
+	// ---------- companion apps: the stotras and festivals that live in their own apps ----------
+	homeExtras.push(async () => {
+		const en = EN();
+		const card = (href, t1, t2, d) => h("a", { class: "comp-card", href }, h("b", null, t1), h("span", null, t2), h("small", null, d));
+		return h("section", { class: "companions" },
+			h("p", { class: "eyebrow" }, T("साथी ऐप · Companion apps", "Companion apps")),
+			h("div", { class: "comp-row" },
+				card("https://tiwari91.github.io/stotra-reader/", T("स्तोत्र पाठ", "Stotra Reader"), "Hanuman Chalisa · Vishnu Sahasranama", en ? "Recite with a mala counter" : "माला के साथ पाठ"),
+				card("https://tiwari91.github.io/utsav-sadhana/", T("उत्सव साधना", "Utsav Sadhana"), en ? "Festival-by-festival sadhana" : "त्योहार अनुसार साधना", en ? "Daily checklist, mantras, calendar" : "दैनिक सूची, मंत्र, पंचांग")));
+	});
+
 	// ---------- verse of the day (same for everyone on a date, by Indian time) ----------
 	homeExtras.push(async () => {
 		const b = bookById("gita");

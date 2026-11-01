@@ -706,3 +706,11 @@ html[lang="hi"] h2.shelf, html[lang="hi"] .eyebrow { letter-spacing: .02em; font
 /* share buttons (verse of the day) */
 .share-row { display: flex; gap: 8px; margin: 10px 0 0; flex-wrap: wrap; }
 .share-row .chip { text-decoration: none; display: inline-flex; align-items: center; }
+
+/* companion apps on the home page */
+.companions { margin: 18px 0; }
+.comp-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+.comp-card { display: grid; gap: 2px; padding: 12px 14px; border: 1px solid var(--rule, rgba(0,0,0,.15)); border-radius: 12px; text-decoration: none; color: inherit; background: var(--card, transparent); }
+.comp-card b { font-size: 1.05em; }
+.comp-card small { opacity: .7; }
+.comp-card:hover { border-color: currentColor; }

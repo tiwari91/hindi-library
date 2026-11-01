@@ -1,0 +1,11 @@
+{
+  "name": "हिन्दी पुस्तकालय · Hindi Library",
+  "short_name": "Hindi Library",
+  "description": "Read the Bhagavad Gita, Ramcharitmanas, the Puranas and other Hindi and Sanskrit classics, free.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf4e8",
+  "theme_color": "#faf4e8",
+  "icons": [ { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" } ]
+}
