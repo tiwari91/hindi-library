@@ -578,6 +578,15 @@
 		const d = EN() ? toEn(b.desc || "") : b.desc || "";
 		return (d.split(/(?<=[.;])\s/)[0] || "").replace(/[;.]$/, "");
 	};
+	// how much of a book you have opened: "5 of 18 chapters read" and a thin bar (nothing until you start)
+	function progressBar(b) {
+		const s = STATS && STATS[b.id], rd = S.read && S.read[b.id];
+		if (!s || !rd || !rd.length || !(s.chapters > 1)) return null;
+		const k = Math.min(rd.length, s.chapters), pct = Math.round(k / s.chapters * 100), en = EN();
+		return h("span", { class: "prog", title: pct + "%" },
+			h("span", { class: "prog-t" }, k === s.chapters ? (en ? "Finished" : "पूरा पढ़ा") : en ? k + " of " + s.chapters + " read" : dev(k) + " / " + dev(s.chapters) + " पढ़े"),
+			h("span", { class: "prog-bar" }, h("i", { style: "width:" + pct + "%" })));
+	}
 	function bookCard(b) {
 		const href = b.link || (b.open ? "#/" + b.open : "#/" + b.id);
 		const en = EN();
@@ -586,7 +595,8 @@
 			h("span", { class: "t" + (!en && b.script === "sa" ? " sa" : "") + (en ? " en" : "") }, bTitle(b)),
 			h("span", { class: "e" }, en ? enInfo : b.title_en),
 			b.desc ? h("span", { class: "d" }, oneLine(b)) : null,
-			b.link ? h("span", { class: "m" }, en ? "Opens the Stotra Reader site" : "स्तोत्र रीडर साइट पर खुलता है") : statLine(b) ? h("span", { class: "m" }, statLine(b)) : null);
+			b.link ? h("span", { class: "m" }, en ? "Opens the Stotra Reader site" : "स्तोत्र रीडर साइट पर खुलता है") : statLine(b) ? h("span", { class: "m" }, statLine(b)) : null,
+			progressBar(b));
 	}
 
 	// a one-time welcome tip; it can be skipped and does not come back
@@ -622,7 +632,7 @@
 				h("span", null, T("जहाँ छोड़ा था वहीं से · Continue: ", "Continue: "), h("b", null, chapterTitle(b, c))), "→"));
 		}
 		const num = (x) => (en ? String(x) : dev(x));
-		parts.push(h("ul", { class: "toc" + (!en && b.script === "sa" ? " sa" : "") + (en ? " en" : "") }, t.chapters.map((c, i) => [c.group && c.group !== (t.chapters[i - 1] || {}).group ? h("li", { class: "grp" }, groupLabel(c.group)) : null, h("li", { class: L && String(L.n) === String(c.n) ? "here" : null },
+		parts.push(h("ul", { class: "toc" + (!en && b.script === "sa" ? " sa" : "") + (en ? " en" : "") }, t.chapters.map((c, i) => [c.group && c.group !== (t.chapters[i - 1] || {}).group ? h("li", { class: "grp" }, groupLabel(c.group)) : null, h("li", { class: [ L && String(L.n) === String(c.n) ? "here" : "", S.read && S.read[b.id] && S.read[b.id].includes(String(c.n)) ? "read" : "" ].join(" ").trim() || null },
 			h("a", { href: "#/" + b.id + "/" + c.n },
 				h("span", { class: "n" }, num(c.label || c.n)),
 				en
@@ -700,6 +710,10 @@
 		setTitle(bTitle(b) + " · " + chapterTitle(b, meta));
 		S.lastBook = b.id;
 		if (!S.last[b.id] || String(S.last[b.id].n) !== String(n)) S.last[b.id] = { n: meta.n };
+		// reading progress: the chapters opened in each book (shown on the book card and in its contents)
+		S.read = S.read || {};
+		const rd = S.read[b.id] = S.read[b.id] || [];
+		if (!rd.includes(String(meta.n))) rd.push(String(meta.n));
 		save();
 
 		const en = EN();

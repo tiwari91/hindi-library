@@ -714,3 +714,14 @@ html[lang="hi"] h2.shelf, html[lang="hi"] .eyebrow { letter-spacing: .02em; font
 .comp-card b { font-size: 1.05em; }
 .comp-card small { opacity: .7; }
 .comp-card:hover { border-color: currentColor; }
+
+/* reading progress: on book cards, and read chapters ticked in the contents */
+.card .prog { display: grid; gap: 4px; margin-top: 8px; font-size: .8em; opacity: .85; }
+.card .prog-bar { height: 4px; border-radius: 4px; background: rgba(127, 127, 127, .25); overflow: hidden; }
+.card .prog-bar i { display: block; height: 100%; background: var(--accent, #b0490a); border-radius: 4px; }
+.toc li.read > a .n::after { content: "✓"; margin-left: 4px; font-size: .8em; color: var(--accent, #b0490a); }
+
+/* search: the matched word, and the book filter */
+.results mark { background: color-mix(in srgb, var(--accent) 22%, transparent); color: inherit; border-radius: 3px; padding: 0 1px; }
+.result-books { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.result-books .chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }

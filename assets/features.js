@@ -52,6 +52,14 @@
 		return IDX[b.id];
 	}
 	const searchable = (all) => HL.books().filter((b) => !b.link && !b.hidden && (all || !b.no_search));
+	// the matched word marked in a snippet, where it appears as typed (Devanagari, or an English word)
+	function marked(text, q) {
+		const t = String(text), qq = String(q || "").trim();
+		if (!qq) return t;
+		const i = isDev(qq) ? t.indexOf(qq) : t.toLowerCase().indexOf(qq.toLowerCase());
+		if (i < 0) return t;
+		return h("span", null, t.slice(0, i), h("mark", null, t.slice(i, i + qq.length)), t.slice(i + qq.length));
+	}
 	function snippet(text, q) {
 		const s = String(text).replace(/\s+/g, " ");
 		const i = q && isDev(q) ? plainDev(s).indexOf(plainDev(q)) : -1;
@@ -85,9 +93,20 @@
 		let shown = 0;
 		const more = h("p", { class: "note" });
 		view.append(more);
+		let only = null;   // a book chosen from the filter chips
+		const chips = h("p", { class: "result-books" });
+		out.before(chips);
+		const pool = () => (only ? hits.filter((x) => x.b.id === only) : hits);
+		const drawChips = () => {
+			const per = new Map();
+			for (const x of hits) per.set(x.b, (per.get(x.b) || 0) + 1);
+			if (per.size < 2) { chips.replaceChildren(); return; }
+			const chip = (id, label, n) => { const c = h("button", { class: "chip", type: "button", "aria-pressed": String(only === id) }, label + " · " + n); c.addEventListener("click", async () => { only = id; shown = 0; out.replaceChildren(); drawChips(); await draw(); }); return c; };
+			chips.replaceChildren(chip(null, T("सभी · All", "All"), hits.length), ...[ ...per ].sort((a, b) => b[1] - a[1]).map(([ b, n ]) => chip(b.id, bTitle(b), n)));
+		};
 		const draw = async () => {
 			// the verse text for the results on screen, a chapter at a time (each chapter is cached)
-			const next = hits.slice(shown, 200);
+			const next = pool().slice(shown, 200);
 			shown += next.length;
 			for (const x of next) {
 				const ch = await chapter(x.b, x.n);
@@ -97,7 +116,7 @@
 				const y = { b: x.b, n: x.n, c, ct: c.title || "", it };
 				out.append(h("li", null, h("a", { href: verseUrl(x.b, x.n, x.id) },
 					h("span", { class: "rb" }, bTitle(x.b), " · ", en ? cTitle(c) : y.ct, it.n ? " · " + label(it.n) : ""),
-					h("span", { class: "rt" }, en ? snippetEn(y, q0) : snippet(it.text || it.p || it.poem, q0)))));
+					h("span", { class: "rt" }, marked(en ? snippetEn(y, q0) : snippet(it.text || it.p || it.poem, q0), q0)))));
 			}
 		};
 		out.replaceChildren();
@@ -110,6 +129,7 @@
 			if (location.hash.indexOf("#/search/") !== 0) return;   // the reader moved on
 		}
 		await draw();
+		drawChips();
 		status.textContent = hits.length ? hits.length + " results" + (hits.length > 200 ? " (showing the first 200)" : "") : "";
 		if (!all) {
 			const a2 = h("a", { href: "#/search/" + encodeURIComponent(q0) + "?all=1", class: "chip" }, T("पुराणों में भी खोजें · Search the Puranas too", "Search the Puranas too"));
