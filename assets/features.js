@@ -43,28 +43,15 @@
 	const plainDev = (s) => String(s).normalize("NFC").replace(/[‌‍।॥|]/g, "").replace(/\s+/g, " ");
 
 	// ---------- search ----------
-	let INDEX = null;
-	async function buildIndex(onProgress) {
-		if (INDEX) return INDEX;
-		const rows = [];
-		const list = readable();
-		let done = 0;
-		for (const b of list) {
-			const t = await toc(b);
-			await Promise.all(t.chapters.map(async (c) => {
-				const ch = await chapter(b, c.n);
-				for (const it of ch.doc.items) {
-					const main = it.text || it.p || it.poem;
-					if (!main) continue;
-					const all = [main, it.hi, it.en, it.note].filter(Boolean).join(" \n ");
-					rows.push({ b, n: c.n, ct: c.title, c, it, dv: plainDev(all), lat: fold(all + " " + (it.tr || "")), en: it.en ? " " + it.en.toLowerCase().replace(/[^a-z0-9\s]/g, " ") : "" });
-				}
-			}));
-			onProgress && onProgress(++done, list.length);
-		}
-		INDEX = rows;
-		return rows;
+	// Each book has a prebuilt index (data/search/<book>.json, from tools/build_search.py): the same folded
+	// spelling as fold() below, and the English meaning, per verse. The main books are searched by default;
+	// the Puranas (far larger) when asked. Verses are loaded only for the results shown.
+	const IDX = {};
+	async function bookIndex(b) {
+		if (!IDX[b.id]) IDX[b.id] = getJSON("data/search/" + b.id + ".json").then((d) => d.rows.map((r) => ({ b, n: r[0], id: r[1], lat: " " + r[2] + " ", en: r[3] ? " " + r[3] : "" }))).catch(() => []);
+		return IDX[b.id];
 	}
+	const searchable = (all) => HL.books().filter((b) => !b.link && !b.hidden && (all || !b.no_search));
 	function snippet(text, q) {
 		const s = String(text).replace(/\s+/g, " ");
 		const i = q && isDev(q) ? plainDev(s).indexOf(plainDev(q)) : -1;
@@ -85,30 +72,54 @@
 			h("p", { class: "eyebrow" }, h("a", { href: "#/" }, T("पुस्तकालय", "Library")), " · Search"),
 			h("h1", null, T("खोजें · Search", "Search")),
 			h("p", { class: "lede" }, en
-				? "Search the verses, transliteration and English meanings of every book except the Puranas (too large to search on a phone). Type a word in English letters, such as dharma, krishna or mind."
-				: "Search every book (except the Puranas, which are too large to search on a phone). Type in Devanagari (धर्म) or in English letters (dharma, krishna).")), form, status, out);
+				? "Search the verses, transliteration and English meanings of every book; the Puranas too, if you ask. Type a word in English letters, such as dharma, krishna or mind."
+				: "हर ग्रंथ में खोजें; चाहें तो पुराणों में भी। Search every book; the Puranas too if you ask. Type in Devanagari (धर्म) or in English letters (dharma, krishna).")), form, status, out);
 		if (!q0) { input.focus(); return; }
-		status.textContent = T("खोज रहे हैं… Searching…", "Searching…");
-		const rows = await buildIndex((d, n) => { status.textContent = "Loading books " + d + "/" + n + "…"; });
-		const dq = isDev(q0) ? plainDev(q0) : null;
+		const all = /[?&]all=1/.test(location.hash);
+		const dq = isDev(q0) ? fold(q0).trim() : null;
 		const lq = fold(q0).trim();
-		if (!dq && lq.length < 2) { status.textContent = "Type at least two letters."; return; }
-		// English words in the meanings match as typed; Sanskrit words match through the folded spelling
+		if (lq.length < 2) { status.textContent = "Type at least two letters."; return; }
+		// English words in the meanings match as typed; Sanskrit and Hindi words through the folded spelling
 		const eq = " " + q0.toLowerCase().trim();
-		const hits = rows.filter((x) => dq ? x.dv.includes(dq) : x.lat.includes(" " + lq) || (x.en && x.en.includes(eq)));
+		const list = searchable(all), hits = [];
+		let shown = 0;
+		const more = h("p", { class: "note" });
+		view.append(more);
+		const draw = async () => {
+			// the verse text for the results on screen, a chapter at a time (each chapter is cached)
+			const next = hits.slice(shown, 200);
+			shown += next.length;
+			for (const x of next) {
+				const ch = await chapter(x.b, x.n);
+				const it = ch && ch.doc.items.find((i) => i.id === x.id);
+				if (!it) continue;
+				const t = await toc(x.b), c = t.chapters.find((cc) => String(cc.n) === String(x.n)) || {};
+				const y = { b: x.b, n: x.n, c, ct: c.title || "", it };
+				out.append(h("li", null, h("a", { href: verseUrl(x.b, x.n, x.id) },
+					h("span", { class: "rb" }, bTitle(x.b), " · ", en ? cTitle(c) : y.ct, it.n ? " · " + label(it.n) : ""),
+					h("span", { class: "rt" }, en ? snippetEn(y, q0) : snippet(it.text || it.p || it.poem, q0)))));
+			}
+		};
+		out.replaceChildren();
+		let done = 0;
+		for (const b of list) {
+			status.textContent = T("खोज रहे हैं… ", "Searching… ") + (++done) + "/" + list.length + " · " + hits.length + " results";
+			const rows = await bookIndex(b);
+			for (const x of rows) { if (x.lat.includes(" " + (dq || lq)) || (!dq && x.en && x.en.includes(eq))) hits.push(x); }
+			if (shown < 30 && hits.length > shown) await draw();
+			if (location.hash.indexOf("#/search/") !== 0) return;   // the reader moved on
+		}
+		await draw();
 		status.textContent = hits.length ? hits.length + " results" + (hits.length > 200 ? " (showing the first 200)" : "") : "";
+		if (!all) {
+			const a2 = h("a", { href: "#/search/" + encodeURIComponent(q0) + "?all=1", class: "chip" }, T("पुराणों में भी खोजें · Search the Puranas too", "Search the Puranas too"));
+			more.replaceChildren(a2, " ", en ? "(about 13 MB: best on Wi-Fi)" : "(लगभग 13 MB · Wi-Fi पर बेहतर)");
+		}
 		if (!hits.length) {
 			out.replaceChildren(h("li", { class: "empty" }, en
 				? "Nothing found for “" + q0 + "”. Try a shorter word, a different spelling (krishna or krsna), or a word from the English meaning."
 				: "कुछ नहीं मिला · Nothing found for “" + q0 + "”. छोटा शब्द या दूसरी वर्तनी आज़माएँ · Try a shorter word or another spelling."));
-			return;
 		}
-		out.replaceChildren(...hits.slice(0, 200).map((x) => h("li", null,
-			h("a", { href: verseUrl(x.b, x.n, x.it.id) },
-				h("span", { class: "rb" }, bTitle(x.b), " · ", en ? cTitle(x.c) : x.ct, x.it.n ? " · " + label(x.it.n) : ""),
-				h("span", { class: "rt" }, en
-					? snippetEn(x, q0)
-					: snippet(x.it.text || x.it.p || x.it.poem, q0))))));
 	};
 	function snippetEn(x, q) {
 		const it = x.it;
