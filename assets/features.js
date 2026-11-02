@@ -221,6 +221,13 @@
 
 	// ---------- offline reading and install (sw.js) ----------
 	if ("serviceWorker" in navigator && (location.protocol === "https:" || location.hostname === "127.0.0.1" || location.hostname === "localhost")) { navigator.serviceWorker.register("sw.js").catch(() => {}); }
+	// ---------- the Gita as a story: a separate, illustrated page (gita-katha.html) ----------
+	homeExtras.push(async () => h("a", { class: "katha-card", href: "gita-katha.html" },
+		h("span", { class: "katha-k" }, T("नया · कथा के रूप में", "New · told as a story")),
+		h("b", null, T("गीता की कथा", "The Gita as a story")),
+		h("span", null, T("कुरुक्षेत्र में अर्जुन धनुष रख देता है, और कृष्ण बोलना शुरू करते हैं। १३ दृश्य, हर एक अपने श्लोक के साथ।", "At Kurukshetra Arjuna lays down his bow, and Krishna begins to speak. 13 scenes, each with its verse.")),
+		h("span", { class: "go", "aria-hidden": "true" }, "→")));
+
 	// ---------- companion apps: the stotras and festivals that live in their own apps ----------
 	homeExtras.push(async () => {
 		const en = EN();

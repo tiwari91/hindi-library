@@ -1,7 +1,7 @@
 /* Offline reading: the page and its code are kept for offline use, and every chapter you open is kept too,
    so it can be read again without a connection. New versions are fetched when online (the copy kept is
    refreshed in the background). The large Purana search files are not kept. */
-const CACHE = "hl-v4";
+const CACHE = "hl-v5";
 const SHELL = [ "./", "index.html", "assets/app.js", "assets/features.js", "assets/app.css", "assets/icon.svg", "data/library.json", "manifest.webmanifest" ];
 self.addEventListener("install", (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", (e) => { e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())); });

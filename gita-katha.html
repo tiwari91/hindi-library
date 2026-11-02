@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>गीता की कथा · The Gita as a Story · हिन्दी पुस्तकालय</title>
+<meta name="description" content="कुरुक्षेत्र में अर्जुन धनुष रख देता है, और उसका सारथी बोलना शुरू करता है। श्रीमद्भगवद्गीता की कथा, उसके श्लोकों के साथ। The Bhagavad Gita told as a story, with its verses.">
+<meta name="theme-color" content="#120b24">
+<link rel="icon" href="assets/icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gentium+Book+Plus:ital,wght@0,400;0,700;1,400&family=Hind:wght@400;500;600&family=Noto+Serif+Devanagari:wght@400;500;600;700&family=Tiro+Devanagari+Sanskrit&display=swap">
+<style>
+/* The sky changes as the story moves: dusk at Kurukshetra, night in Arjuna's despair, dawn as he understands. */
+:root {
+  --sky1: #1d1238; --sky2: #4a2340; --glow: #f0a35e;
+  --gold: #e9c27a; --gold-2: #f6dca6; --ink: #f4ecdf; --ink-dim: #cdbfa8; --ink-faint: #9b8d79;
+  --card: rgba(18, 11, 30, 0.55); --line: rgba(233, 194, 122, 0.22);
+  --sa: "Tiro Devanagari Sanskrit", "Noto Serif Devanagari", serif;
+  --hi: "Noto Serif Devanagari", "Hind", serif;
+  --en: "Gentium Book Plus", Georgia, serif;
+  --ui: "Hind", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { margin: 0; color: var(--ink); font: 18px/1.7 var(--hi); background: #120b24; overflow-x: hidden; }
+.en body, body.en { font-family: var(--en); }
+a { color: var(--gold-2); }
+/* the sky behind everything */
+.sky { position: fixed; inset: 0; z-index: -2; background: radial-gradient(120% 80% at 50% 105%, var(--glow) 0%, transparent 55%), linear-gradient(180deg, var(--sky1) 0%, var(--sky2) 100%);
+  transition: background 1.6s ease; }
+.stars { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: var(--stars, 0.7); transition: opacity 1.6s ease;
+  background-image: radial-gradient(1px 1px at 12% 18%, #fff8 50%, transparent 51%), radial-gradient(1px 1px at 72% 12%, #fff9 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 33% 42%, #fff7 50%, transparent 51%), radial-gradient(1px 1px at 86% 36%, #fff8 50%, transparent 51%),
+    radial-gradient(1px 1px at 55% 25%, #fff6 50%, transparent 51%), radial-gradient(1.5px 1.5px at 8% 60%, #fff5 50%, transparent 51%),
+    radial-gradient(1px 1px at 93% 70%, #fff6 50%, transparent 51%), radial-gradient(1px 1px at 46% 8%, #fff8 50%, transparent 51%); }
+
+/* top bar */
+.bar { position: fixed; top: 0; left: 0; right: 0; z-index: 10; display: flex; align-items: center; gap: 12px; padding: 12px clamp(16px, 4vw, 40px);
+  font: 500 15px var(--ui); background: linear-gradient(180deg, rgba(10, 6, 20, 0.7), transparent); }
+.bar a.home { color: var(--ink); text-decoration: none; opacity: .85; }
+.bar a.home:hover { opacity: 1; }
+.bar .sp { flex: 1; }
+.lang { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+.lang button { font: 500 14px var(--ui); color: var(--ink-dim); background: transparent; border: 0; padding: 5px 13px; cursor: pointer; }
+.lang button[aria-pressed="true"] { background: var(--gold); color: #1d1238; }
+
+/* hero */
+.hero { position: relative; min-height: 100svh; display: grid; place-items: center; text-align: center; padding: 90px 16px 40px; overflow: hidden; }
+.hero .art { position: absolute; inset: auto 0 0 0; height: 62svh; pointer-events: none; }
+.hero .art svg { width: 100%; height: 100%; }
+.hero .words { position: relative; z-index: 2; max-width: 820px; margin-bottom: 22svh; }
+.kicker { font: 500 14px var(--ui); letter-spacing: .22em; text-transform: uppercase; color: var(--gold); }
+h1 { font: 400 clamp(46px, 9vw, 112px)/1.05 var(--sa); margin: 14px 0 10px; color: var(--gold-2);
+  text-shadow: 0 0 40px rgba(240, 163, 94, 0.45); }
+.sub { font: italic 400 clamp(19px, 2.4vw, 26px)/1.5 var(--en); color: var(--ink); max-width: 640px; margin: 0 auto; }
+.cta { margin-top: 28px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn { font: 600 16px var(--ui); padding: 11px 22px; border-radius: 999px; border: 1px solid var(--gold); color: var(--ink); background: rgba(18, 11, 30, 0.4); text-decoration: none; cursor: pointer; }
+.btn.go { background: var(--gold); color: #1d1238; }
+.btn:hover { filter: brightness(1.08); }
+.scroll-hint { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); font: 13px var(--ui); color: var(--ink-faint); z-index: 2; }
+@media (prefers-reduced-motion: no-preference) { .scroll-hint { animation: bob 2.4s ease-in-out infinite; } }
+@keyframes bob { 50% { transform: translate(-50%, 6px); } }
+
+/* scenes */
+.scene { min-height: 100svh; display: grid; align-items: center; padding: 12svh clamp(16px, 5vw, 64px); }
+.scene .in { display: grid; grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr); gap: clamp(24px, 5vw, 72px); align-items: center; max-width: 1180px; margin: 0 auto; width: 100%; }
+/* Devanagari: no letter spacing (it breaks the joined letters), no fake italics, and a font whose numerals read as Devanagari */
+body:not(.en) .kicker, body:not(.en) .where { letter-spacing: 0; text-transform: none; font-family: var(--hi); font-weight: 600; font-size: 15px; }
+body:not(.en) .sub { font: 400 clamp(19px, 2.3vw, 25px)/1.6 var(--hi); }
+body:not(.en) .verse .who { font-family: var(--hi); }
+body:not(.en) .chip, body:not(.en) .btn { font-family: var(--hi); }
+.scene:nth-of-type(even) .in { direction: rtl; }
+.scene:nth-of-type(even) .in > * { direction: ltr; }
+.pic { aspect-ratio: 1; max-width: 460px; width: 100%; justify-self: center; }
+.pic svg { width: 100%; height: 100%; overflow: visible; }
+.pic .st { fill: none; stroke: var(--gold); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.pic .st.thin { stroke-width: 1.2; opacity: .75; }
+.pic .fl { fill: var(--gold); }
+.pic .glow { filter: drop-shadow(0 0 18px rgba(240, 163, 94, 0.55)); }
+.where { font: 500 13px var(--ui); letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
+.scene h2 { font: 600 clamp(30px, 4.4vw, 50px)/1.2 var(--hi); margin: 8px 0 14px; color: var(--ink); }
+body.en .scene h2 { font-family: var(--en); font-weight: 700; }
+.story { color: var(--ink-dim); margin: 0 0 22px; max-width: 58ch; }
+.verse { border-left: 2px solid var(--gold); padding: 16px 20px; background: var(--card); border-radius: 0 12px 12px 0; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+.verse .sa { font: 400 clamp(20px, 2.2vw, 25px)/1.75 var(--sa); color: var(--gold-2); white-space: pre-line; margin: 0; }
+.verse .tr { font: italic 15px/1.6 var(--en); color: var(--ink-faint); white-space: pre-line; margin: 8px 0 0; }
+.verse .mean { margin: 12px 0 0; color: var(--ink); }
+.verse .who { font: 500 12.5px var(--ui); color: var(--ink-faint); margin-top: 10px; }
+.acts { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+.chip { font: 500 14px var(--ui); color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px; text-decoration: none; cursor: pointer; }
+.chip:hover { border-color: var(--gold); }
+.chip[aria-pressed="true"] { border-color: var(--gold); color: var(--gold-2); }
+
+/* reveal on scroll */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 1s ease, transform 1s ease; }
+  .reveal.shown { opacity: 1; transform: none; }
+  .pic.reveal { transform: scale(.94); }
+  .pic.reveal.shown { transform: none; }
+  .pic .draw { stroke-dasharray: 1600; stroke-dashoffset: 1600; transition: stroke-dashoffset 2.6s ease; }
+  .pic.shown .draw { stroke-dashoffset: 0; }
+}
+
+/* the path down the side: one dot per scene */
+.path { position: fixed; right: 14px; top: 50%; transform: translateY(-50%); z-index: 9; display: grid; gap: 9px; }
+.path a { width: 9px; height: 9px; border-radius: 50%; border: 1px solid var(--gold); display: block; opacity: .6; }
+.path a.on { background: var(--gold); opacity: 1; }
+@media (max-width: 760px) { .path { display: none; } }
+
+.end { text-align: center; min-height: 80svh; display: grid; place-items: center; padding: 10svh 16px; }
+.end .verse { text-align: left; max-width: 720px; margin: 22px auto 0; }
+.note { font: 14px var(--ui); color: var(--ink-faint); max-width: 720px; margin: 40px auto 0; }
+@media (max-width: 860px) {
+  .scene .in { grid-template-columns: minmax(0, 1fr); }
+  .scene:nth-of-type(even) .in { direction: ltr; }
+  .pic { max-width: 300px; }
+  body { font-size: 17px; }
+}
+</style>
+<script>
+  // Same language setting as the library (hl:v1 → lang "en", or Hindi by default)
+  (function () { try { var s = JSON.parse(localStorage.getItem("hl:v1") || "{}"); if (s.lang === "en") document.documentElement.classList.add("en"); } catch (e) {} })();
+</script>
+</head>
+<body>
+<div class="sky" aria-hidden="true"></div>
+<div class="stars" aria-hidden="true"></div>
+
+<header class="bar">
+  <a class="home" href="./" data-hi="← हिन्दी पुस्तकालय" data-en="← Hindi Library">← हिन्दी पुस्तकालय</a>
+  <span class="sp"></span>
+  <div class="lang" role="group" aria-label="भाषा · Language"><button type="button" data-l="hi">हिन्दी</button><button type="button" data-l="en">English</button></div>
+</header>
+
+<nav class="path" id="path" aria-label="कथा के दृश्य · Scenes"></nav>
+
+<main>
+  <section class="hero" id="top">
+    <div class="art" aria-hidden="true">
+      <svg viewBox="0 0 1600 700" preserveAspectRatio="xMidYMax slice" id="heroArt">
+        <defs>
+          <radialGradient id="sun" cx="50%" cy="100%" r="60%"><stop offset="0" stop-color="#ffd08a" stop-opacity=".95"/><stop offset=".35" stop-color="#f0a35e" stop-opacity=".55"/><stop offset="1" stop-color="#f0a35e" stop-opacity="0"/></radialGradient>
+          <linearGradient id="land" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#2a1631"/><stop offset="1" stop-color="#0d0718"/></linearGradient>
+        </defs>
+        <circle cx="800" cy="640" r="420" fill="url(#sun)" data-depth="0.15"/>
+        <!-- the two armies, far off: banners and spears on either side -->
+        <g data-depth="0.25" fill="#1a0f26" stroke="#1a0f26">
+          <path d="M0 560 Q200 530 420 548 L560 556 L560 700 L0 700 Z"/>
+          <path d="M1040 556 L1180 548 Q1400 530 1600 560 L1600 700 L1040 700 Z"/>
+          <g stroke-width="3">
+            <path d="M40 545 v-70 M70 540 v-90 M105 538 v-60 M140 536 v-85 M180 534 v-70 M220 534 v-95 M260 536 v-65 M300 539 v-80 M340 542 v-60 M380 545 v-75 M420 547 v-55 M470 551 v-70 M520 554 v-50"/>
+            <path d="M1080 554 v-50 M1130 551 v-72 M1180 547 v-58 M1220 545 v-80 M1260 542 v-62 M1300 539 v-88 M1340 536 v-66 M1380 534 v-92 M1420 534 v-70 M1460 536 v-84 M1500 538 v-62 M1540 540 v-90 M1575 545 v-70"/>
+          </g>
+          <path d="M70 450 l34 10 -34 10 z M220 439 l34 10 -34 10 z M380 470 l30 9 -30 9 z M1220 465 l-34 10 34 10 z M1380 442 l-34 10 34 10 z M1540 450 l-34 10 34 10 z"/>
+        </g>
+        <!-- the plain of Kurukshetra -->
+        <path d="M0 610 Q400 585 800 592 T1600 610 L1600 700 L0 700 Z" fill="url(#land)" data-depth="0.4"/>
+        <!-- the chariot between the armies: four horses, the wheel, the canopy and the flag -->
+        <g data-depth="0.6" fill="#0b0614" stroke="#0b0614" transform="translate(800 600)">
+          <g transform="translate(-235 -6)">
+            <path d="M0 0 q8-40 30-58 q14-12 32-14 l10-24 q6 8 4 22 q22 4 36 20 q14 16 10 34 l-8 20 l-6 0 l2-22 q-24 8-52 6 l-14 18 l-8 0 l8-26 q-18-6-26-14 l-8 38 h-8 z"/>
+            <path d="M44 6 q8-40 30-58 q14-12 32-14 l10-24 q6 8 4 22 q22 4 36 20 q14 16 10 34 l-8 20 l-6 0 l2-22 q-24 8-52 6 l-14 18 l-8 0 l8-26 q-18-6-26-14 l-8 38 h-8 z" opacity=".9"/>
+            <path d="M88 2 q8-40 30-58 q14-12 32-14 l10-24 q6 8 4 22 q22 4 36 20 q14 16 10 34 l-8 20 l-6 0 l2-22 q-24 8-52 6 l-14 18 l-8 0 l8-26 q-18-6-26-14 l-8 38 h-8 z" opacity=".95"/>
+            <path d="M132 8 q8-40 30-58 q14-12 32-14 l10-24 q6 8 4 22 q22 4 36 20 q14 16 10 34 l-8 20 l-6 0 l2-22 q-24 8-52 6 l-14 18 l-8 0 l8-26 q-18-6-26-14 l-8 38 h-8 z"/>
+          </g>
+          <path d="M-40 -60 h150 l18 34 h-186 z" />
+          <path d="M-30 -60 v-70 M100 -60 v-70" stroke-width="5"/>
+          <path d="M-46 -130 q81 -36 162 0 z"/>
+          <path d="M35 -148 v-120" stroke-width="4"/>
+          <path d="M35 -268 l70 18 -70 22 z"/>
+          <circle cx="95" cy="-14" r="40" fill="none" stroke-width="7"/>
+          <path d="M95 -54 v80 M55 -14 h80 M67 -42 l56 56 M123 -42 l-56 56" stroke-width="3"/>
+          <!-- Krishna at the reins, Arjuna behind -->
+          <circle cx="-8" cy="-92" r="11"/><path d="M-20 -80 h24 l4 22 h-32 z"/>
+          <circle cx="58" cy="-100" r="12"/><path d="M44 -87 h28 l6 30 h-40 z"/>
+          <path d="M-14 -70 Q-120 -40 -150 -30" stroke-width="2" fill="none"/>
+        </g>
+      </svg>
+    </div>
+    <div class="words">
+      <div class="kicker" data-hi="कुरुक्षेत्र · महाभारत के युद्ध की सुबह" data-en="Kurukshetra · the morning of the great war">कुरुक्षेत्र · महाभारत के युद्ध की सुबह</div>
+      <h1>श्रीमद्भगवद्गीता</h1>
+      <p class="sub" data-hi="दो सेनाओं के बीच एक योद्धा अपना धनुष नीचे रख देता है। उसका सारथी बोलना शुरू करता है।" data-en="Between two armies, a warrior lays down his bow. His charioteer begins to speak.">दो सेनाओं के बीच एक योद्धा अपना धनुष नीचे रख देता है। उसका सारथी बोलना शुरू करता है।</p>
+      <div class="cta">
+        <a class="btn go" href="#s1" data-hi="कथा शुरू करें ↓" data-en="Begin the story ↓">कथा शुरू करें ↓</a>
+        <a class="btn" href="./#/gita/1" data-hi="पूरे १८ अध्याय पढ़ें" data-en="Read all 18 chapters">पूरे १८ अध्याय पढ़ें</a>
+      </div>
+    </div>
+    <div class="scroll-hint" data-hi="नीचे स्क्रॉल करें" data-en="Scroll down">नीचे स्क्रॉल करें</div>
+  </section>
+
+  <div id="scenes"></div>
+
+  <section class="end" id="end">
+    <div class="reveal">
+      <div class="where" data-hi="अध्याय १८ · श्लोक ७८" data-en="Chapter 18 · Verse 78">अध्याय १८ · श्लोक ७८</div>
+      <h2 style="font: 600 clamp(30px,4.4vw,50px)/1.2 var(--hi); margin: 8px 0 0" data-hi="जहाँ कृष्ण हैं, जहाँ अर्जुन हैं" data-en="Where Krishna is, and Arjuna">जहाँ कृष्ण हैं, जहाँ अर्जुन हैं</h2>
+      <div class="verse" data-verse="18.78"></div>
+      <div class="cta">
+        <a class="btn go" href="./#/gita/1" data-hi="गीता को शुरू से पढ़ें" data-en="Read the Gita from the start">गीता को शुरू से पढ़ें</a>
+        <a class="btn" href="#top" data-hi="कथा फिर से देखें ↑" data-en="Back to the top ↑">कथा फिर से देखें ↑</a>
+      </div>
+      <p class="note" data-hi="श्लोक: संस्कृत विकिस्रोत। हिन्दी अर्थ: महात्मा गांधी, ‘अनासक्तियोग’। अंग्रेज़ी: एनी बेसेंट (1922)। सब सार्वजनिक या मुक्त स्रोत हैं; पूरा विवरण पुस्तकालय के ‘स्रोत और लाइसेंस’ पृष्ठ पर है। कथा के वाक्य इसी पुस्तकालय के लिए लिखे गए हैं।" data-en="Verses: Sanskrit Wikisource. Hindi meaning: Mahatma Gandhi, Anasaktiyoga. English: Annie Besant (1922). All public domain or openly licensed; full credits are on the library's Sources and licences page. The story lines were written for this library.">श्लोक: संस्कृत विकिस्रोत। हिन्दी अर्थ: महात्मा गांधी, ‘अनासक्तियोग’। अंग्रेज़ी: एनी बेसेंट (1922)। सब सार्वजनिक या मुक्त स्रोत हैं; पूरा विवरण पुस्तकालय के ‘स्रोत और लाइसेंस’ पृष्ठ पर है। कथा के वाक्य इसी पुस्तकालय के लिए लिखे गए हैं।</p>
+    </div>
+  </section>
+</main>
+
+<script>
+"use strict";
+/* Each scene: the verse it is built on, the sky it sits under, a small drawing, and a few lines of story in Hindi and English. */
+const SCENES = [
+  { v: "1.1", sky: ["#1d1238", "#4a2340", "#f0a35e"], stars: .6, art: "armies",
+    hi: ["दो सेनाएँ, एक प्रश्न", "हस्तिनापुर के महल में अंधे राजा धृतराष्ट्र बैठे हैं। युद्ध का मैदान उनसे दूर है, पर संजय को दिव्य दृष्टि मिली है। राजा पूछते हैं: धर्म की भूमि कुरुक्षेत्र में मेरे पुत्रों और पांडवों ने क्या किया? यहीं से गीता शुरू होती है।"],
+    en: ["Two armies, one question", "In the palace at Hastinapura sits the blind king Dhritarashtra. The battlefield is far away, but his minister Sanjaya has been given the sight to see it. The king asks: on the holy field of Kurukshetra, what did my sons and the Pandavas do? This is where the Gita begins."] },
+  { v: "1.15", sky: ["#1f1236", "#542636", "#f39a52"], stars: .45, art: "conch",
+    hi: ["शंखनाद", "भीष्म शंख बजाते हैं, और फिर दोनों ओर से शंख, नगाड़े और रणसिंघे गूँज उठते हैं। श्वेत घोड़ों वाले रथ पर खड़े कृष्ण अपना पाञ्चजन्य शंख बजाते हैं, और अर्जुन अपना देवदत्त।"],
+    en: ["The conches sound", "Bhishma blows his conch, and then conches, drums and horns roar from both sides. Standing in the chariot with white horses, Krishna blows his conch Panchajanya, and Arjuna blows Devadatta."] },
+  { v: "1.21", sky: ["#21123a", "#5a2a3e", "#e98f50"], stars: .4, art: "chariot",
+    hi: ["‘रथ को बीच में ले चलो’", "युद्ध से ठीक पहले अर्जुन कहता है: हे अच्युत, मेरा रथ दोनों सेनाओं के बीच खड़ा करो। मैं देखना चाहता हूँ कि मुझे किन लोगों से लड़ना है। कृष्ण चुपचाप रथ आगे बढ़ाते हैं।"],
+    en: ["‘Take the chariot between the armies’", "Just before the battle, Arjuna says: Achyuta, place my chariot between the two armies. I want to see who I must fight. Krishna quietly drives forward."] },
+  { v: "1.47", sky: ["#0f0a1f", "#22142e", "#6a3a52"], stars: .9, art: "bow",
+    hi: ["धनुष गिर जाता है", "सामने अर्जुन देखता है: गुरु द्रोण, पितामह भीष्म, भाई, चाचा, मित्र। उसके हाथ काँपते हैं, मुँह सूख जाता है। वह कहता है, मैं नहीं लड़ूँगा, और गाण्डीव धनुष छोड़कर रथ के पीछे बैठ जाता है।"],
+    en: ["The bow slips from his hand", "Across the field Arjuna sees his teacher Drona, his grandfather Bhishma, cousins, uncles, friends. His hands shake and his mouth goes dry. He says he will not fight, puts down his bow Gandiva, and sinks into the back of the chariot."] },
+  { v: "2.11", sky: ["#120c26", "#2c1a3c", "#8a4f62"], stars: .85, art: "smile",
+    hi: ["कृष्ण मुस्कुराते हैं", "अर्जुन रोते हुए कृष्ण से मार्ग पूछता है: मैं आपका शिष्य हूँ, मुझे बताइए। दोनों सेनाओं के बीच कृष्ण मुस्कुराते हैं, और गीता का उपदेश शुरू होता है: तू उनके लिए शोक कर रहा है जिनके लिए शोक नहीं करना चाहिए।"],
+    en: ["Krishna smiles", "In tears, Arjuna asks Krishna to guide him: I am your disciple, teach me. Standing between the armies, Krishna smiles, and the teaching of the Gita begins: you grieve for those who need no grief."] },
+  { v: "2.20", sky: ["#151030", "#33204a", "#a0647a"], stars: .75, art: "flame",
+    hi: ["आत्मा न जन्म लेती है, न मरती है", "कृष्ण बताते हैं कि शरीर बदलते रहते हैं, जैसे हम पुराने कपड़े उतारकर नए पहनते हैं। पर भीतर जो आत्मा है, वह न कभी जन्मी, न कभी मरेगी। शस्त्र उसे काट नहीं सकते, आग उसे जला नहीं सकती।"],
+    en: ["The self is never born and never dies", "Krishna explains that bodies change, the way we take off old clothes and put on new ones. But the self within was never born and will never die. Weapons cannot cut it; fire cannot burn it."] },
+  { v: "2.47", sky: ["#191233", "#3d2650", "#c27a6c"], stars: .6, art: "hands",
+    hi: ["कर्म करो, फल की चिंता छोड़ो", "यह गीता का सबसे प्रसिद्ध श्लोक है। तेरा अधिकार केवल कर्म पर है, उसके फल पर नहीं। फल के लिए काम मत कर, और काम छोड़कर भी मत बैठ। पूरे मन से अपना कर्तव्य कर, और नतीजा छोड़ दे।"],
+    en: ["Do the work; let go of the fruit", "This is the Gita's best-known verse. Your right is to the work alone, never to its results. Do not work for the reward, and do not give up working either. Do your duty fully, and let the outcome go."] },
+  { v: "6.19", sky: ["#1b1435", "#45294f", "#d68a64"], stars: .5, art: "lamp",
+    hi: ["हवा में न काँपता दीपक", "मन को कैसे स्थिर करें? कृष्ण एक चित्र देते हैं: जैसे बिना हवा वाली जगह में रखा दीपक काँपता नहीं, वैसा ही होता है योगी का साधा हुआ मन। अभ्यास और वैराग्य से मन वश में आता है।"],
+    en: ["A lamp that does not flicker", "How do we steady the mind? Krishna gives a picture: like a lamp in a windless place that does not flicker, so is the disciplined mind of the yogi. Practice and letting go bring the mind under control."] },
+  { v: "4.7", sky: ["#1e1636", "#51304f", "#e2955f"], stars: .4, art: "wheel",
+    hi: ["‘जब-जब धर्म की हानि होती है’", "अर्जुन पूछता है कि कृष्ण कौन हैं। कृष्ण बताते हैं: जब-जब धर्म घटता है और अधर्म बढ़ता है, तब-तब मैं प्रकट होता हूँ, सज्जनों की रक्षा के लिए और धर्म को फिर से स्थापित करने के लिए।"],
+    en: ["‘Whenever dharma declines’", "Arjuna asks who Krishna really is. Krishna answers: whenever dharma declines and adharma rises, I come forth, to protect the good and to set dharma on its feet again."] },
+  { v: "11.12", sky: ["#3b2a4a", "#a8645a", "#ffd89a"], stars: 0, art: "suns",
+    hi: ["हज़ार सूर्यों जैसा प्रकाश", "अर्जुन कृष्ण का असली रूप देखना चाहता है। कृष्ण उसे दिव्य दृष्टि देते हैं, और अर्जुन विश्वरूप देखता है: अनगिनत मुख, आँखें, भुजाएँ, सारा ब्रह्माण्ड एक ही रूप में। यदि आकाश में एक साथ हज़ार सूर्य उग आएँ, तब शायद वह प्रकाश उसके जैसा हो।"],
+    en: ["Brighter than a thousand suns", "Arjuna asks to see Krishna's true form. Krishna gives him divine sight, and Arjuna sees the universal form: countless faces, eyes and arms, the whole universe in one being. If a thousand suns rose at once in the sky, that light might be like his."] },
+  { v: "12.13", sky: ["#2a1d40", "#6d3f55", "#f2ad6e"], stars: .2, art: "lotus",
+    hi: ["मुझे प्रिय भक्त", "डरा हुआ अर्जुन कृष्ण के सौम्य रूप को फिर देखना चाहता है। फिर कृष्ण बताते हैं कि उन्हें कौन प्रिय है: जो किसी से द्वेष नहीं करता, सबका मित्र है, दयालु है, जिसमें ‘मैं’ और ‘मेरा’ का घमंड नहीं, और जो सुख-दुख में एक-सा रहता है।"],
+    en: ["The devotee who is dear to me", "Shaken, Arjuna asks to see Krishna's gentle form again. Then Krishna says who is dear to him: one who hates no being, who is friendly and kind to all, free of ‘I’ and ‘mine’, the same in joy and in sorrow."] },
+  { v: "18.66", sky: ["#2e2142", "#7c4757", "#f7b878"], stars: .1, art: "feather",
+    hi: ["‘मेरी शरण में आ’", "अठारह अध्यायों के बाद कृष्ण सब कुछ एक बात में कह देते हैं: सारे धर्मों की चिंता छोड़कर मेरी ही शरण में आ जा। मैं तुझे सब पापों से छुड़ा दूँगा। शोक मत कर।"],
+    en: ["‘Take refuge in me alone’", "After eighteen chapters, Krishna puts it all in one line: set aside every other duty and take refuge in me alone. I will free you from every sin. Do not grieve."] },
+  { v: "18.73", sky: ["#3a2a46", "#b06a56", "#ffcf8a"], stars: 0, art: "rise",
+    hi: ["‘मेरा मोह नष्ट हो गया’", "अर्जुन उठ खड़ा होता है। वह कहता है: हे अच्युत, आपकी कृपा से मेरा मोह नष्ट हो गया, मुझे अपनी स्मृति वापस मिल गई। मेरे संदेह मिट गए। अब मैं वही करूँगा जो आप कहेंगे। वह फिर से गाण्डीव उठा लेता है।"],
+    en: ["‘My confusion is gone’", "Arjuna stands up. He says: Achyuta, by your grace my confusion is gone and I remember who I am. My doubts have cleared. I will do as you say. He takes up his bow Gandiva again."] },
+];
+const END = { sky: ["#3d2d48", "#c7795a", "#ffe0a0"], stars: 0 };
+
+/* Small line drawings, one per scene (drawn for this page). */
+const ART = {
+  armies: `<path class="st draw" d="M40 300 Q240 270 460 300"/><g class="st thin draw"><path d="M70 300 v-80 M100 296 v-100 M130 292 v-70 M160 290 v-95 M190 290 v-75 M300 290 v-75 M330 290 v-95 M360 292 v-70 M390 296 v-100 M420 300 v-80"/></g><path class="fl" d="M100 196 l30 9 -30 9z M160 195 l30 9-30 9z M330 195 l-30 9 30 9z M390 196 l-30 9 30 9z"/><circle class="st draw" cx="250" cy="150" r="46"/><path class="st thin draw" d="M250 84 v-30 M250 216 v30 M184 150 h-30 M316 150 h30"/>`,
+  conch: `<g class="glow"><path class="st draw" d="M150 330 C120 250 150 170 230 140 C320 106 380 160 360 230 C345 285 290 300 250 280 C215 262 215 222 245 210 C270 200 292 214 290 236"/><path class="st draw" d="M150 330 C200 340 270 330 320 300 M150 330 l-20 30 M160 336 l-8 34"/><path class="st thin draw" d="M330 160 C350 120 380 100 420 96 M360 190 C390 170 420 166 450 170 M362 230 C392 236 420 250 440 272"/></g>`,
+  chariot: `<path class="st draw" d="M120 300 h210 l24 -40 h-258 z"/><path class="st draw" d="M130 260 v-90 M320 260 v-90 M110 170 Q225 120 340 170"/><path class="st draw" d="M225 150 v-110"/><path class="fl" d="M225 40 l60 16 -60 18z"/><circle class="st draw" cx="300" cy="330" r="46"/><path class="st thin draw" d="M300 284 v92 M254 330 h92 M268 298 l64 64 M332 298 l-64 64"/><path class="st thin draw" d="M96 280 Q40 270 20 250"/>`,
+  bow: `<path class="st draw" d="M80 360 Q240 180 420 240"/><path class="st thin draw" d="M80 360 L420 240"/><path class="st draw" d="M60 400 H440"/><path class="st thin draw" d="M150 330 l120 -40 M270 290 l-14 -8 M270 290 l-6 13"/><circle class="fl" cx="250" cy="110" r="3"/><circle class="fl" cx="310" cy="80" r="2"/><circle class="fl" cx="180" cy="70" r="2"/>`,
+  smile: `<path class="st draw" d="M250 380 C190 380 160 330 170 270 C178 220 210 190 250 190 C290 190 322 220 330 270 C340 330 310 380 250 380 Z"/><path class="st draw" d="M210 290 q12 -10 24 0 M266 290 q12 -10 24 0 M222 330 q28 22 56 0"/><path class="st draw" d="M190 200 C200 140 300 140 310 200"/><path class="st draw" d="M250 140 C238 100 250 70 290 52 C282 80 300 96 300 120 C300 134 290 144 276 148" /><circle class="st thin draw" cx="250" cy="280" r="150"/>`,
+  flame: `<g class="glow"><path class="st draw" d="M250 400 C170 400 150 330 180 270 C200 230 230 210 230 160 C270 190 300 230 290 280 C310 270 320 250 318 226 C350 260 360 300 345 340 C330 380 295 400 250 400 Z"/><path class="st thin draw" d="M250 400 C220 400 210 370 222 345 C232 324 248 316 250 296 C268 312 282 334 276 360 C272 384 262 400 250 400"/></g><path class="st thin draw" d="M120 430 H380"/>`,
+  hands: `<path class="st draw" d="M120 360 C140 300 190 280 230 300 L250 312 L270 300 C310 280 360 300 380 360"/><path class="st draw" d="M120 360 C170 380 330 380 380 360"/><g class="glow"><circle class="st draw" cx="250" cy="220" r="34"/><path class="st thin draw" d="M250 166 v-26 M250 274 v26 M196 220 h-26 M304 220 h26 M212 182 l-18-18 M288 182 l18-18"/></g>`,
+  lamp: `<g class="glow"><path class="st draw" d="M250 250 C232 230 236 200 250 170 C264 200 268 230 250 250 Z"/></g><path class="st draw" d="M170 280 C190 320 310 320 330 280 Z"/><path class="st draw" d="M150 280 H350"/><path class="st draw" d="M230 318 L215 380 H285 L270 318"/><path class="st thin draw" d="M180 380 H320"/><path class="st thin draw" d="M90 160 h40 M370 200 h40 M100 240 h30"/>`,
+  wheel: `<circle class="st draw" cx="250" cy="250" r="140"/><circle class="st draw" cx="250" cy="250" r="26"/><g class="st thin draw"><path d="M250 110 V224 M250 276 V390 M110 250 H224 M276 250 H390 M151 151 L232 232 M268 268 L349 349 M349 151 L268 232 M232 268 L151 349"/></g><circle class="st thin draw" cx="250" cy="250" r="160"/>`,
+  suns: `<g class="glow">${Array.from({ length: 12 }, (_, i) => `<path class="st draw" d="M250 250 L${250 + 210 * Math.cos(i * Math.PI / 6)} ${250 + 210 * Math.sin(i * Math.PI / 6)}"/>`).join("")}${Array.from({ length: 24 }, (_, i) => `<path class="st thin draw" d="M${250 + 120 * Math.cos(i * Math.PI / 12 + .13)} ${250 + 120 * Math.sin(i * Math.PI / 12 + .13)} L${250 + 170 * Math.cos(i * Math.PI / 12 + .13)} ${250 + 170 * Math.sin(i * Math.PI / 12 + .13)}"/>`).join("")}<circle class="fl" cx="250" cy="250" r="64" opacity=".9"/><circle class="st draw" cx="250" cy="250" r="92"/></g>`,
+  lotus: `<path class="st draw" d="M250 360 C215 300 215 230 250 170 C285 230 285 300 250 360 Z"/><path class="st draw" d="M250 360 C190 340 150 290 145 220 C200 235 240 280 250 360 Z"/><path class="st draw" d="M250 360 C310 340 350 290 355 220 C300 235 260 280 250 360 Z"/><path class="st thin draw" d="M250 360 C170 365 110 330 80 280 M250 360 C330 365 390 330 420 280"/><path class="st thin draw" d="M90 400 Q250 370 410 400"/>`,
+  feather: `<path class="st draw" d="M150 420 C220 330 280 230 330 90"/><path class="st draw" d="M330 90 C250 120 200 200 205 280 C210 330 250 340 280 300 C320 245 345 170 330 90 Z"/><g class="glow"><path class="st draw" d="M268 220 C250 205 252 180 272 170 C294 162 308 182 300 202 C294 218 280 226 268 220 Z"/><circle class="fl" cx="282" cy="196" r="9"/></g><path class="st thin draw" d="M215 300 l-40 10 M228 260 l-48 0 M245 220 l-46 -8 M300 270 l40 8 M316 230 l44 0"/>`,
+  rise: `<g class="glow"><circle class="st draw" cx="250" cy="330" r="110"/></g><path class="st draw" d="M60 330 H440"/><path class="st draw" d="M250 300 V150 M250 180 L210 230 M250 180 L290 230 M250 300 L220 360 M250 300 L280 360"/><circle class="st draw" cx="250" cy="130" r="18"/><path class="st draw" d="M300 60 Q370 150 300 240"/><path class="st thin draw" d="M300 60 L300 240"/>`,
+};
+
+const $ = s => document.querySelector(s);
+let lang = document.documentElement.classList.contains("en") ? "en" : "hi";
+const verses = {};   // "2.47" -> verse from the library's own data
+const toDev = n => String(n).replace(/\d/g, d => "०१२३४५६७८९"[d]);
+
+async function loadVerses() {
+  const chapters = [...new Set([...SCENES.map(s => s.v), "18.78"].map(v => v.split(".")[0]))];
+  await Promise.all(chapters.map(async c => {
+    try {
+      const r = await fetch(`data/gita/${String(c).padStart(2, "0")}.json`);
+      const ch = await r.json();
+      for (const it of ch.verses || ch.items || []) if (it.id) verses[it.id] = it;
+    } catch (e) { /* offline and not cached yet: the story still reads; the verse box says so */ }
+  }));
+}
+
+function verseHtml(id) {
+  const v = verses[id], [c, n] = id.split(".");
+  if (!v) return `<p class="mean">${lang === "en" ? "This verse could not be loaded. " : "यह श्लोक लोड नहीं हो सका। "}<a href="./#/gita/${c}/${id}">${lang === "en" ? "Open it in the library" : "पुस्तकालय में खोलें"}</a></p>`;
+  const meaning = lang === "en" ? (v.en || v.hi) : (v.hi || v.en);
+  return `<p class="sa" lang="sa">${v.text}</p>
+    <p class="tr" lang="sa-Latn">${v.tr || ""}</p>
+    <p class="mean" lang="${lang === "en" && v.en ? "en" : "hi"}">${meaning || ""}</p>
+    <div class="who">${lang === "en" ? `Chapter ${c}, verse ${n} · English: Annie Besant` : `अध्याय ${toDev(c)}, श्लोक ${toDev(n)} · हिन्दी अर्थ: महात्मा गांधी`}</div>
+    <div class="acts">
+      <button class="chip listen" type="button" data-v="${id}" aria-pressed="false">${lang === "en" ? "▶ Listen" : "▶ सुनें"}</button>
+      <a class="chip" href="./#/gita/${c}/${id}">${lang === "en" ? `Read chapter ${c} →` : `अध्याय ${toDev(c)} पढ़ें →`}</a>
+    </div>`;
+}
+
+function render() {
+  document.documentElement.lang = lang === "en" ? "en" : "hi";
+  document.body.classList.toggle("en", lang === "en");
+  document.querySelectorAll("[data-hi]").forEach(el => { el.textContent = el.dataset[lang]; });
+  document.querySelectorAll(".lang button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.l === lang)));
+  $("#scenes").innerHTML = SCENES.map((s, i) => {
+    const [title, story] = s[lang], [c, n] = s.v.split(".");
+    return `<section class="scene" id="s${i + 1}" data-i="${i}">
+      <div class="in">
+        <div class="pic reveal" aria-hidden="true"><svg viewBox="0 0 500 460">${ART[s.art]}</svg></div>
+        <div class="txt reveal">
+          <div class="where">${lang === "en" ? `Chapter ${c} · Verse ${n}` : `अध्याय ${toDev(c)} · श्लोक ${toDev(n)}`}</div>
+          <h2>${title}</h2>
+          <p class="story">${story}</p>
+          <div class="verse">${verseHtml(s.v)}</div>
+        </div>
+      </div></section>`;
+  }).join("");
+  $(".end .verse").innerHTML = verseHtml("18.78");
+  $("#path").innerHTML = SCENES.map((s, i) => `<a href="#s${i + 1}" title="${s[lang][0]}" aria-label="${s[lang][0]}"></a>`).join("");
+  watch();
+}
+
+/* Scroll: reveal each scene, move the sky to its colours, light its dot. */
+let io;
+function watch() {
+  if (io) io.disconnect();
+  const root = document.documentElement;
+  io = new IntersectionObserver(entries => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      e.target.querySelectorAll(".reveal").forEach(r => r.classList.add("shown"));
+      if (e.target.classList.contains("reveal")) e.target.classList.add("shown");
+      const i = e.target.dataset.i, s = i != null ? SCENES[+i] : e.target.id === "end" ? END : { sky: ["#1d1238", "#4a2340", "#f0a35e"], stars: .7 };
+      root.style.setProperty("--sky1", s.sky[0]); root.style.setProperty("--sky2", s.sky[1]); root.style.setProperty("--glow", s.sky[2]); root.style.setProperty("--stars", s.stars);
+      document.querySelectorAll("#path a").forEach((a, k) => a.classList.toggle("on", String(k) === i));
+    }
+  }, { threshold: 0.35 });
+  document.querySelectorAll(".scene, .end, .hero").forEach(el => io.observe(el));
+}
+
+/* The hero drawing drifts at different speeds as you scroll (still, if you prefer less motion). */
+const still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (!still) {
+  // keep each layer's own position (its transform attribute) and add the drift on top
+  const layers = [...document.querySelectorAll("#heroArt [data-depth]")].map(l => ({ l, base: l.getAttribute("transform") || "", d: +l.dataset.depth }));
+  addEventListener("scroll", () => {
+    const y = scrollY; if (y > innerHeight * 1.2) return;
+    for (const { l, base, d } of layers) l.setAttribute("transform", `translate(0 ${(y * d).toFixed(1)}) ${base}`);
+  }, { passive: true });
+}
+
+/* Listen: the verse in Sanskrit, then its meaning, read by the device's own voice. */
+let speaking = null;
+function stopSpeaking() { try { speechSynthesis.cancel(); } catch (e) {} if (speaking) speaking.setAttribute("aria-pressed", "false"); speaking = null; }
+document.addEventListener("click", e => {
+  const b = e.target.closest(".listen"); if (!b) return;
+  if (speaking === b) { stopSpeaking(); return; }
+  stopSpeaking();
+  const v = verses[b.dataset.v]; if (!v || !("speechSynthesis" in window)) return;
+  const say = (text, l) => { const u = new SpeechSynthesisUtterance(text.replace(/[॥।|]+\s*[०-९\d]*\s*[॥।|]*/g, ", ")); u.lang = l; u.rate = 0.9; return u; };
+  const parts = [say(v.text, "hi-IN"), lang === "en" && v.en ? say(v.en, "en-IN") : say(v.hi || "", "hi-IN")];
+  parts[parts.length - 1].onend = () => { if (speaking === b) stopSpeaking(); };
+  speaking = b; b.setAttribute("aria-pressed", "true");
+  parts.forEach(p => speechSynthesis.speak(p));
+});
+
+/* Language: the same setting as the library */
+document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => {
+  lang = b.dataset.l; stopSpeaking();
+  try { const s = JSON.parse(localStorage.getItem("hl:v1") || "{}"); if (lang === "en") s.lang = "en"; else delete s.lang; localStorage.setItem("hl:v1", JSON.stringify(s)); } catch (e) {}
+  const at = scrollY; render(); scrollTo(0, at);
+}));
+
+render();
+loadVerses().then(render);
+</script>
+</body>
+</html>
