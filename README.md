@@ -67,7 +67,7 @@ English meanings, by source:
   Wikisource: `python3 tools/fetch_besant.py` then `python3 tools/add_en_pd.py gita sources/en-pd/gita-besant.json`.
 - **Vishnu Purana** – M. N. Dutt's translation (1896, public domain), one passage per chapter, from
   Project Gutenberg #66208: `python3 tools/add_vishnu_dutt.py`.
-- **Parashara Smriti, Chanakya Niti, Bal Kand, Sundarkand and the three Sahasranamas** – machine
+- **Parashara Smriti, Chanakya Niti, Bal Kand, Sundarkand, the three Sahasranamas and Aditya Hridayam** – machine
   translation written by an AI model (Claude) for this site, kept in `sources/en/` and merged with
   `tools/add_en.py`. The site labels it "machine translation, not proofread". No public-domain
   English was found that lines up verse by verse with these texts.
@@ -76,6 +76,10 @@ English meanings, by source:
 
 `python3 tools/stats.py` refreshes `data/stats.json` (chapter and verse counts and reading time on the
 home page); run it after adding or rebuilding a book.
+
+Hindi meanings written by an AI model are kept the same way, in `sources/hi/<book>/*.json` (entries with
+`"hi"` instead of `"en"`), merged with `python3 tools/add_en.py --lang hi <book>`; the book's `hi_note` makes
+every such meaning carry the label "मशीन अनुवाद, अभी जाँचा नहीं". So far only Aditya Hridayam has them.
 
 ## How to add a book
 

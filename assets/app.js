@@ -344,6 +344,8 @@
 			const lab = [];
 			if (it.hi_group) lab.push((b.verse || "") + " " + it.hi_group[0] + "–" + it.hi_group[1] + " का अर्थ");
 			if (opts.recite && it.hi_src && b.ocr_note) lab.push("स्कैन से लिया गया अर्थ, अभी जाँचा नहीं; कुछ अक्षर ग़लत हो सकते हैं");
+			// a book whose Hindi meanings were written by an AI model says so on every meaning
+			if (b.hi_note) lab.push("हिन्दी · मशीन अनुवाद, अभी जाँचा नहीं");
 			const m = h("div", { class: "meaning", lang: "hi" });
 			if (lab.length || it.hi_src) {
 				m.append(h("span", { class: "mlabel" }, lab.join(" "), lab.length && it.hi_src ? " · " : "",
@@ -738,7 +740,8 @@
 			en && !b.en_source && !b.en_note ? enNote(b) : null,
 			notesBox([
 				ocr && !(en && b.hi_only_ocr) ? h("p", { lang: en ? "en" : "hi" }, ocr) : null,
-				en ? (b.en_source || b.en_note ? enNote(b) : null) : b.en_note ? h("p", { lang: "en" }, b.en_note) : null]),
+				en ? (b.en_source || b.en_note ? enNote(b) : null) : b.en_note ? h("p", { lang: "en" }, b.en_note) : null,
+				!en && b.hi_note ? h("p", { lang: "hi" }, b.hi_note) : null]),
 			chapterEnBox(b, doc),
 			summaryBox(b, doc),
 			doc.items.some((x) => (x.text || x.p || x.poem) && !x.en && !x.en_ref) ? gtChapterLink(b, doc) : null,
