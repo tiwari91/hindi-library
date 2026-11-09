@@ -3,6 +3,7 @@
   vishnu-sahasranama  <- sa.wikisource "श्रीविष्णुसहस्रनामस्तोत्रम्‌" (typed page, sections by == headings ==)
   lalita-sahasranama  <- sa.wikisource "श्री ललितासहस्रनामस्तोत्रम्" (typed page, two <poem> blocks)
   shiva-sahasranama   <- sa.wikisource "शिवसहस्रनामस्तोत्रम्" (validated scan pages of बृहत्स्तोत्ररत्नाकरः, 1953)
+  aditya-hridayam     <- sa.wikisource "आदित्यहृदयम्" (typed page, one <poem>; Valmiki Ramayana, Yuddha Kanda)
 
 The words are used exactly as on Wikisource. This script only splits lines into verses
 (a verse ends at ॥ or ।।, or after four lines), turns "X उवाच" lines into speakers and
@@ -192,6 +193,19 @@ def chanakya():
     for i in range(0, len(parts), 2):
         chapters.append((parts[i].strip(), verses(clean_wiki(parts[i + 1]), len(chapters) + 1, numbered=True)))
     write_book("chanakya-niti", chapters, url(title))
+
+
+def aditya():
+    title = "आदित्यहृदयम्"
+    w = wikitext(HOST, title)
+    poem = re.findall(r"<poem>(.*?)</poem>", w, flags=re.S)[0]
+    items = verses(clean_wiki(poem), 1, numbered=True)
+    # the page's own title line repeats the book title; the closing "इति ..." line stays as a heading
+    if items and items[0].get("h", "").startswith("आदित्यहृदयम्"):
+        items = items[1:]
+        for j, x in enumerate(items, 1):
+            x["id"] = f"1.{j}"
+    write_book("aditya-hridayam", [("आदित्यहृदयम्", items)], url(title))
 
 
 if __name__ == "__main__":
